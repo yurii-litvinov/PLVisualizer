@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {FC, useState} from 'react';
 import './App.css';
+import {AppBar} from "./components/Appbar/Appbar";
+import {Modal} from "./components/Modal/Modal";
+import {AddExcelTable} from "./components/Modal/AddExcelTable";
+import {AddGoogleSS} from "./components/Modal/AddGoogleSS";
+import {SelectImport} from "./components/Modal/SelectImport";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    const [importModal, setImportModal] = useState(false)
+    const [exportModal, setExportModal] = useState(false)
+    const toggleImportModal = () => setImportModal(value => !value)
+    const toggleExportModal = () => setExportModal(value => !value)
+    return(<div className="Appbar">
+            <AppBar onImportClick={toggleImportModal} onExportClick={toggleExportModal}></AppBar>
+            { importModal && <Modal
+                title={'Добавьте таблицу'}
+                onClose={toggleImportModal}
+            > <SelectImport/>
+            </Modal>}
+            { exportModal && <Modal
+                title={''}
+                onClose={toggleExportModal}
+            >
+            </Modal>}
+
     </div>
-  );
+    )
 }
 
 export default App;
