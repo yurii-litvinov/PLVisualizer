@@ -1,25 +1,38 @@
 import React, {FC, useState} from "react";
-import styles from './Appbar.module.css'
+import styled from "styled-components";
+import {Actions} from "./Actions";
 
 
-export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) =>{
-    return(
-        <div className={styles.actionsContainer}>
-            <button className={styles.actionButton} onClick={onImportClick}>Добавить таблицу</button>
-            <button className={styles.actionButton} onClick={onExportClick}>Экспортировать таблицу</button>
-        </div>)
-}
-
-interface appBarProps{
+export interface appBarProps{
     onImportClick: () => void
     onExportClick: () => void
 }
 
+const AppBarContainer = styled.nav`
+  color: white;
+  height: 80px;
+  width: 100%;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Segoe UI"
+`
+
+const AppNameContainer = styled.div`
+    padding-left: 20px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: xx-large;
+`
+
 export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) => {
     return(
-        <nav className={styles.appBar}>
-            <div className={styles.appName}> PLVisualizer </div>
+        <AppBarContainer>
+            <AppNameContainer> PLVisualizer </AppNameContainer>
             <Actions onExportClick={onExportClick} onImportClick={onImportClick}  />
-        </nav>
+        </AppBarContainer>
     )
 }
+
