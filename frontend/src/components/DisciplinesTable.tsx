@@ -4,8 +4,14 @@ import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful
 import {tableRow} from "./TableRow";
 import {Discipline} from "./Discipline";
 
-export const DisciplinesTable : FC<{items : tableRow[]}> = ({items}) => {
-    const [localItems, setLocalItems] = useState<Array<tableRow>>(items)
+interface tableProps {
+    lecturersIds : string[]
+    lecturers : {[key:string] : tableRow}
+    
+}
+
+export const DisciplinesTable : FC<tableProps> = ({lecturers, lecturersIds} : tableProps) => {
+    const [tableData, setTableData] = useState<tableProps>({lecturers, lecturersIds})
 
 
     const onDragEnd = (result: DropResult) => {
@@ -13,15 +19,14 @@ export const DisciplinesTable : FC<{items : tableRow[]}> = ({items}) => {
             return
         }
 
-        setLocalItems(previous  => {
-            const temp = [...previous]
-            const destination = temp[result.destination!.index]
-            const source = temp[result.source!.index]
-            //const destination1 =
-            // temp[result.destination!.index] = temp[result.source.index]
-            // temp[result.source.index] = d
-            // return temp;
-            return temp
+        setTableData((previous)  => {
+            const tempPrevious = previous;
+            const destination = result.destination
+            const source = result.source
+
+            tempPrevious.lecturers[source.droppableId].disciplinesIds.splice(source.index, 1)
+
+            return tempPrevious
         })
 
     }
@@ -49,17 +54,17 @@ export const DisciplinesTable : FC<{items : tableRow[]}> = ({items}) => {
                 </TableHead>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <TableBody>
-                    {localItems.map((item) => {
+                    {tableData.lecturersIds.map((id) => {
                         return <TableRow>
-                            <TableCell align={"left"}>{item.name}</TableCell>
-                            <TableCell align={"left"}>{item.post}</TableCell>
-                            <TableCell align={"left"}>{item.interestRate}%</TableCell>
-                            <Droppable droppableId={item.name}>
+                            <TableCell align={"left"}>{lecturers[id].name}</TableCell>
+                            <TableCell align={"left"}>{lecturers[id].post}</TableCell>
+                            <TableCell align={"left"}>{lecturers[id].interestRate}%</TableCell>
+                            <Droppable droppableId={lecturers[id].name}>
                                 {(provided) => { return(
                                     <TableCell ref={provided.innerRef}>
-                                            {item.disciplines.map(discipline =>
+                                            {lecturers[id].disciplinesIds.map((disId) =>
                                             { return(
-                                                <Discipline name={discipline.name} index={discipline.index}/>
+                                                <Discipline name={lecturers[id].disciplines[disId]} />
                                             )
                                             })}
                                     </TableCell>)

@@ -3,69 +3,66 @@
 
 import {tableRow} from "./TableRow";
 
-export interface IDiscipline{
-    index: number
-    name: string
+// export interface IDiscipline{
+//     index: number
+//     name: string
+// }
+
+export const tableData = {
+    lecturers : {
+        'Литвинов Ю.В.':
+        {
+            name: 'Литвинов Ю.В.',
+            post: 'Доцент',
+            disciplines : {
+                'Программирование': 'Программирование',
+                'Информатика' : 'Информатика',
+                'Дисциплина с оооооооооооочень очееееень длинннннннннннным названииииииием': 'Дисциплина с оооооооооооочень очееееень длинннннннннннным названииииииием'
+            },
+            index: 0,
+            interestRate: 100,
+            standard: 500,
+            disciplinesIds: ['Программирование', 'Информатика', 'Дисциплина с оооооооооооочень очееееень длинннннннннннным названииииииием']
+        },
+
+        'Кириленко Я.А.':
+        {
+            name: 'Кириленко Я.А.',
+            post: 'Старший преподаватель',
+            disciplines : {
+                'Machine Learning' : 'Machine Learning'
+            },
+            index: 1,
+            interestRate: 100,
+            standard: 500,
+            disciplinesIds: ['Machine Learning']
+        },
+        'Терехов А.Н.':
+        {
+            name: 'Терехов А.Н.',
+            post: 'Старший преподаватель',
+            disciplines : {
+                'RuC' : 'RuC'
+            },
+            index: 2,
+            interestRate: 50,
+            standard: 500,
+            disciplinesIds: ['RuC']
+        },
+
+        'Смирнов К.К.':
+        {
+            name: 'Смирнов К.К.',
+            post: 'Старший преподаватель',
+            disciplines : {
+                'Асимптотический анализ': 'Асимптотический анализ'
+            },
+            index: 3,
+            interestRate: 20,
+            standard: 500,
+            disciplinesIds: ['Асимптотический анализ']
+        }
+    },
+
+    lecturersIds: ['Литвинов Ю.В.', 'Кириленко Я.А.', 'Терехов А.Н.', 'Смирнов К.К.']
 }
-
-export const tableData : tableRow[] = [
-    {
-        name: 'Литвинов Ю.В.',
-        post: 'Доцент',
-        disciplines : [
-            {
-                index: 1,
-                name: 'Программирование'
-            },
-            {
-                index: 2,
-                name: 'Информатика'
-            },
-        ],
-        index: 0,
-        interestRate: 100,
-        standard: 500
-    },
-
-    {
-        name: 'Кириленко Я.А.',
-        post: 'Старший преподаватель',
-        disciplines: [
-            {
-                index: 3,
-                name: 'Windows'
-            },
-            {
-                index: 4,
-                name: 'Machine Learning'
-            },
-        ],
-        index: 1,
-        interestRate: 1000,
-        standard: 500
-    },
-    {
-        name: 'Терехов А.Н.',
-        post: 'Старший преподаватель',
-        disciplines: [{
-            name: 'RuC',
-            index: 4
-        }],
-        index: 2,
-        interestRate: 50,
-        standard: 500
-    },
-    {
-        name: 'Смирнов К.К.',
-        post: 'Старший преподаватель',
-        disciplines: [{
-            name: 'Асимптотический анализ',
-            index: 5
-        }],
-        index: 3,
-        interestRate: 20,
-        standard: 500
-    },
-
-
-]
