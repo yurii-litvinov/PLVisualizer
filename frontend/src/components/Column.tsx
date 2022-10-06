@@ -3,6 +3,9 @@ import styled from "styled-components"
 import {Lecturer} from "./Lecturer"
 import {Droppable} from "react-beautiful-dnd";
 
+// я не уверен, что этот компонент понадобится. была идея иметь небольшую табличку,
+//     куда можно скинуть все дисциплины, и оттуда перетаскивать их к преподавателям
+
 interface columnProps {
     title: string
     children: string[]
@@ -19,6 +22,7 @@ const Title = styled.h3`
 
 const Children = styled.div`
     padding: 8px`
+
 
 export const Column : FC<columnProps> = ({title, children, id} : columnProps) =>{
     return ( <Container>
