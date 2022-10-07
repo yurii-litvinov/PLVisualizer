@@ -8,6 +8,15 @@ export interface appBarProps{
     onExportClick: () => void
 }
 
+export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) => {
+    return(
+        <AppBarContainer>
+            <AppNameContainer> PLVisualizer </AppNameContainer>
+            <Actions onExportClick={onExportClick} onImportClick={onImportClick}  />
+        </AppBarContainer>
+    )
+}
+
 const AppBarContainer = styled.nav`
   color: white;
   height: 80px;
@@ -26,13 +35,4 @@ const AppNameContainer = styled.div`
     cursor: pointer;
     font-size: xx-large;
 `
-
-export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) => {
-    return(
-        <AppBarContainer>
-            <AppNameContainer> PLVisualizer </AppNameContainer>
-            <Actions onExportClick={onExportClick} onImportClick={onImportClick}  />
-        </AppBarContainer>
-    )
-}
 

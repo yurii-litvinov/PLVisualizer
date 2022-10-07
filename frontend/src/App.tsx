@@ -25,7 +25,7 @@ function App() {
                 onClose={toggleExportModal}
             >
             </Modal>}
-            <DisciplinesTable lecturersIds={tableData.lecturersIds} lecturers={tableData.lecturers}  />
+            <DisciplinesTable lecturersIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}  />
     </div>
     )
 }

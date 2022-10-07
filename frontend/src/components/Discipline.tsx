@@ -5,11 +5,12 @@ import {Draggable} from "react-beautiful-dnd";
 
 interface disciplineProps {
     name: string
+    index: number
 }
 
-export const Discipline : FC<disciplineProps> =  ({name} : disciplineProps) => {
+export const Discipline : FC<disciplineProps> =  ({name, index} : disciplineProps) => {
     return (
-        <Draggable draggableId={name} index={0}>
+        <Draggable draggableId={name} index={index}>
             { (provided) => <Container
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
@@ -24,4 +25,5 @@ const Container = styled.div`
 border: 1px solid lightblue;
 padding: 8px;
 margin-bottom: 8px;
-border-radius: 2px`
+border-radius: 2px;
+background-color: white`

@@ -2,6 +2,14 @@ import styled from 'styled-components'
 import React from "react";
 import {appBarProps} from "./Appbar";
 
+export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) =>{
+    return(
+            <ActionsContainer>
+                < ButtonContainer onClick={onImportClick}>Добавить таблицу </ButtonContainer>
+                <ButtonContainer  onClick={onExportClick}>Экспортировать таблицу</ButtonContainer>
+            </ActionsContainer>)
+}
+
 const ActionsContainer = styled.ul`
     margin-right: 100px;
     display: flex;
@@ -41,12 +49,3 @@ const ButtonContainer = styled.button`
   vertical-align: top;
   white-space: nowrap;
 `
-
-
-export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) =>{
-    return(
-            <ActionsContainer>
-                < ButtonContainer onClick={onImportClick}>Добавить таблицу </ButtonContainer>
-                <ButtonContainer  onClick={onExportClick}>Экспортировать таблицу</ButtonContainer>
-            </ActionsContainer>)
-}

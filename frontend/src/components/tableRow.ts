@@ -3,8 +3,7 @@ export interface tableRow{
     name: string
     post: string
     interestRate: number
-    disciplines: {[key:string] : string}
-    disciplinesIds: string[]
+    disciplineIds: string[]
     distributedLoad? :{ [key: number] : number}
     standard: number
 }
