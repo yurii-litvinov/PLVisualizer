@@ -3,7 +3,6 @@ import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "
 import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
 import {tableRow} from "./tableRow";
 import {Discipline} from "./Discipline";
-import styled from 'styled-components'
 
 interface tableProps {
     lecturersIds : string[]
@@ -12,50 +11,36 @@ interface tableProps {
     
 }
 
+/// Represents a table with a pedagogical load with the possibility of Drag&Drop
 export const DisciplinesTable : FC<tableProps> = ({lecturers, lecturersIds, disciplines} : tableProps) => {
-    const [tableData, setTableData] = useState<tableProps>({lecturers, lecturersIds, disciplines})
-
+    const [localTableData, setLocalTableData] = useState<tableProps>({lecturers, lecturersIds, disciplines})
 
     const onDragEnd = (result: DropResult) => {
+        const destination = result.destination
+        const source = result.source
+        // the same place or drag to nowhere
         if ((!result.destination) || (result.destination.index === result.source.index &&
             result.destination.droppableId === result.source.droppableId)){
             return
-        }
-
-        if (result.destination.droppableId === result.source.droppableId){
-            setTableData((previousState) => {
-                const {lecturers} = previousState
-                const lecturer = lecturers[result.source.droppableId]
-                const newDisciplineIds = Array.from(lecturer.disciplineIds)
-                newDisciplineIds.splice(result.source.index,1)
-                newDisciplineIds.splice(result.destination!.index,0, result.draggableId)
-
-                const newLecturer = {
-                    ...lecturer,
-                    disciplineIds : newDisciplineIds
-                }
-
-                return {
-                    ...previousState,
-                    lecturers: {
-                        ...lecturers,
-                        [result.source.droppableId] : newLecturer
-                    }
-                }
+        }  // the same lecturer
+        else if (destination!.droppableId === source.droppableId){
+            setLocalTableData(({lecturers, lecturersIds, disciplines}) => {
+                const lecturer = lecturers[source.droppableId]
+                const destinationIds = Array.from(lecturer.disciplineIds)
+                destinationIds.splice(source.index,1)
+                destinationIds.splice(destination!.index,0, result.draggableId)
+                lecturers[source.droppableId].disciplineIds = destinationIds;
+                return {lecturers, lecturersIds, disciplines}
             })
-        }
-
-        if (result.source.droppableId !== result.destination.droppableId) {
-            setTableData(({lecturers, lecturersIds, disciplines}) => {
-                const destination = result.destination
-                const source = result.source
-
+        }  // another lecturer
+        else if (result.source.droppableId !== result.destination.droppableId) {
+            setLocalTableData(({lecturers, lecturersIds, disciplines}) => {
                 const sourceIds = Array.from(lecturers[source.droppableId].disciplineIds)
-                sourceIds.splice(source.index, 1)
+                sourceIds.splice(result.source.index, 1)
                 const destinationIds = Array.from(lecturers[destination!.droppableId].disciplineIds)
                 destinationIds.splice(destination!.index, 0, result.draggableId)
                 lecturers[destination!.droppableId].disciplineIds = destinationIds;
-                lecturers[source!.droppableId].disciplineIds = sourceIds
+                lecturers[source.droppableId].disciplineIds = sourceIds
                 return {lecturers, lecturersIds, disciplines}
             })
         }
@@ -85,17 +70,17 @@ export const DisciplinesTable : FC<tableProps> = ({lecturers, lecturersIds, disc
                 </TableHead>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <TableBody>
-                    {tableData.lecturersIds.map((lecturerId) => {
+                    {localTableData.lecturersIds.map((lecturerId) => {
                         return <TableRow>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].name}</TableCell>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].post}</TableCell>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].interestRate}%</TableCell>
-                            <Droppable droppableId={tableData.lecturers[lecturerId].name}>
+                            <TableCell align={"left"}>{localTableData.lecturers[lecturerId].name}</TableCell>
+                            <TableCell align={"left"}>{localTableData.lecturers[lecturerId].post}</TableCell>
+                            <TableCell align={"left"}>{localTableData.lecturers[lecturerId].interestRate}%</TableCell>
+                            <Droppable droppableId={localTableData.lecturers[lecturerId].name}>
                                 {(provided) => { return(
                                     <TableCell ref={provided.innerRef} >
-                                            {tableData.lecturers[lecturerId].disciplineIds.map((disciplineId, index) =>
+                                            {localTableData.lecturers[lecturerId].disciplineIds.map((disciplineId, index) =>
                                             { return(
-                                                <Discipline name={disciplineId} index={index} />
+                                                <Discipline key={disciplineId} name={disciplineId} index={index} />
                                             )
                                             })}
                                         {provided.placeholder}
@@ -113,9 +98,3 @@ export const DisciplinesTable : FC<tableProps> = ({lecturers, lecturersIds, disc
         </TableContainer>
     )
 }
-
-export const DroppableContainer = styled.div`
-display: flex;
-flex-direction: column`
-
-

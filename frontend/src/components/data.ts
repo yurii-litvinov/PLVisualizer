@@ -35,7 +35,7 @@ export const tableData = {
             index: 1,
             interestRate: 100,
             standard: 500,
-            disciplineIds: ['']
+            disciplineIds: []
         },
         'Терехов А.Н.':
         {
@@ -44,7 +44,7 @@ export const tableData = {
             index: 2,
             interestRate: 50,
             standard: 500,
-            disciplineIds: ['']
+            disciplineIds: []
         },
 
         'Смирнов К.К.':
@@ -54,7 +54,7 @@ export const tableData = {
             index: 3,
             interestRate: 20,
             standard: 500,
-            disciplineIds: ['']
+            disciplineIds: []
         }
     },
 
