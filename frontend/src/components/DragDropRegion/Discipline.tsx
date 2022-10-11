@@ -22,8 +22,8 @@ export const Discipline : FC<disciplineProps> =  ({name, index} : disciplineProp
 }
 
 const Container = styled.div`
-border: 1px solid lightblue;
-padding: 8px;
-margin-bottom: 8px;
-border-radius: 2px;
-background-color: white`
+    border: 1px solid lightblue;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 2px;
+    background-color: white`

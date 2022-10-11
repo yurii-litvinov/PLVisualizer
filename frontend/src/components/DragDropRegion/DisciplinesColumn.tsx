@@ -2,18 +2,15 @@ import React, {FC} from "react";
 import styled from "styled-components"
 import {Droppable} from "react-beautiful-dnd";
 import {Discipline} from "./Discipline";
-import {ITableRow} from "./ITableRow";
 
-interface columnProps {
+export interface columnProps {
     disciplineIds: string[]
-    lecturers : {[key:string] : ITableRow}
-    disciplines : {[key:string] : string}
 }
 
-export const DisciplinesColumn : FC<columnProps> = ({disciplineIds, lecturers, disciplines} : columnProps) =>{
+export const DisciplinesColumn : FC<columnProps> = ({disciplineIds} : columnProps) =>{
     return ( <Container>
             <Title>Дисциплины</Title>
-            <Droppable droppableId={'Дисциплины'}>
+            <Droppable droppableId={'column'}>
                 {(provided) =>(
                     <Children ref={provided.innerRef}>
                         {disciplineIds.map((id, index) => {

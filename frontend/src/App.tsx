@@ -1,12 +1,11 @@
 import React, {FC, useState} from 'react';
 import './App.css';
-import {DragDropContext} from 'react-beautiful-dnd'
 import {AppBar} from "./components/Appbar/Appbar";
 import {Modal} from "./components/Modal/Modal";
 import {SelectImport} from "./components/Modal/SelectImport";
-import {tableData} from "./components/data";
-import styled from "styled-components"
-import {DisciplinesTable} from "./components/DisciplinesTable";
+import {dndData} from "./components/data";
+import {DisciplinesTable} from "./components/DragDropRegion/DisciplinesTable";
+import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
 
 function App() {
     const [importModal, setImportModal] = useState(false)
@@ -25,7 +24,7 @@ function App() {
                 onClose={toggleExportModal}
             >
             </Modal>}
-            <DisciplinesTable lecturersIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}  />
+            <DragDropRegion tableProps={dndData} columnProps={dndData} />
     </div>
     )
 }

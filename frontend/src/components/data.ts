@@ -1,14 +1,4 @@
-
-// этот файл потом удалится, просто для тестов
-
-import {tableRow} from "./tableRow";
-
-// export interface IDiscipline{
-//     index: number
-//     name: string
-// }
-
-export const tableData = {
+export const dndData = {
     disciplines : {
         'Программирование': 'Программирование',
         'Информатика': 'Информатика',
@@ -25,7 +15,7 @@ export const tableData = {
             index: 0,
             interestRate: 100,
             standard: 500,
-            disciplineIds: ['Программирование', 'Информатика', 'Дисциплина с оооооооооооочень очееееень длинннннннннннным названииииииием']
+            disciplineIds: []
         },
 
         'Кириленко Я.А.':
@@ -58,5 +48,11 @@ export const tableData = {
         }
     },
 
-    lecturerIds: ['Литвинов Ю.В.', 'Кириленко Я.А.', 'Терехов А.Н.', 'Смирнов К.К.']
+    lecturerIds: ['Литвинов Ю.В.', 'Кириленко Я.А.', 'Терехов А.Н.', 'Смирнов К.К.'],
+    disciplineIds: ['Программирование',
+     'Информатика',
+    'Дисциплина с оооооооооооочень очееееень длинннннннннннным названииииииием',
+    'Machine Learning',
+    'RuC',
+    'Асимптотический анализ']
 }
