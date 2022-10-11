@@ -1,14 +1,13 @@
 import React, {FC, useState} from 'react'
 import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
 import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
-import {tableRow} from "./tableRow";
+import {ITableRow} from "./ITableRow";
 import {Discipline} from "./Discipline";
 
 interface tableProps {
     lecturersIds : string[]
-    lecturers : {[key:string] : tableRow}
+    lecturers : {[key:string] : ITableRow}
     disciplines : {[key:string] : string}
-    
 }
 
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop

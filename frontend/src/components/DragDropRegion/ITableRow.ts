@@ -1,4 +1,4 @@
-export interface tableRow{
+export interface ITableRow{
     index: number
     name: string
     post: string
