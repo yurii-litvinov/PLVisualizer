@@ -14,14 +14,13 @@ export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : 
             </ActionsContainer>)
 }
 
-const ActionsContainer = styled.ul`
+const ActionsContainer = styled.div`
     margin: 20px;
     margin-right: 100px;
     display: flex;
     width: 300px;
     justify-content: space-evenly;
     align-items: center;
-  w
 `
 
 const ButtonContainer = styled.button`

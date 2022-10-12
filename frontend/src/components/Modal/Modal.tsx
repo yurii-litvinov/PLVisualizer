@@ -18,14 +18,28 @@ export const Modal : FC<modalProps> = ({title, children, onClose} : modalProps) 
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
                 <ModalContent> {children} </ModalContent>
+                <ButtonSubmit type={'submit'}>Подтвердить</ButtonSubmit>
             </ModalBox>
-        <div/>
         </ModalContainer>
     )
 }
 
+const ButtonSubmit = styled.button`
+  padding: 0.8rem 1.2rem;
+  border-style: none;
+  border-radius: 9999px;
+  background-color: black;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  outline: none;
+`
+
+
+
 const ModalContainer = styled.div`
-    width: 500px;
     position: fixed;
     top: 0;
     left: 0;
@@ -39,7 +53,7 @@ const ModalContainer = styled.div`
 
 const ModalBox = styled.div`
     position:relative;
-    width: 80%;
+    width: 50%;
     margin: 0 10%;
     padding: 50px;
     box-sizing: border-box;
@@ -47,6 +61,7 @@ const ModalBox = styled.div`
     background-color: white;
     cursor: auto;
     font-family: inherit;
+  align-items: center;
 `
 
 const ModalTitle = styled.div`
@@ -54,7 +69,6 @@ const ModalTitle = styled.div`
     font-size: 30px;
     font-family: inherit
 `
-
 
 const ModalContent = styled.div`
     margin-top: 50px;

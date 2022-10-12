@@ -21,11 +21,11 @@ const AppBarContainer = styled.nav`
   color: white;
   height: 80px;
   width: 100%;
-  background: black;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: "Segoe UI"
+  font-family: "Segoe UI";
+  background-image: linear-gradient(45deg, #282c34 0%, #251c34 100%);
 `
 
 const AppNameContainer = styled.div`
