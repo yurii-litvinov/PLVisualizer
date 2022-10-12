@@ -25,6 +25,7 @@ export const Modal : FC<modalProps> = ({title, children, onClose} : modalProps) 
 }
 
 const ModalContainer = styled.div`
+    width: 500px;
     position: fixed;
     top: 0;
     left: 0;

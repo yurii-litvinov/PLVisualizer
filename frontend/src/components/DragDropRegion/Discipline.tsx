@@ -8,22 +8,29 @@ interface disciplineProps {
     index: number
 }
 
+interface containerProps  {
+    readonly isDragging: boolean
+}
+
 export const Discipline : FC<disciplineProps> =  ({name, index} : disciplineProps) => {
     return (
         <Draggable draggableId={name} index={index}>
-            { (provided) => <Container
+            { (provided, snapshot) =>
+                <Container
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                ref={provided.innerRef}>
+                ref={provided.innerRef}
+                isDragging={snapshot.isDragging}>
                 {name}
             </Container>}
         </Draggable>
     )
 }
 
-const Container = styled.div`
+const Container = styled.div<containerProps>`
     border: 1px solid lightblue;
     padding: 8px;
     margin-bottom: 8px;
     border-radius: 2px;
-    background-color: white`
+    background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')}
+`

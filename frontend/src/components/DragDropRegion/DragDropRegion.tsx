@@ -2,6 +2,7 @@ import {FC, useState} from "react";
 import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {columnProps, DisciplinesColumn} from "./DisciplinesColumn";
 import {DisciplinesTable, tableProps} from "./DisciplinesTable";
+import styled from "styled-components";
 
 
 interface dragDropRegionProps {
@@ -111,7 +112,12 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnPro
 
     return(
     <DragDropContext onDragEnd={handleDragEnd}>
-        <DisciplinesColumn disciplineIds={columnData.disciplineIds} />
-        <DisciplinesTable lecturerIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}/>
+        <DragDropContextContainer>
+            <DisciplinesColumn disciplineIds={columnData.disciplineIds} />
+            <DisciplinesTable lecturerIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}/>
+        </DragDropContextContainer>
     </DragDropContext>)
 }
+
+const DragDropContextContainer = styled.div`
+display: flex`

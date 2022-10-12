@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react'
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
-import {DragDropContext, Droppable, DropResult} from "react-beautiful-dnd";
+import {Table, TableBody, TableCell, TableCellProps, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {DragDropContext, Droppable, DroppableProvided, DropResult} from "react-beautiful-dnd";
 import {ITableRow} from "./ITableRow";
 import {Discipline} from "./Discipline";
 
@@ -10,11 +10,23 @@ export interface tableProps {
     disciplines : {[key:string] : string}
 }
 
+export interface extendedTableCellProps extends TableCellProps{
+    isDraggingOver : boolean
+    provided: DroppableProvided
+}
+
+
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop
 export const DisciplinesTable : FC<tableProps> = (tableData) => {
+    const TableCellExtended : FC<extendedTableCellProps> = ({isDraggingOver,provided, ...props}) => {
+        return <TableCell ref={provided.innerRef} {...props}>
+            {provided.placeholder}
+        </TableCell>
+    }
+
     return(
         <TableContainer>
-            <Table style={{width: 1000}}>
+            <Table style={{width: 1300}}>
                 <colgroup>
                     <col style={{width: "10%"}}/>
                     <col style={{width: "10%"}}/>
@@ -40,8 +52,11 @@ export const DisciplinesTable : FC<tableProps> = (tableData) => {
                             <TableCell align={"left"}>{tableData.lecturers[lecturerId].post}</TableCell>
                             <TableCell align={"left"}>{tableData.lecturers[lecturerId].interestRate}%</TableCell>
                             <Droppable droppableId={tableData.lecturers[lecturerId].name}>
-                                {(provided) => { return(
-                                    <TableCell ref={provided.innerRef} >
+                                {(provided, snapshot) => { return(
+                                    <TableCell
+                                        style={{backgroundColor: snapshot.isDraggingOver ? 'skyblue' : 'white'}}
+                                        ref={provided.innerRef}
+                                    >
                                             {tableData.lecturers[lecturerId].disciplineIds.map((disciplineId, index) =>
                                             { return(
                                                 <Discipline key={disciplineId} name={disciplineId} index={index} />
