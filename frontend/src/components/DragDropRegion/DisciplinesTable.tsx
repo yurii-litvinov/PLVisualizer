@@ -14,13 +14,13 @@ export interface tableProps {
 export const DisciplinesTable : FC<tableProps> = (tableData) => {
     return(
         <TableContainer>
-            <Table>
+            <Table style={{width: 1000}}>
                 <colgroup>
                     <col style={{width: "10%"}}/>
                     <col style={{width: "10%"}}/>
                     <col style={{width: "3%"}}/>
-                    <col style={{width: "25%"}}/>
                     <col style={{width: "20%"}}/>
+                    <col style={{width: "15%"}}/>
                     <col style={{width: "7%"}}/>
                 </colgroup>
                 <TableHead>

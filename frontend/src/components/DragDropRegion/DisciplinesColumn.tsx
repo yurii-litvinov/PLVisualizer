@@ -7,13 +7,13 @@ export interface columnProps {
     disciplineIds: string[]
 }
 
-export const DisciplinesColumn : FC<columnProps> = ({disciplineIds} : columnProps) =>{
+export const DisciplinesColumn : FC<columnProps> = (columnsProps) =>{
     return ( <Container>
             <Title>Дисциплины</Title>
             <Droppable droppableId={'column'}>
                 {(provided) =>(
                     <Children ref={provided.innerRef}>
-                        {disciplineIds.map((id, index) => {
+                        {columnsProps.disciplineIds.map((id, index) => {
                             return(<Discipline key={id} name={id} index={index}/>)
                         })}
                         {provided.placeholder}

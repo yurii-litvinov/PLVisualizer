@@ -18,44 +18,44 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnPro
         const source = result.source
         //dnd between disciplines in column
         if (destination!.droppableId === source.droppableId){
-            setColumnData(previousState => {
-                const destinationIds = Array.from(previousState.disciplineIds)
+            setColumnData(({disciplineIds}) => {
+                const destinationIds = Array.from(disciplineIds)
                 destinationIds.splice(source.index, 1)
                 destinationIds.splice(destination!.index, 0, result.draggableId)
-                previousState.disciplineIds = destinationIds;
-                return previousState;
+                disciplineIds = destinationIds;
+                return {disciplineIds}
             })
         }
         // dnd from column to table
         else if (source.droppableId === 'column'){
-            setColumnData(previousColumnState => {
-                const sourceIds = Array.from(previousColumnState.disciplineIds)
+            setColumnData(({disciplineIds}) => {
+                const sourceIds = Array.from(disciplineIds)
                 sourceIds.splice(source.index, 1)
-                previousColumnState.disciplineIds = sourceIds;
-                return previousColumnState;
+                disciplineIds = sourceIds
+                return {disciplineIds}
             })
-            setTableData(previousTableState => {
-                const lecturer = previousTableState.lecturers[destination!.droppableId];
+            setTableData(({lecturers, lecturerIds, disciplines}) => {
+                const lecturer = lecturers[destination!.droppableId];
                 const destinationIds = Array.from(lecturer.disciplineIds)
                 destinationIds.splice(destination!.index, 0, result.draggableId)
-                previousTableState.lecturers[destination!.droppableId].disciplineIds = destinationIds;
-                return previousTableState;
+                lecturers[destination!.droppableId].disciplineIds = destinationIds;
+                return {lecturers, lecturerIds, disciplines};
             })
         }
         // dnd from table to column
         else if (destination?.droppableId === 'column'){
-            setColumnData(previousColumnState => {
-                const destinationIds = Array.from(previousColumnState.disciplineIds)
+            setColumnData(({disciplineIds}) => {
+                const destinationIds = Array.from(disciplineIds)
                 destinationIds.splice(destination.index, 0, result.draggableId)
-                previousColumnState.disciplineIds = destinationIds;
-                return previousColumnState;
+                disciplineIds = destinationIds;
+                return {disciplineIds};
             })
-            setTableData(previousTableState => {
-                const lecturer = previousTableState.lecturers[source.droppableId]
+            setTableData(({lecturers, lecturerIds, disciplines}) => {
+                const lecturer = lecturers[source.droppableId]
                 const sourceIds = Array.from(lecturer.disciplineIds)
                 sourceIds.splice(source.index, 1)
-                previousTableState.lecturers[source.droppableId].disciplineIds = sourceIds;
-                return previousTableState;
+                lecturers[source.droppableId].disciplineIds = sourceIds;
+                return {lecturers, lecturerIds, disciplines};
             })
         }
     }
@@ -114,6 +114,4 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnPro
         <DisciplinesColumn disciplineIds={columnData.disciplineIds} />
         <DisciplinesTable lecturerIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}/>
     </DragDropContext>)
-
 }
-

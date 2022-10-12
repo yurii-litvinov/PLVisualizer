@@ -24,7 +24,7 @@ function App() {
                 onClose={toggleExportModal}
             >
             </Modal>}
-            <DragDropRegion tableProps={dndData} columnProps={dndData} />
+            <DragDropRegion columnProps={dndData} tableProps={dndData} />
     </div>
     )
 }
