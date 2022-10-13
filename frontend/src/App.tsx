@@ -4,7 +4,6 @@ import {AppBar} from "./components/Appbar/Appbar";
 import {Modal} from "./components/Modal/Modal";
 import {SelectImport} from "./components/Modal/SelectImport";
 import {dndData} from "./components/data";
-import {DisciplinesTable} from "./components/DragDropRegion/DisciplinesTable";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
 
 function App() {
@@ -24,7 +23,8 @@ function App() {
                 onClose={toggleExportModal}
             >
             </Modal>}
-            <DragDropRegion columnProps={dndData} tableProps={dndData} />
+            <DragDropRegion disciplineIds={dndData.disciplineIds} lecturerIds={dndData.lecturerIds}
+                lecturers={dndData.lecturers} disciplines={dndData.disciplines}/>
     </div>
     )
 }

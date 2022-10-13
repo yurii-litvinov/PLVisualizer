@@ -10,20 +10,9 @@ export interface tableProps {
     disciplines : {[key:string] : string}
 }
 
-export interface extendedTableCellProps extends TableCellProps{
-    isDraggingOver : boolean
-    provided: DroppableProvided
-}
-
 
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop
 export const DisciplinesTable : FC<tableProps> = (tableData) => {
-    const TableCellExtended : FC<extendedTableCellProps> = ({isDraggingOver,provided, ...props}) => {
-        return <TableCell ref={provided.innerRef} {...props}>
-            {provided.placeholder}
-        </TableCell>
-    }
-
     return(
         <TableContainer>
             <Table style={{width: 1300}}>

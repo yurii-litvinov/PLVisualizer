@@ -3,37 +3,62 @@ import {DragDropContext, DropResult} from "react-beautiful-dnd";
 import {columnProps, DisciplinesColumn} from "./DisciplinesColumn";
 import {DisciplinesTable, tableProps} from "./DisciplinesTable";
 import styled from "styled-components";
+import { ITableRow } from "./ITableRow";
 
 
-interface dragDropRegionProps {
-    tableProps : tableProps;
-    columnProps: columnProps
+export interface dragDropRegionProps {
+    disciplineIds : string[]
+    lecturerIds : string[]
+    lecturers : {[key:string] : ITableRow}
+    disciplines : {[key:string] : string}
 }
 
-export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnProps}) => {
-    const [tableData, setTableData] = useState(tableProps);
-    const [columnData, setColumnData] = useState(columnProps)
+export const DragDropRegion : FC<dragDropRegionProps>  = ({disciplineIds, lecturerIds, lecturers, disciplines}) => {
+    const handleResetClick = () => {
+        setColumnData(({disciplineIds, handleResetClick}) => {
+            const newIds = Array.from(disciplineIds)
+            tableData.lecturerIds.map(lecturerId => {
+                tableData.lecturers[lecturerId].disciplineIds.map(disciplineId => {
+                    newIds.splice(0, 0, disciplineId)
+                })
+            })
+            disciplineIds = newIds;
+            return {disciplineIds, handleResetClick}
+        })
+
+        setTableData(({disciplines, lecturerIds, lecturers}) => {
+            const newDisciplineIds = [] as string[]
+            lecturerIds.map(lecturerId => {
+                lecturers[lecturerId].disciplineIds = newDisciplineIds
+            })
+            return {disciplines, lecturerIds, lecturers}
+
+        })
+    }
+
+    const [tableData, setTableData] = useState<tableProps>({lecturerIds, lecturers, disciplines})
+    const [columnData, setColumnData] = useState<columnProps>({disciplineIds, handleResetClick})
 
     const handleDndAffectingColumn = (result: DropResult) => {
         const destination = result.destination
         const source = result.source
         //dnd between disciplines in column
         if (destination!.droppableId === source.droppableId){
-            setColumnData(({disciplineIds}) => {
+            setColumnData(({disciplineIds, handleResetClick}) => {
                 const destinationIds = Array.from(disciplineIds)
                 destinationIds.splice(source.index, 1)
                 destinationIds.splice(destination!.index, 0, result.draggableId)
                 disciplineIds = destinationIds;
-                return {disciplineIds}
+                return {disciplineIds,  handleResetClick}
             })
         }
         // dnd from column to table
         else if (source.droppableId === 'column'){
-            setColumnData(({disciplineIds}) => {
+            setColumnData(({disciplineIds, handleResetClick}) => {
                 const sourceIds = Array.from(disciplineIds)
                 sourceIds.splice(source.index, 1)
                 disciplineIds = sourceIds
-                return {disciplineIds}
+                return {disciplineIds, handleResetClick}
             })
             setTableData(({lecturers, lecturerIds, disciplines}) => {
                 const lecturer = lecturers[destination!.droppableId];
@@ -45,11 +70,11 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnPro
         }
         // dnd from table to column
         else if (destination?.droppableId === 'column'){
-            setColumnData(({disciplineIds}) => {
+            setColumnData(({disciplineIds, handleResetClick}) => {
                 const destinationIds = Array.from(disciplineIds)
                 destinationIds.splice(destination.index, 0, result.draggableId)
                 disciplineIds = destinationIds;
-                return {disciplineIds};
+                return {disciplineIds, handleResetClick};
             })
             setTableData(({lecturers, lecturerIds, disciplines}) => {
                 const lecturer = lecturers[source.droppableId]
@@ -113,7 +138,7 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({tableProps, columnPro
     return(
     <DragDropContext onDragEnd={handleDragEnd}>
         <DragDropContextContainer>
-            <DisciplinesColumn disciplineIds={columnData.disciplineIds} />
+            <DisciplinesColumn disciplineIds={columnData.disciplineIds} handleResetClick={handleResetClick} />
             <DisciplinesTable lecturerIds={tableData.lecturerIds} lecturers={tableData.lecturers} disciplines={tableData.disciplines}/>
         </DragDropContextContainer>
     </DragDropContext>)
