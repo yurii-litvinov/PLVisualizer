@@ -52,24 +52,13 @@ const ButtonContainer = styled.button`
     background-color: lightblue;
     border-radius: 8px;
     border: 3px solid lightblue;
-    box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
     box-sizing: border-box;
     color: black;
     cursor: pointer;
-    display: inline-block;
     font-family: "Segoe UI";
     font-size: 16px;
     font-weight: 600;
-    letter-spacing: normal;
     line-height: 1.5;
     overflow: visible ;
     padding: 13px 20px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    transform: translate3d(0, 0, 0);
-    transition: all .3s;
-    touch-action: manipulation;
-    vertical-align: top;
-    white-space: nowrap;
 `

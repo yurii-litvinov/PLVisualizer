@@ -41,10 +41,5 @@ const ButtonContainer = styled.button`
   padding: 13px 20px;
   position: relative;
   text-align: center;
-  text-decoration: none;
-  transform: translate3d(0, 0, 0);
-  transition: all .3s;
-  touch-action: manipulation;
-  vertical-align: top;
   white-space: nowrap;
 `
