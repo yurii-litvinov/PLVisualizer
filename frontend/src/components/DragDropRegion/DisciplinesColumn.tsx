@@ -31,6 +31,7 @@ export const DisciplinesColumn : FC<columnProps> = ({disciplineIds, handleResetC
 }
 
 const Container = styled.div`
+  height: 390px;
   display: flex;
   flex-direction: column;
     width: 15%;
@@ -47,10 +48,11 @@ const DisciplinesList = styled.div<disciplinesListProps>`
   background-color: ${(props) => props.isDraggingOver ? 'skyblue' : 'white'}`
 
 const ButtonContainer = styled.button`
+margin: 10px;
     appearance: none;
     backface-visibility: hidden;
     background-color: lightblue;
-    border-radius: 8px;
+    border-radius: 9999px;
     border: 3px solid lightblue;
     box-sizing: border-box;
     color: black;

@@ -5,27 +5,26 @@ import {appBarProps} from "./Appbar";
 export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) =>{
     return(
             <ActionsContainer>
-                   < ButtonContainer onClick={onImportClick}>Добавить таблицу </ButtonContainer>
-                &nbsp;&nbsp;&nbsp;
+                   <ButtonContainer onClick={onImportClick}>Добавить таблицу </ButtonContainer>
                     <ButtonContainer  onClick={onExportClick}>Экспортировать таблицу</ButtonContainer>
 
             </ActionsContainer>)
 }
 
 const ActionsContainer = styled.div`
-    margin: 20px;
-    margin-right: 100px;
-    display: flex;
-    width: 300px;
-    justify-content: space-evenly;
-    align-items: center;
+  margin: 24px 96px 24px 24px;
+  display: flex;
+  width: 300px;
+  justify-content: space-evenly;
+  align-items: center;
 `
 
 const ButtonContainer = styled.button`
+  margin: 24px;
   appearance: none;
   backface-visibility: hidden;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 9999px;
   border-style: none;
   box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
   box-sizing: border-box;

@@ -24,6 +24,6 @@ const InputContainer = styled.input`
   border-radius: 4px;
   border: 1px solid skyblue;
   padding: 10px 15px;
-  margin-bottom: 10px;
+  margin: 10px;
   font-size: 14px;
 `

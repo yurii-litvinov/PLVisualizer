@@ -1,14 +1,15 @@
 import React, {FC} from "react";
 import closeIcon from "../../img/close.svg"
 import styled from "styled-components";
+import {SelectImport} from "./SelectImport";
 
 interface modalProps{
     onClose: () => void
     title: string
-    children: React.ReactNode
 }
-export const Modal : FC<modalProps> = ({title, children, onClose} : modalProps) => {
+export const AddTableModal : FC<modalProps> = ({title, onClose} : modalProps) => {
     return (
+        <>
         <ModalContainer>
             <ModalOverlay>
             </ModalOverlay>
@@ -17,27 +18,12 @@ export const Modal : FC<modalProps> = ({title, children, onClose} : modalProps) 
                     <img src={closeIcon} alt={'close modal'}></img>
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
-                <ModalContent> {children} </ModalContent>
-                <ButtonSubmit type={'submit'}>Подтвердить</ButtonSubmit>
+                <SelectImport onCancelClick={onClose}/>
             </ModalBox>
         </ModalContainer>
+    </>
     )
 }
-
-const ButtonSubmit = styled.button`
-  padding: 0.8rem 1.2rem;
-  border-style: none;
-  border-radius: 9999px;
-  background-color: black;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  outline: none;
-`
-
-
 
 const ModalContainer = styled.div`
     position: fixed;
@@ -65,16 +51,10 @@ const ModalBox = styled.div`
 `
 
 const ModalTitle = styled.div`
+  margin: 20px;
     color: black;
     font-size: 30px;
     font-family: inherit
-`
-
-const ModalContent = styled.div`
-    margin-top: 50px;
-    color: black;
-    font-size: 16px;
-    font-family: inherit;
 `
 
 const CloseButton = styled.div`
