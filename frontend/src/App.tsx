@@ -1,10 +1,11 @@
 import React, {FC, useState} from 'react';
 import './App.css';
 import {AppBar} from "./components/Appbar/Appbar";
-import {AddTableModal} from "./components/Modal/AddTableModal";
+import {Modal} from "./components/Modal/Modal";
 import {SelectImport} from "./components/Modal/SelectImport";
 import {dndData} from "./components/data";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
+import {AddGoogleSS} from "./components/Modal/AddGoogleSS";
 
 function App() {
     const [importModal, setImportModal] = useState(false)
@@ -13,10 +14,18 @@ function App() {
     const toggleExportModal = () => setExportModal(value => !value)
     return(<div className="Appbar">
             <AppBar onImportClick={toggleImportModal} onExportClick={toggleExportModal}></AppBar>
-            { importModal && <AddTableModal
+            { importModal && <Modal
                 title={'Добавление таблицы'}
-                onClose={toggleImportModal}
-            />}
+                onClose={toggleImportModal}>
+                <SelectImport onCancelClick={toggleImportModal}/>
+            </Modal>
+            }
+            { exportModal && <Modal
+                title={'Добавление таблицы'}
+                onClose={toggleExportModal}>
+                <AddGoogleSS/>
+            </Modal>
+            }
             <DragDropRegion disciplineIds={dndData.disciplineIds} lecturerIds={dndData.lecturerIds}
                 lecturers={dndData.lecturers} disciplines={dndData.disciplines}/>
     </div>

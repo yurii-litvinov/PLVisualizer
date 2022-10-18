@@ -20,10 +20,9 @@ const Container = styled.div`
 
 const InputContainer = styled.input`
   box-sizing: border-box;
-  width: 400px;
+  width: 100%;
   border-radius: 4px;
-  border: 1px solid skyblue;
+  border: 2px solid skyblue;
   padding: 10px 15px;
-  margin: 10px;
   font-size: 14px;
 `

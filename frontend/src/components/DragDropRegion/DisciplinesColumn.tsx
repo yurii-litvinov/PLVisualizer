@@ -31,7 +31,7 @@ export const DisciplinesColumn : FC<columnProps> = ({disciplineIds, handleResetC
 }
 
 const Container = styled.div`
-  height: 390px;
+  height: 600px;
   display: flex;
   flex-direction: column;
     width: 15%;
