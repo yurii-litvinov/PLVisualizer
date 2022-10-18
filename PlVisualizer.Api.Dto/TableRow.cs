@@ -1,5 +1,6 @@
 ﻿namespace PlVisualizer.Api.Dto;
 
+
 public class TableRow
 {
     public string Lecturer { get; set; }
