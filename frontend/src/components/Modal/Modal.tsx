@@ -7,9 +7,10 @@ interface modalProps{
     onClose: () => void
     title: string
     children: ReactNode
+    onSubmit: () => void
 }
 
-export const Modal : FC<modalProps> = ({title, onClose, children} : modalProps) => {
+export const Modal : FC<modalProps> = ({title, onClose, children, onSubmit} : modalProps) => {
     return (
         <>
         <ModalContainer>
@@ -21,7 +22,7 @@ export const Modal : FC<modalProps> = ({title, onClose, children} : modalProps) 
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
                 {children}
-                <ButtonSubmit>Подтвердить</ButtonSubmit>
+                <ButtonSubmit type={'submit'} onSubmit={onSubmit} >Подтвердить</ButtonSubmit>
                 <ButtonCancel onClick={onClose}> Отмена </ButtonCancel>
             </ModalBox>
         </ModalContainer>

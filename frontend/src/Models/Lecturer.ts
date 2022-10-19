@@ -1,5 +1,4 @@
-export interface ITableRow{
-    index: number
+export interface Lecturer{
     name: string
     post: string
     interestRate: number

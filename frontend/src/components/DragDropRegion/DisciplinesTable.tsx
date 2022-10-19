@@ -1,13 +1,13 @@
 import React, {FC, useState} from 'react'
 import {Table, TableBody, TableCell, TableCellProps, TableContainer, TableHead, TableRow} from "@material-ui/core";
 import {DragDropContext, Droppable, DroppableProvided, DropResult} from "react-beautiful-dnd";
-import {ITableRow} from "./ITableRow";
-import {Discipline} from "./Discipline";
+import {Lecturer} from "../../Models/Lecturer";
+import {DndDiscipline} from "./DndDiscipline";
+import {Discipline} from "../../Models/Discipline";
 
 export interface tableProps {
-    lecturerIds : string[]
-    lecturers : {[key:string] : ITableRow}
-    disciplines : {[key:string] : string}
+    lecturers: Lecturer[]
+    disciplines: {[key: string] : Discipline}
 }
 
 
@@ -35,20 +35,20 @@ export const DisciplinesTable : FC<tableProps> = (tableData) => {
                     </TableRow>
                 </TableHead>
                     <TableBody>
-                    {tableData.lecturerIds.map((lecturerId) => {
+                    {tableData.lecturers.map((lecturer) => {
                         return <TableRow>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].name}</TableCell>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].post}</TableCell>
-                            <TableCell align={"left"}>{tableData.lecturers[lecturerId].interestRate}%</TableCell>
-                            <Droppable droppableId={tableData.lecturers[lecturerId].name}>
+                            <TableCell align={"left"}>{lecturer.name}</TableCell>
+                            <TableCell align={"left"}>{lecturer.post}</TableCell>
+                            <TableCell align={"left"}>{lecturer.interestRate}</TableCell>
+                            <Droppable droppableId={lecturer.name}>
                                 {(provided, snapshot) => { return(
                                     <TableCell
                                         style={{backgroundColor: snapshot.isDraggingOver ? 'skyblue' : 'white'}}
                                         ref={provided.innerRef}
                                     >
-                                            {tableData.lecturers[lecturerId].disciplineIds.map((disciplineId, index) =>
+                                            {lecturer.disciplineIds.map((disciplineId, index) =>
                                             { return(
-                                                <Discipline key={disciplineId} name={disciplineId} index={index} />
+                                                <DndDiscipline key={disciplineId} name={disciplineId} index={index} />
                                             )
                                             })}
                                         {provided.placeholder}

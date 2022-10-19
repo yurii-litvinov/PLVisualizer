@@ -1,8 +1,7 @@
 import React, {FC, useState} from "react";
 import styled from "styled-components"
 import {Droppable} from "react-beautiful-dnd";
-import {Discipline} from "./Discipline";
-import {ITableRow} from "./ITableRow";
+import {DndDiscipline} from "./DndDiscipline";
 
 export interface columnProps {
     handleResetClick : () => void
@@ -20,7 +19,7 @@ export const DisciplinesColumn : FC<columnProps> = ({disciplineIds, handleResetC
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
                         {disciplineIds.map((id, index) => {
-                            return(<Discipline key={id} name={id} index={index}/>)
+                            return(<DndDiscipline key={id} name={id} index={index}/>)
                         })}
                         {provided.placeholder}
                     </DisciplinesList>)}

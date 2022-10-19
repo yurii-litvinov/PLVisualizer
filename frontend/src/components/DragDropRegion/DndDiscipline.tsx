@@ -12,7 +12,7 @@ interface containerProps  {
     readonly isDragging: boolean
 }
 
-export const Discipline : FC<disciplineProps> =  ({name, index} : disciplineProps) => {
+export const DndDiscipline : FC<disciplineProps> =  ({name, index} : disciplineProps) => {
     return (
         <Draggable draggableId={name} index={index}>
             { (provided, snapshot) =>
