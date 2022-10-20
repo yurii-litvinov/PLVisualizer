@@ -12,7 +12,7 @@ export interface tableProps {
 
 
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop
-export const DisciplinesTable : FC<tableProps> = (tableData) => {
+export const LecturersTable : FC<tableProps> = (tableData) => {
     return(
         <TableContainer>
             <Table style={{width: 1300}}>

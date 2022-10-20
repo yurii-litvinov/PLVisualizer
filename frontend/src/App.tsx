@@ -54,8 +54,7 @@ function App() {
                 <AddGoogleSS/>
             </Modal>
             }
-            <DragDropRegion disciplineIds={dndData.disciplineIds} lecturerIds={dndData.lecturerIds}
-                lecturers={dndData.lecturers} disciplines={dndData.disciplines}/>
+            <DragDropRegion  lecturers={lecturers} disciplines={disciplines} setLecturers={setLecturers}/>
     </div>
     )
 }
