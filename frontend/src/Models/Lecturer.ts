@@ -3,6 +3,6 @@ export interface Lecturer{
     post: string
     interestRate: number
     disciplineIds: string[]
-    distributedLoad? :{ [key: number] : number}
+    distributedLoad: number
     standard: number
 }

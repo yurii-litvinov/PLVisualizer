@@ -1,10 +1,21 @@
-import React, {FC} from "react";
+import React, {Dispatch, FC, FormEvent} from "react";
 import styled from "styled-components";
 
-export const AddGoogleSS : FC = () =>{
+interface addGoogleSSProps {
+    setUrl: Dispatch<React.SetStateAction<string>>
+}
+
+export const AddGoogleSS : FC<addGoogleSSProps> = ({setUrl}) =>{
+    const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
+        setUrl(prevUrl => {
+            prevUrl = e.currentTarget.value
+            return prevUrl
+        })
+    }
+
     return(
     <Container>
-        <InputContainer type={"text"}  placeholder={'Ссылка на Google Spreadsheet таблицу'}/>
+        <InputContainer type={"text"}  placeholder={'Ссылка на Google Spreadsheet таблицу'} onChange={handleInputChange}/>
     </Container>)
 }
 

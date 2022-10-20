@@ -1,14 +1,14 @@
-import React, {FC, useState} from "react";
+import React, {Dispatch, FC, useState} from "react";
 import {AddGoogleSS} from "./AddGoogleSS";
 import {AddXlsxTable} from "./AddXlsxTable";
 import {FormControlLabel, RadioGroup, Radio} from "@material-ui/core";
 import styled from "styled-components";
 
 interface selectImportProps{
-    onCancelClick : () => void
+    setImportUrl : Dispatch<React.SetStateAction<string>>
 }
 
-export const SelectImport : FC<selectImportProps> = () => {
+export const SelectImport : FC<selectImportProps> = ({setImportUrl}) => {
     const [googleSSForm, setGoogleSSForm] = useState(true)
     const [excelTableForm, setExcelTableForm] = useState(false)
 
@@ -26,7 +26,7 @@ export const SelectImport : FC<selectImportProps> = () => {
                     <FormControlLabel control={<Radio />} label={'Xlsx файл'} value={'xlsx файл'}  />
                 </RadioGroup>
         </fieldset>
-        {googleSSForm && <AddGoogleSS/>}
+        {googleSSForm && <AddGoogleSS setUrl={setImportUrl}/>}
          {excelTableForm && <AddXlsxTable/>}
         </>
     )

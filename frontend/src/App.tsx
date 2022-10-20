@@ -8,6 +8,8 @@ import {AddGoogleSS} from "./components/Modal/AddGoogleSS";
 import {Lecturer} from "./Models/Lecturer"
 import {Discipline} from "./Models/Discipline";
 import {createTablesClient} from "./clients/TablesClient";
+import {ExportModal} from "./components/Modal/ExportModal";
+import {ImportModal} from "./components/Modal/ImportModal";
 
 
 function App() {
@@ -16,43 +18,25 @@ function App() {
     const toggleImportModal = () => setImportModal(value => !value)
     const toggleExportModal = () => setExportModal(value => !value)
 
-    const [exportTableUrl, setExportTableUrl] = useState('')
-    const [importTableUrl, setImportTableUrl] = useState('')
-
     const [lecturers, setLecturers] = useState([] as Lecturer[])
     const [disciplines, setDisciplines] = useState({} as {[key:string]:Discipline})
 
     const tablesClient = createTablesClient()
 
-    const handleExportSubmit = async () => {
-        await tablesClient.exportTable(exportTableUrl, lecturers)
-    }
 
-    const handleImportSubmit = async () => {
-        await tablesClient.importTable(importTableUrl).then(response => {
-            const {data} = response
-            setLecturers(prevState => {
-                prevState = data
-                return prevState
-            })
-        })
-    }
+
 
     return(<div className="Appbar">
             <AppBar onImportClick={toggleImportModal} onExportClick={toggleExportModal}></AppBar>
-            { importModal && <Modal
-                title={'Добавление таблицы'}
-                onClose={toggleImportModal}
-                onSubmit={handleImportSubmit}>
-                <SelectImport onCancelClick={toggleImportModal}/>
-            </Modal>
+            { importModal && <ImportModal
+                setLecturers={setLecturers}
+                tablesClient={tablesClient}
+                onClose={toggleImportModal}/>
             }
-            { exportModal && <Modal
-                title={'Добавление таблицы'}
+            { exportModal && <ExportModal
                 onClose={toggleExportModal}
-                onSubmit={handleExportSubmit}>
-                <AddGoogleSS/>
-            </Modal>
+                tablesClient={tablesClient}
+                lecturers={lecturers} />
             }
             <DragDropRegion  lecturers={lecturers} disciplines={disciplines} setLecturers={setLecturers}/>
     </div>

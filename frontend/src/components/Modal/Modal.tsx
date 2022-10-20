@@ -3,14 +3,14 @@ import closeIcon from "../../img/close.svg"
 import styled from "styled-components";
 import {SelectImport} from "./SelectImport";
 
-interface modalProps{
-    onClose: () => void
+export interface modalProps{
     title: string
     children: ReactNode
     onSubmit: () => void
+    onClose: () => void
 }
 
-export const Modal : FC<modalProps> = ({title, onClose, children, onSubmit} : modalProps) => {
+export const Modal : FC<modalProps> = ({title, onClose, onSubmit, children}) => {
     return (
         <>
         <ModalContainer>
@@ -22,7 +22,7 @@ export const Modal : FC<modalProps> = ({title, onClose, children, onSubmit} : mo
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
                 {children}
-                <ButtonSubmit type={'submit'} onSubmit={onSubmit} >Подтвердить</ButtonSubmit>
+                <ButtonSubmit type={'submit'} onSubmit={onSubmit}>Подтвердить</ButtonSubmit>
                 <ButtonCancel onClick={onClose}> Отмена </ButtonCancel>
             </ModalBox>
         </ModalContainer>
