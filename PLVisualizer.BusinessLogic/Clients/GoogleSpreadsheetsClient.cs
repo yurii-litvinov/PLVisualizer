@@ -32,7 +32,7 @@ public class GoogleSpreadsheetsClient
             var exportRow = new List<object>
             {
                 lecturer.Name, lecturer.Post, lecturer.InterestRate,
-                lecturer.Disciplines, lecturer.DistributedLoad, lecturer.Standard
+                lecturer.DisciplineIds, lecturer.DistributedLoad, lecturer.Standard
             };
             valueRange.Values = new List<IList<object>> { exportRow };
 

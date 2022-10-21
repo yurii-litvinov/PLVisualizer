@@ -7,4 +7,8 @@
         <RootNamespace>PlVisualizer</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj" />
+    </ItemGroup>
+
 </Project>
