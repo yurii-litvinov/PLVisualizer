@@ -23,9 +23,6 @@ function App() {
 
     const tablesClient = createTablesClient()
 
-
-
-
     return(<div className="Appbar">
             <AppBar onImportClick={toggleImportModal} onExportClick={toggleExportModal}></AppBar>
             { importModal && <ImportModal
