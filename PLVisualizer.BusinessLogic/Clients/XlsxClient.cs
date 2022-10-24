@@ -2,5 +2,8 @@
 
 public class XlsxClient
 {
-    
+    public XlsxClient()
+    {
+        
+    }
 }

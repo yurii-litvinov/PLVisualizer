@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="DocumentFormat.OpenXml" Version="2.18.0" />
       <PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2826" />
+      <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="6.0.0-preview.4.21253.5" />
     </ItemGroup>
 
     <ItemGroup>

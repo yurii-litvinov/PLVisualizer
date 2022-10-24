@@ -31,7 +31,7 @@ public class TablesController : Controller
     }
 
     [HttpGet]
-    [Route("{spreadsheetId}/disciplines")]
+    [Route("disciplines/{spreadsheetId}")]
     public async Task<ActionResult<Discipline[]>> GetRequiredDisciplines([FromRoute] string spreadsheetId)
     {
         try
@@ -41,6 +41,21 @@ public class TablesController : Controller
         catch (SpreadsheetNotFoundException e)
         {
             return NotFound();
+        }
+    }
+
+    [HttpPost]
+    [Route("import")]
+    public async Task<ActionResult> UploadFile([FromBody] IFormFile file)
+    {
+        try
+        {
+            await tablesService.UploadFile(file);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest();
         }
     }
 
