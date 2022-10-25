@@ -29,43 +29,42 @@ public class GoogleSpreadsheetsClient
     {
         var range = $"{sheetTitle}!A:F";
         var valueRange = new ValueRange();
-        foreach (var lecturer in lecturers)
-        {
-            var exportRow = new List<object>
-            {
-                lecturer.Name, lecturer.Post, lecturer.InterestRate,
-                string.Join('\n', lecturer.DisciplineIds), lecturer.DistributedLoad, lecturer.Standard
-            };
-            valueRange.Values = new List<IList<object>> { exportRow };
-            
-            var appendRequest = service.Spreadsheets.Values.Append(valueRange, sheetId, range);
-            appendRequest.ValueInputOption =
-                SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-            await appendRequest.ExecuteAsync();
-        }
+        var values = ToValues(lecturers);
+        var appendRequest = service.Spreadsheets.Values.Append(valueRange, sheetId, range);
+        appendRequest.ValueInputOption =
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+        await appendRequest.ExecuteAsync();
     }
 
-    // public async Task<Lecturer[]> GetLecturers(string spreadsheetId)
-    // {
-    //     var range = $"{sheetTitle}!A:F";
-    //     var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-    //     var response = await request.ExecuteAsync();
-    //     var values = response.Values;
-    //     var lecturers = new Lecturer[values.Count];
-    //     if (values is { Count: > 0 })
-    //     {
-    //         for (var i = 0; i < values.Count; i++)
-    //         {
-    //             var lecturer = new Lecturer
-    //             {
-    //                 Name = values[i][0].ToString();
-    //             }
-    //             
-    //         }
-    //     }
-    // }
+    public async Task<Lecturer[]> GetLecturers(string spreadsheetId)
+    {
+        var range = $"{sheetTitle}!A:F";
+        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+        var response = await request.ExecuteAsync();
+        var values = response.Values;
+        return ToModel(values);
+    }
 
-    private Lecturer[] ToModel(List<List<object>> lecturers)
+    public List<IList<object>> ToValues(Lecturer[] lecturers)
+    {
+        var values = new List<IList<object>>();
+        foreach (var lecturer in lecturers)
+        {
+            values.AddRange(lecturer.DisciplineIds.Select(disciplineId => new List<object>
+            {
+                lecturer.Name,
+                lecturer.Post,
+                lecturer.InterestRate,
+                disciplineId,
+                lecturer.DistributedLoad,
+                lecturer.Standard
+            }));
+        }
+
+        return values;
+    }
+
+    private Lecturer[] ToModel(IList<IList<object>> lecturers)
     {
         var models = new List<Lecturer>();
         var previousLecturer = lecturers[0];
@@ -85,7 +84,8 @@ public class GoogleSpreadsheetsClient
                 Post = previousLecturer[1].ToString() ?? string.Empty,
                 InterestRate = int.Parse(previousLecturer[2].ToString() ?? string.Empty),
                 DisciplineIds = disciplineIds.ToArray(),
-                DistributedLoad = int.Parse(previousLecturer[4].ToString() ?? string.Empty)
+                DistributedLoad = int.Parse(previousLecturer[4].ToString() ?? string.Empty),
+                Standard = int.Parse(previousLecturer[5].ToString() ?? string.Empty)
             });
             previousLecturer = lecturer;
         }
