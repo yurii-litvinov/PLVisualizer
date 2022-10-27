@@ -1,6 +1,6 @@
 ﻿using System.Security.AccessControl;
 
-namespace PlVisualizer.Api.Dto;
+namespace PlVisualizer.Api.Dto.Tables;
 
 public class Lecturer
 {

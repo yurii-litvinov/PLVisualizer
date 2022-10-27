@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Vml.Office;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
-using PlVisualizer.Api.Dto;
+using PlVisualizer.Api.Dto.Tables;
 
 namespace PLVisualizer.BusinessLogic.Clients;
 using Google.Apis.Sheets.v4;
@@ -31,6 +31,7 @@ public class GoogleSpreadsheetsClient
         var valueRange = new ValueRange();
         var values = ToValues(lecturers);
         var appendRequest = service.Spreadsheets.Values.Append(valueRange, sheetId, range);
+        // var mergeRequest = service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest()., sheetId)
         appendRequest.ValueInputOption =
             SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
         await appendRequest.ExecuteAsync();
@@ -45,7 +46,7 @@ public class GoogleSpreadsheetsClient
         return ToModel(values);
     }
 
-    public List<IList<object>> ToValues(Lecturer[] lecturers)
+    private  IList<IList<object>> ToValues(Lecturer[] lecturers)
     {
         var values = new List<IList<object>>();
         foreach (var lecturer in lecturers)

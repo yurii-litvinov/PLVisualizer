@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using PlVisualizer.Api.Dto;
+using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients;
 
 namespace PLVisualizer.BusinessLogic.Services;

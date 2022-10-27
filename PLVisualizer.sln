@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{8D85966D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurriculumParser", "curriculum-parser\CurriculumParser\CurriculumParser.csproj", "{CC93368D-AB2A-4888-9877-AD3F252A353F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{A422761D-60BA-4EB2-A91D-5D1DF188D8ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,8 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CC93368D-AB2A-4888-9877-AD3F252A353F} = {8D85966D-22E6-40DD-913F-A7097DE163AB}
+		{4F14D2A8-CB33-4BEC-B13F-1AE414BDEEA9} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
+		{9479FD9D-4127-467C-87AF-1DA5ACFD1A58} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
+		{0BC99D5B-FD05-4EBB-91D5-A66F9CF2E1B2} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
 	EndGlobalSection
 EndGlobal

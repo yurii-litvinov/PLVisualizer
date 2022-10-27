@@ -1,4 +1,4 @@
-﻿namespace PlVisualizer.Api.Dto;
+﻿namespace PlVisualizer.Api.Dto.Tables;
 
 public enum AcademicWorkType
 {

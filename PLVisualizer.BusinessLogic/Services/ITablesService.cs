@@ -1,4 +1,4 @@
-﻿using PlVisualizer.Api.Dto;
+﻿using PlVisualizer.Api.Dto.Tables;
 using Microsoft.AspNetCore.Http;
 
 namespace PLVisualizer.BusinessLogic.Services;
