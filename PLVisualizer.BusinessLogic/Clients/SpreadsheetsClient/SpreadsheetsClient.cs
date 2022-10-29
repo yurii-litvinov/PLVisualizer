@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Vml.Office;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
@@ -10,14 +11,25 @@ using Google.Apis.Sheets.v4;
 
 public class GoogleSpreadsheetsClient
 {
-    private static readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
+    private readonly string applicationName = "PLVisualizer";
+    private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
     private string sheetId = "1fsCQvoWo0WidGfZI8rLJqXVHWRULDViCbCd6S5cJ2vE";
     private readonly string sheetTitle = "VisualizerTest";
+    private readonly GoogleCredential credential;
     private readonly SheetsService service;
 
     public GoogleSpreadsheetsClient()
     {
-        service = new SheetsService(new BaseClientService.Initializer());
+        using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
+        credential = GoogleCredential
+            .FromStream(stream)
+            .CreateScoped(scopes);
+        service = new SheetsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = applicationName
+            }
+        );
     }
 
     public void SetSheetId(string sheetId)
@@ -51,12 +63,12 @@ public class GoogleSpreadsheetsClient
         var values = new List<IList<object>>();
         foreach (var lecturer in lecturers)
         {
-            values.AddRange(lecturer.DisciplineIds.Select(disciplineId => new List<object>
+            values.AddRange(lecturer.DisciplineContent.Select(disciplineContent => new List<object>
             {
                 lecturer.Name,
                 lecturer.Post,
                 lecturer.InterestRate,
-                disciplineId,
+                disciplineContent,
                 lecturer.DistributedLoad,
                 lecturer.Standard
             }));
@@ -69,13 +81,13 @@ public class GoogleSpreadsheetsClient
     {
         var models = new List<Lecturer>();
         var previousLecturer = lecturers[0];
-        var disciplineIds = new List<string>();
+        var disciplinesContent = new List<string>();
         foreach (var lecturer in lecturers)
         {
             //iterating through one lecturer
             if (lecturer[0].ToString() == previousLecturer[0].ToString())
             {
-                disciplineIds.Add(lecturer[4].ToString() ??
+                disciplinesContent.Add(lecturer[4].ToString() ??
                                   throw new InvalidOperationException("cell with discipline is empty"));
                 continue;
             }
@@ -84,7 +96,7 @@ public class GoogleSpreadsheetsClient
                 Name = previousLecturer[0].ToString() ?? string.Empty,
                 Post = previousLecturer[1].ToString() ?? string.Empty,
                 InterestRate = int.Parse(previousLecturer[2].ToString() ?? string.Empty),
-                DisciplineIds = disciplineIds.ToArray(),
+                DisciplineContent = disciplinesContent.ToArray(),
                 DistributedLoad = int.Parse(previousLecturer[4].ToString() ?? string.Empty),
                 Standard = int.Parse(previousLecturer[5].ToString() ?? string.Empty)
             });
