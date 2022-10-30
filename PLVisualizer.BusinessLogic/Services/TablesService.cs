@@ -4,13 +4,16 @@ using PLVisualizer.BusinessLogic.Clients;
 
 namespace PLVisualizer.BusinessLogic.Services;
 
+/// <summary>
+/// Tables service
+/// </summary>
 public class TablesService : ITablesService
 {
     private DocxClient docxClient;
     private XlsxClient xlsxClient;
-    private GoogleSpreadsheetsClient spreadsheetsClient;
+    private SpreadsheetsClient spreadsheetsClient;
 
-    public TablesService(DocxClient docxClient, XlsxClient xlsxClient, GoogleSpreadsheetsClient spreadsheetsClient)
+    public TablesService(DocxClient docxClient, XlsxClient xlsxClient, SpreadsheetsClient spreadsheetsClient)
     {
         this.docxClient = docxClient;
         this.xlsxClient = xlsxClient;

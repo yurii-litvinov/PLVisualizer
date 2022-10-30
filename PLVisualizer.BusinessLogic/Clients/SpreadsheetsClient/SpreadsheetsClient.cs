@@ -9,7 +9,10 @@ using PlVisualizer.Api.Dto.Tables;
 namespace PLVisualizer.BusinessLogic.Clients;
 using Google.Apis.Sheets.v4;
 
-public class GoogleSpreadsheetsClient
+/// <summary>
+/// Represents google spreadsheets client
+/// </summary>
+public class SpreadsheetsClient
 {
     private readonly string applicationName = "PLVisualizer";
     private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
@@ -18,7 +21,7 @@ public class GoogleSpreadsheetsClient
     private readonly GoogleCredential credential;
     private readonly SheetsService service;
 
-    public GoogleSpreadsheetsClient()
+    public SpreadsheetsClient()
     {
         using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
         credential = GoogleCredential
