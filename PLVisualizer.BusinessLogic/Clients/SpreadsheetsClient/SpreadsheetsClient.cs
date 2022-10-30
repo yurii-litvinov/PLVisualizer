@@ -40,6 +40,10 @@ public class SpreadsheetsClient
         this.sheetId = sheetId;
     }
     
+    /// <summary>
+    /// Exports lecturers with distributed load to google spreadsheets
+    /// </summary>
+    /// <param name="lecturers"></param>
     public async Task ExportLecturers(Lecturer[] lecturers)
     {
         var range = $"{sheetTitle}!A:F";
