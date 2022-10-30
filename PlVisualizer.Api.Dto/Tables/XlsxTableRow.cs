@@ -7,7 +7,7 @@ public class XlsxTableRow
     /// <summary>
     /// Term
     /// </summary>
-    public string EducationalPeriod { get; set; }
+    public string Term { get; set; }
     
     /// <summary>
     /// Faculty etc
@@ -27,7 +27,7 @@ public class XlsxTableRow
     /// <summary>
     /// Teacher name
     /// </summary>
-    public string Teacher { get; set; }
+    public string Lecturer { get; set; }
     
     /// <summary>
     /// Department

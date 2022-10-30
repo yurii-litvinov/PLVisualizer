@@ -17,4 +17,10 @@
       <ProjectReference Include="..\PlVisualizer.Api.Dto\PlVisualizer.Api.Dto.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Clients\DocxClient\WorkingPlans\ВМ.5665-2019.docx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

@@ -63,12 +63,12 @@ public class GoogleSpreadsheetsClient
         var values = new List<IList<object>>();
         foreach (var lecturer in lecturers)
         {
-            values.AddRange(lecturer.DisciplineContent.Select(disciplineContent => new List<object>
+            values.AddRange(lecturer.Disciplines.Select(discipline => new List<object>
             {
                 lecturer.Name,
                 lecturer.Post,
                 lecturer.InterestRate,
-                disciplineContent,
+                discipline.Content,
                 lecturer.DistributedLoad,
                 lecturer.Standard
             }));
@@ -81,14 +81,17 @@ public class GoogleSpreadsheetsClient
     {
         var models = new List<Lecturer>();
         var previousLecturer = lecturers[0];
-        var disciplinesContent = new List<string>();
+        var disciplines = new List<Discipline>();
         foreach (var lecturer in lecturers)
         {
             //iterating through one lecturer
             if (lecturer[0].ToString() == previousLecturer[0].ToString())
             {
-                disciplinesContent.Add(lecturer[4].ToString() ??
-                                  throw new InvalidOperationException("cell with discipline is empty"));
+                disciplines.Add(new Discipline
+                {
+                    //fill remaining properties using docx client
+                    Content = lecturer[4].ToString() ?? string.Empty
+                });
                 continue;
             }
             models.Add(new Lecturer
@@ -96,11 +99,12 @@ public class GoogleSpreadsheetsClient
                 Name = previousLecturer[0].ToString() ?? string.Empty,
                 Post = previousLecturer[1].ToString() ?? string.Empty,
                 InterestRate = int.Parse(previousLecturer[2].ToString() ?? string.Empty),
-                DisciplineContent = disciplinesContent.ToArray(),
+                Disciplines = disciplines,
                 DistributedLoad = int.Parse(previousLecturer[4].ToString() ?? string.Empty),
                 Standard = int.Parse(previousLecturer[5].ToString() ?? string.Empty)
             });
             previousLecturer = lecturer;
+            disciplines.Clear();
         }
 
         return models.ToArray();
