@@ -5,11 +5,11 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
-namespace PLVisualizer.BusinessLogic.Clients;
+namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
-public class DocxClient
+public class DocxClient : IDocxClient
 {
-    public List<Lecturer> GetLecturersWithDisciplines(XlsxTableRow[] tableRows)
+    public Dictionary<string, Lecturer> GetLecturersWithDisciplines(XlsxTableRow[] tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
         
@@ -56,7 +56,7 @@ public class DocxClient
             }
         }
 
-        return lecturers.Values.ToList();
+        return lecturers;
     }
 
     private string GetCurriculumName(string curriculumCode)

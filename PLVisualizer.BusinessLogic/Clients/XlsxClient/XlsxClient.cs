@@ -1,15 +1,16 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
+using PlVisualizer.Api.Dto.Tables;
 
-namespace PLVisualizer.BusinessLogic.Clients;
+namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
 
-public class XlsxClient
+public class XlsxClient : IXlsxClient
 {
-    private IFormFile file;
-    public XlsxClient(IFormFile file)
+    public XlsxTableRow[] TableRows { get; set; }
+    
+    public void SetFile(IFormFile file)
     {
-        this.file = file;
         var fileStream = file.OpenReadStream();
         fileStream.Position = 0;
         using var document = SpreadsheetDocument.Open(fileStream, false);
@@ -24,10 +25,7 @@ public class XlsxClient
             foreach (var row in rows)
             {
                 var cells = row.Descendants<Cell>();
-                
             }
         }
     }
-    
-    
 }

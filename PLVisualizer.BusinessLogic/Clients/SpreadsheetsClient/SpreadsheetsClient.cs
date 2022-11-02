@@ -6,13 +6,13 @@ using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using PlVisualizer.Api.Dto.Tables;
 
-namespace PLVisualizer.BusinessLogic.Clients;
+namespace PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
 using Google.Apis.Sheets.v4;
 
 /// <summary>
 /// Represents google spreadsheets client
 /// </summary>
-public class SpreadsheetsClient
+public class SpreadsheetsClient : ISpreadsheetsClient
 {
     private readonly string applicationName = "PLVisualizer";
     private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
@@ -62,7 +62,16 @@ public class SpreadsheetsClient
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
         var values = response.Values;
-        return ToModel(values);
+        return ToLecturersModel(values);
+    }
+
+    public async Task<ConfigTableRow[]> GetConfigTableRows(string spreadsheetId)
+    {
+        var range = $"{sheetTitle}!:A:C";
+        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+        var response = await request.ExecuteAsync();
+        var values = response.Values;
+        return ToConfigModel(values);
     }
 
     private  IList<IList<object>> ToValues(Lecturer[] lecturers)
@@ -84,7 +93,16 @@ public class SpreadsheetsClient
         return values;
     }
 
-    private Lecturer[] ToModel(IList<IList<object>> lecturers)
+    private ConfigTableRow[] ToConfigModel(IList<IList<object>> configTableRows)
+    {
+        return configTableRows.Select(configTableRow => new ConfigTableRow { 
+                LecturerName = configTableRow[0].ToString() ?? string.Empty,
+                Post = configTableRow[1].ToString() ?? string.Empty,
+                InterestRate = int.Parse(configTableRow[2].ToString() ?? string.Empty) })
+            .ToArray();
+    }
+    
+    private Lecturer[] ToLecturersModel(IList<IList<object>> lecturers)
     {
         var models = new List<Lecturer>();
         var previousLecturer = lecturers[0];

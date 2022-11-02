@@ -5,8 +5,8 @@ namespace PLVisualizer.BusinessLogic.Services;
 
 public interface ITablesService
 {
-    Task<Lecturer[]> GetLecturers(string spreadsheetId);
+    Task<Lecturer[]> GetLecturersViaLecturersTable(string spreadsheetId);
     Task UnloadLecturers(string spreadsheetId, Lecturer[] lecturers);
-    Task<Discipline[]> GetRequiredDisciplines(string spreadsheetId);
     Task UploadFile(IFormFile file);
+    Task<Lecturer[]> GetLecturersViaConfig(string spreadsheetId);
 }

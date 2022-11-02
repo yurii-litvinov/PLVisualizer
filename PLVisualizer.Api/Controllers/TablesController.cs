@@ -18,11 +18,11 @@ public class TablesController : Controller
 
     [HttpGet]
     [Route("import/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturers([FromRoute]string spreadsheetId)
+    public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTable([FromRoute]string spreadsheetId)
     {
         try
         {
-            return await tablesService.GetLecturers(spreadsheetId);
+            return await tablesService.GetLecturersViaLecturersTable(spreadsheetId);
         }
         catch (SpreadsheetNotFoundException)
         {
@@ -30,23 +30,9 @@ public class TablesController : Controller
         }
         
     }
-
-    [HttpGet]
-    [Route("disciplines/{spreadsheetId}")]
-    public async Task<ActionResult<Discipline[]>> GetRequiredDisciplines([FromRoute] string spreadsheetId)
-    {
-        try
-        {
-            return await tablesService.GetRequiredDisciplines(spreadsheetId);
-        }
-        catch (SpreadsheetNotFoundException e)
-        {
-            return NotFound();
-        }
-    }
-
+    
     [HttpPost]
-    [Route("import")]
+    [Route("import/file")]
     public async Task<ActionResult> UploadFile([FromBody] IFormFile file)
     {
         try
@@ -55,6 +41,20 @@ public class TablesController : Controller
             return Ok();
         }
         catch (Exception e)
+        {
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("import/config/{spreadsheetId}")]
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfig([FromRoute] string spreadsheetId)
+    {
+        try
+        {
+            return await tablesService.GetLecturersViaConfig(spreadsheetId);
+        }
+        catch (SpreadsheetNotFoundException e)
         {
             return BadRequest();
         }
@@ -74,6 +74,4 @@ public class TablesController : Controller
             return NotFound();
         }
     }
-    
-    
 }
