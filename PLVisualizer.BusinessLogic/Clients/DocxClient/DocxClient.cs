@@ -9,6 +9,28 @@ namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
 public class DocxClient : IDocxClient
 {
+    public void FillDisciplinesTerms(Lecturer[] lecturers)
+    {
+        var disciplines = new List<Discipline>();
+        foreach (var lecturer in lecturers)
+        {
+            disciplines.AddRange(lecturer.Disciplines);
+        }
+
+        var groupedByProgramDisciplines = disciplines.GroupBy(discipline => discipline.EducationalProgram);
+        foreach (var  groupedByProgramDiscipline in groupedByProgramDisciplines)
+        {
+            var parser = new DocxCurriculum($"{groupedByProgramDiscipline.Key}");
+            foreach (var discipline in groupedByProgramDiscipline)
+            {
+                var disciplineCode = discipline.Content[..discipline.Content.IndexOf(' ')];
+                var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == disciplineCode);
+                discipline.Terms = new int[] { disciplineFromParser.Implementations[0].Semester };
+            }
+        }
+        
+    }
+
     public Dictionary<string, Lecturer> GetLecturersWithDisciplines(XlsxTableRow[] tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
@@ -28,7 +50,7 @@ public class DocxClient : IDocxClient
             
             foreach (var groupedByNameRow in groupedByNameRows)
             {
-                var disciplineCode = groupedByNameRow.Key.Split()[0];
+                var disciplineCode = groupedByNameRow.Key[..groupedByNameRow.Key.IndexOf(' ')];
                 var disciplineFromParser =
                     parserDisciplines.FirstOrDefault(discipline => discipline.Code == disciplineCode);
 
@@ -79,12 +101,14 @@ public class DocxClient : IDocxClient
     private Discipline CreateDiscipline(List<DisciplineImplementation> implementations, 
         string curriculumName,  IGrouping<string,XlsxTableRow> groupedByNameRow)
     {
+        var contactLoad = GetContactLoad(implementations.First().WorkHours ?? string.Empty);
+        var content = $"{groupedByNameRow.First().DisciplineName} ({contactLoad}) ({curriculumName})";
         return  new Discipline
         {
             EducationalProgram = curriculumName,
             Terms = groupedByNameRow.Select(row => GetTermNumber(row.Term)).ToArray(),
-            Content = $"{groupedByNameRow.First().DisciplineName}",
-            ContactLoad = GetContactLoad(implementations.First().WorkHours ?? string.Empty)
+            Content = content,
+            ContactLoad = contactLoad
         };
     }
 }

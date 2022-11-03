@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
+﻿using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Vml.Office;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -112,10 +113,17 @@ public class SpreadsheetsClient : ISpreadsheetsClient
             //iterating through one lecturer
             if (lecturer[0].ToString() == previousLecturer[0].ToString())
             {
+                var disciplineContent = lecturer[4].ToString() ?? string.Empty;
+                var pattern = @"\(([^)]*)\)";
+                var matches = Regex.Match(disciplineContent, pattern);
+                var curriculumCode = matches.Groups[^1].Value;
+                var contactLoad = int.Parse(matches.Groups[^2].Value);
                 disciplines.Add(new Discipline
                 {
                     //fill remaining properties using docx client
-                    Content = lecturer[4].ToString() ?? string.Empty
+                    Content = disciplineContent,
+                    Code = curriculumCode,
+                    ContactLoad = contactLoad
                 });
                 continue;
             }

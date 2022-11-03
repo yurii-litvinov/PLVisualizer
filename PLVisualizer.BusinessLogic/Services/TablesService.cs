@@ -22,11 +22,13 @@ public class TablesService : ITablesService
         this.xlsxClient = xlsxClient;
         this.spreadsheetsClient = spreadsheetsClient;
     }
-    
-    
+
+
     public async Task<Lecturer[]> GetLecturersViaLecturersTable(string spreadsheetId)
     {
-        throw new NotImplementedException();
+        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturers(spreadsheetId);
+        docxClient.FillDisciplinesTerms(lecturersWithoutTerms);
+        return lecturersWithoutTerms;
     }
 
     public async Task UnloadLecturers(string spreadsheetId, Lecturer[] lecturers)
@@ -34,10 +36,7 @@ public class TablesService : ITablesService
         throw new NotImplementedException();
     }
 
-    public async Task<Discipline[]> GetRequiredDisciplines(string spreadsheetId)
-    {
-        throw new NotImplementedException();
-    }
+
 
     public async Task UploadFile(IFormFile file)
     {

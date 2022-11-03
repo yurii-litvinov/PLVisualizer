@@ -23,6 +23,11 @@ public class XlsxTableRow
     /// Discipline name
     /// </summary>
     public string DisciplineName { get; set; }
+
+    /// <summary>
+    /// Type of study
+    /// </summary>
+    public string WorkType { get; set; }
     
     /// <summary>
     /// Teacher name
