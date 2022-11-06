@@ -24,16 +24,16 @@ public class TablesService : ITablesService
     }
 
 
-    public async Task<Lecturer[]> GetLecturersViaLecturersTable(string spreadsheetId)
+    public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId)
     {
-        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturers(spreadsheetId);
+        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturersAsync(spreadsheetId);
         docxClient.FillDisciplinesTerms(lecturersWithoutTerms);
         return lecturersWithoutTerms;
     }
 
-    public async Task UnloadLecturers(string spreadsheetId, Lecturer[] lecturers)
+    public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers)
     {
-        throw new NotImplementedException();
+        await spreadsheetsClient.ExportLecturersAsync(lecturers);
     }
 
 
@@ -43,10 +43,10 @@ public class TablesService : ITablesService
         xlsxClient.SetFile(file);
     }
 
-    public async Task<Lecturer[]> GetLecturersViaConfig(string spreadsheetId)
+    public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId)
     {
-        var xlsxTableRows = xlsxClient.TableRows;
-        var configTableRows = await spreadsheetsClient.GetConfigTableRows(spreadsheetId);
+        var xlsxTableRows = xlsxClient.GetTableRows();
+        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId);
         var lecturersWithDisciplines = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
         foreach (var configTableRow in configTableRows)
         {

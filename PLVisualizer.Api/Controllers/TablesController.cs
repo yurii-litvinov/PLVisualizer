@@ -18,11 +18,11 @@ public class TablesController : Controller
 
     [HttpGet]
     [Route("import/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTable([FromRoute]string spreadsheetId)
+    public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTableAsync([FromRoute]string spreadsheetId)
     {
         try
         {
-            return await tablesService.GetLecturersViaLecturersTable(spreadsheetId);
+            return await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
         }
         catch (SpreadsheetNotFoundException)
         {
@@ -48,11 +48,11 @@ public class TablesController : Controller
 
     [HttpGet]
     [Route("import/config/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfig([FromRoute] string spreadsheetId)
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId)
     {
         try
         {
-            return await tablesService.GetLecturersViaConfig(spreadsheetId);
+            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId);
         }
         catch (SpreadsheetNotFoundException e)
         {
@@ -62,11 +62,11 @@ public class TablesController : Controller
 
     [HttpPost]
     [Route("export/{spreadsheetId}")]
-    public async Task<ActionResult> UnloadLecturers(string spreadsheetId, [FromBody]Lecturer[] lecturers)
+    public async Task<ActionResult> ExportLecturersAsync(string spreadsheetId, [FromBody]Lecturer[] lecturers)
     {
         try
         {
-            await tablesService.UnloadLecturers(spreadsheetId, lecturers);
+            await tablesService.ExportLecturersAsync(spreadsheetId, lecturers);
             return Ok();
         }
         catch (SpreadsheetNotFoundException e)

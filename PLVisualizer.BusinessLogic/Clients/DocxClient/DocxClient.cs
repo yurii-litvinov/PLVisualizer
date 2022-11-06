@@ -25,7 +25,7 @@ public class DocxClient : IDocxClient
             {
                 var disciplineCode = discipline.Content[..discipline.Content.IndexOf(' ')];
                 var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == disciplineCode);
-                discipline.Terms = new int[] { disciplineFromParser.Implementations[0].Semester };
+                discipline.Terms = disciplineFromParser.Implementations[0].Semester.ToString();
             }
         }
         
@@ -106,7 +106,7 @@ public class DocxClient : IDocxClient
         return  new Discipline
         {
             EducationalProgram = curriculumName,
-            Terms = groupedByNameRow.Select(row => GetTermNumber(row.Term)).ToArray(),
+            Terms = string.Join(' ', groupedByNameRow.Select(row => GetTermNumber(row.Term))),
             Content = content,
             ContactLoad = contactLoad
         };

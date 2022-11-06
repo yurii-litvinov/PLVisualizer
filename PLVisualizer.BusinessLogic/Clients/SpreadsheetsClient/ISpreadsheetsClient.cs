@@ -4,7 +4,8 @@ namespace PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
 
 public interface ISpreadsheetsClient
 {
-    Task ExportLecturers(Lecturer[] lecturers);
-    Task<Lecturer[]> GetLecturers(string spreadsheetId);
-    Task<ConfigTableRow[]> GetConfigTableRows(string spreadsheetId);
+    void SetSheetTitle(string sheetTitle);
+    Task ExportLecturersAsync(Lecturer[] lecturers);
+    Task<Lecturer[]> GetLecturersAsync(string spreadsheetId);
+    Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId);
 }

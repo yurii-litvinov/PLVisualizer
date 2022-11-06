@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Http;
 using PlVisualizer.Api.Dto.Tables;
 
@@ -7,23 +8,32 @@ namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
 
 public class XlsxClient : IXlsxClient
 {
-    public XlsxTableRow[]? TableRows { get; set; }
-    
+    private SpreadsheetDocument spreadsheetDocument;
+
     public void SetFile(IFormFile file)
     {
-        var tableRows = new List<XlsxTableRow>();
         var fileStream = file.OpenReadStream();
         fileStream.Position = 0;
-        using var document = SpreadsheetDocument.Open(fileStream, false);
-        var workbookPart = document.WorkbookPart;
+        spreadsheetDocument = SpreadsheetDocument.Open(fileStream, false);
+    }
+    
+    public void SetFile(string path)
+    {
+        spreadsheetDocument = SpreadsheetDocument.Open(path, false);
+    }
+    
+    public XlsxTableRow[] GetTableRows()
+    {
+        var tableRows = new List<XlsxTableRow>();
+        var workbookPart = spreadsheetDocument.WorkbookPart;
         var workbook = workbookPart.Workbook;
         var sheets = workbook.Descendants<Sheet>();
         foreach (var sheet in sheets)
         {
             var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
 
-            var rows = worksheetPart.Worksheet.Descendants<Row>();
-            tableRows.AddRange(rows.Select(row => row.Descendants<Cell>().ToArray())
+            var rows = worksheetPart.Worksheet.Elements<Row>();
+            tableRows.AddRange(rows.Skip(1).Select(row => row.Elements<Cell>().ToArray())
             .Select(cells => new XlsxTableRow
             {
                 Term = cells[0].CellValue?.Text ?? string.Empty,
@@ -37,7 +47,8 @@ public class XlsxClient : IXlsxClient
                 EducationalProgram = cells[8].CellValue?.Text ?? string.Empty
             }));
         }
-
-        TableRows = tableRows.ToArray();
+        
+        spreadsheetDocument.Dispose();
+        return tableRows.ToArray();
     }
 }

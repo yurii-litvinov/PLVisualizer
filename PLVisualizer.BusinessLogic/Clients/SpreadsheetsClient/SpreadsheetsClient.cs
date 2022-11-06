@@ -18,13 +18,14 @@ public class SpreadsheetsClient : ISpreadsheetsClient
     private readonly string applicationName = "PLVisualizer";
     private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
     private string sheetId = "1fsCQvoWo0WidGfZI8rLJqXVHWRULDViCbCd6S5cJ2vE";
-    private readonly string sheetTitle = "VisualizerTest";
+    private string sheetTitle = "Sheet1";
     private readonly GoogleCredential credential;
     private readonly SheetsService service;
 
     public SpreadsheetsClient()
     {
-        using var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read);
+        using var stream = new FileStream("../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/SpreadsheetsClient/credentials.json", 
+            FileMode.Open, FileAccess.Read);
         credential = GoogleCredential
             .FromStream(stream)
             .CreateScoped(scopes);
@@ -36,20 +37,17 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         );
     }
 
-    public void SetSheetId(string sheetId)
+    public void SetSheetTitle(string sheetTitle)
     {
-        this.sheetId = sheetId;
+        this.sheetTitle = sheetTitle;
     }
     
-    /// <summary>
-    /// Exports lecturers with distributed load to google spreadsheets
-    /// </summary>
-    /// <param name="lecturers"></param>
-    public async Task ExportLecturers(Lecturer[] lecturers)
+    public async Task ExportLecturersAsync(Lecturer[] lecturers)
     {
         var range = $"{sheetTitle}!A:F";
         var valueRange = new ValueRange();
         var values = ToValues(lecturers);
+        valueRange.Values = values;
         var appendRequest = service.Spreadsheets.Values.Append(valueRange, sheetId, range);
         // var mergeRequest = service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest()., sheetId)
         appendRequest.ValueInputOption =
@@ -57,27 +55,28 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         await appendRequest.ExecuteAsync();
     }
 
-    public async Task<Lecturer[]> GetLecturers(string spreadsheetId)
+    public async Task<Lecturer[]> GetLecturersAsync(string spreadsheetId)
     {
         var range = $"{sheetTitle}!A:F";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
-        var values = response.Values;
+        var values = response.Values.Skip(1).ToArray();
         return ToLecturersModel(values);
     }
 
-    public async Task<ConfigTableRow[]> GetConfigTableRows(string spreadsheetId)
+    public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId)
     {
-        var range = $"{sheetTitle}!:A:C";
+        var range = $"{sheetTitle}!A:C";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
-        var values = response.Values;
+        var values = response.Values.Skip(1).ToArray();
         return ToConfigModel(values);
     }
 
-    private  IList<IList<object>> ToValues(Lecturer[] lecturers)
+    private static  IList<IList<object>> ToValues(Lecturer[] lecturers)
     {
         var values = new List<IList<object>>();
+        values.Add(new List<object>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка, Норматив"});
         foreach (var lecturer in lecturers)
         {
             values.AddRange(lecturer.Disciplines.Select(discipline => new List<object>
@@ -94,7 +93,7 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         return values;
     }
 
-    private ConfigTableRow[] ToConfigModel(IList<IList<object>> configTableRows)
+    private static ConfigTableRow[] ToConfigModel(IEnumerable<IList<object>> configTableRows)
     {
         return configTableRows.Select(configTableRow => new ConfigTableRow { 
                 LecturerName = configTableRow[0].ToString() ?? string.Empty,
@@ -103,43 +102,60 @@ public class SpreadsheetsClient : ISpreadsheetsClient
             .ToArray();
     }
     
-    private Lecturer[] ToLecturersModel(IList<IList<object>> lecturers)
+    private  static Lecturer[] ToLecturersModel(IList<IList<object>> lecturers)
     {
+        // otherwise response from google will contain 4 elements in a row
+        const int lecturerHeaderCount = 6;
         var models = new List<Lecturer>();
         var previousLecturer = lecturers[0];
         var disciplines = new List<Discipline>();
-        foreach (var lecturer in lecturers)
+        var lecturer = new Lecturer();
+        for(var i = 0; i < lecturers.Count; i++)
         {
-            //iterating through one lecturer
-            if (lecturer[0].ToString() == previousLecturer[0].ToString())
-            {
-                var disciplineContent = lecturer[4].ToString() ?? string.Empty;
-                var pattern = @"\(([^)]*)\)";
-                var matches = Regex.Match(disciplineContent, pattern);
-                var curriculumCode = matches.Groups[^1].Value;
-                var contactLoad = int.Parse(matches.Groups[^2].Value);
-                disciplines.Add(new Discipline
+            //iterating through the same lecturer disciplines
+            if (lecturers[i].Count != lecturerHeaderCount)
+            { 
+                var disciplineContent = lecturers[i][3].ToString() ?? string.Empty;
+                var discipline = CreateDiscipline(disciplineContent);
+                disciplines.Add(discipline);
+
+                if (i == lecturers.Count - 1 || lecturers[i + 1].Count == lecturerHeaderCount)
                 {
-                    //fill remaining properties using docx client
-                    Content = disciplineContent,
-                    Code = curriculumCode,
-                    ContactLoad = contactLoad
-                });
-                continue;
+                    lecturer.Disciplines = disciplines;
+                    models.Add(lecturer);
+                    disciplines = new List<Discipline>();
+                    lecturer = new Lecturer();
+                }
             }
-            models.Add(new Lecturer
+            else
             {
-                Name = previousLecturer[0].ToString() ?? string.Empty,
-                Post = previousLecturer[1].ToString() ?? string.Empty,
-                InterestRate = int.Parse(previousLecturer[2].ToString() ?? string.Empty),
-                Disciplines = disciplines,
-                DistributedLoad = int.Parse(previousLecturer[4].ToString() ?? string.Empty),
-                Standard = int.Parse(previousLecturer[5].ToString() ?? string.Empty)
-            });
-            previousLecturer = lecturer;
-            disciplines.Clear();
+                lecturer.Name = lecturers[i][0].ToString() ?? string.Empty;
+                lecturer.Post = lecturers[i][1].ToString() ?? string.Empty;
+                lecturer.InterestRate = int.Parse(lecturers[i][2].ToString() ?? string.Empty);
+                disciplines.Add(CreateDiscipline(lecturers[i][3].ToString() ?? string.Empty));
+                lecturer.DistributedLoad = int.Parse(lecturers[i][4].ToString() ?? string.Empty);
+                lecturer.Standard = int.Parse(lecturers[i][5].ToString() ?? string.Empty);
+            }
         }
 
         return models.ToArray();
     }
+
+    private static Discipline CreateDiscipline(string content)
+    {
+        // take content in [ ]
+        var pattern = @"(?<=\[).+?(?=\])";
+        var matches = Regex.Matches(content, pattern);
+        var curriculum = matches[^1].Value;
+        var contactLoad = int.Parse(matches[^2].Value);
+        return new Discipline
+        {
+            //fill remaining properties using docx client
+            Content = content,
+            Code = content[..content.IndexOf(' ')],
+            ContactLoad = contactLoad,
+            EducationalProgram = curriculum[..curriculum.IndexOf(',')]
+        };
+    }
+    
 }
