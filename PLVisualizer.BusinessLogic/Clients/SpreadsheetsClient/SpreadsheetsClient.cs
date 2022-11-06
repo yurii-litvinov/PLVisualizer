@@ -5,6 +5,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
+using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Tables;
 
 namespace PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
@@ -17,8 +18,6 @@ public class SpreadsheetsClient : ISpreadsheetsClient
 {
     private readonly string applicationName = "PLVisualizer";
     private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
-    private string sheetId = "1fsCQvoWo0WidGfZI8rLJqXVHWRULDViCbCd6S5cJ2vE";
-    private string sheetTitle = "Sheet1";
     private readonly GoogleCredential credential;
     private readonly SheetsService service;
 
@@ -37,25 +36,34 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         );
     }
 
-    public void SetSheetTitle(string sheetTitle)
-    {
-        this.sheetTitle = sheetTitle;
-    }
-    
-    public async Task ExportLecturersAsync(Lecturer[] lecturers)
+    public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)
     {
         var range = $"{sheetTitle}!A:F";
         var valueRange = new ValueRange();
         var values = ToValues(lecturers);
         valueRange.Values = values;
-        var appendRequest = service.Spreadsheets.Values.Append(valueRange, sheetId, range);
-        // var mergeRequest = service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest()., sheetId)
+        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
         appendRequest.ValueInputOption =
             SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
         await appendRequest.ExecuteAsync();
+
+        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
+        var sheet = spreadsheet.Sheets.FirstOrDefault(sheet => sheet.Properties.Title == sheetTitle);
+        if (sheet == null)
+        {
+            throw new SheetNotFoundException();
+        }
+        var sheetId = sheet.Properties.SheetId;
+        
+        var formatTableRequests = GetFormatTableRequests(lecturers, sheetId);
+        var formatRequest = service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest
+        {
+            Requests = formatTableRequests
+        }, spreadsheetId);
+        await formatRequest.ExecuteAsync();
     }
 
-    public async Task<Lecturer[]> GetLecturersAsync(string spreadsheetId)
+    public async Task<Lecturer[]> GetLecturersAsync(string spreadsheetId, string sheetTitle)
     {
         var range = $"{sheetTitle}!A:F";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
@@ -64,7 +72,7 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         return ToLecturersModel(values);
     }
 
-    public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId)
+    public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId, string sheetTitle)
     {
         var range = $"{sheetTitle}!A:C";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
@@ -75,8 +83,8 @@ public class SpreadsheetsClient : ISpreadsheetsClient
 
     private static  IList<IList<object>> ToValues(Lecturer[] lecturers)
     {
-        var values = new List<IList<object>>();
-        values.Add(new List<object>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка, Норматив"});
+        var values = new List<IList<object>> 
+            { new List<object>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка", "Норматив"} };
         foreach (var lecturer in lecturers)
         {
             values.AddRange(lecturer.Disciplines.Select(discipline => new List<object>
@@ -157,5 +165,52 @@ public class SpreadsheetsClient : ISpreadsheetsClient
             EducationalProgram = curriculum[..curriculum.IndexOf(',')]
         };
     }
+
+    private static List<Request> GetFormatTableRequests(Lecturer[] lecturers, int? sheetId)
+    {
+        var requests = new List<Request>();
+        const int disciplinesColumnIndex = 3;
+        const int columnsCount = 6;
+        var currentDisciplinesCount = 0;
+        foreach (var lecturer in lecturers)
+        {
+            var mergeLeftColumns = new Request
+            {
+                MergeCells = GetMergeCellsRequest(sheetId, startRowIndex: currentDisciplinesCount + 1,
+                    endRowIndex: currentDisciplinesCount + lecturer.Disciplines.Count + 1,
+                    startColumnIndex: 0, endColumnIndex: disciplinesColumnIndex)
+            };
+            var mergeRightColumns = new Request
+            {
+                MergeCells = GetMergeCellsRequest(sheetId, startRowIndex: currentDisciplinesCount + 1,
+                    endRowIndex: currentDisciplinesCount + lecturer.Disciplines.Count + 1,
+                    startColumnIndex: disciplinesColumnIndex + 1, endColumnIndex: columnsCount + 1)
+            };
+            requests.Add(mergeLeftColumns);
+            requests.Add(mergeRightColumns);
+
+            currentDisciplinesCount += lecturer.Disciplines.Count;
+        }
+        
+        return requests;
+    }
+
+    private static MergeCellsRequest GetMergeCellsRequest(int? spreadsheetId, int startRowIndex, int endRowIndex,
+        int startColumnIndex, int endColumnIndex)
+    {
+        return new MergeCellsRequest
+        {
+            Range = new GridRange
+            {
+                SheetId = spreadsheetId,
+                StartRowIndex = startRowIndex,
+                EndRowIndex = endRowIndex,
+                StartColumnIndex = startColumnIndex,
+                EndColumnIndex = endColumnIndex
+            },
+            MergeType = "MERGE_COLUMNS"
+        };
+    }
+    
     
 }

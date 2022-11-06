@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
@@ -12,66 +13,66 @@ namespace PLVisualizerTest;
 
 public class SpreadsheetsClientTest
 {
-    private SpreadsheetsClient spreadsheetsClient = new();
+    private ISpreadsheetsClient spreadsheetsClient = new SpreadsheetsClient();
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalLecturersSheet = "SeveralLecturers";
     private static string singleLecturerSheet = "SingleLecturer";
 
-    [SetUp]
-    public void Setup()
-    {
-
-    }
+    private static Lecturer[] sampleLecturers = {
+        new()
+        {
+            Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 201,
+            Standard = 500, Disciplines =
+                new List<Discipline>
+                {
+                    new()
+                    {
+                        Code = "058505", ContactLoad = 9,
+                        Content = "058505 Учебная практика (научно-исследовательская работа) [9] [BM.5665, осень]",
+                        EducationalProgram = "BM.5665"
+                    },
+                    new()
+                    {
+                        Code = "002212", ContactLoad = 128,
+                        Content = "002212 Программирование [128] [CB.5162, осень-весна]", EducationalProgram = "CB.5162"
+                    },
+                    new()
+                    {
+                        Code = "002211", ContactLoad = 64, Content = "002211 Информатика [64] [CB.5162, осень-весна]",
+                        EducationalProgram = "CB.5162"
+                    }
+                }
+        },
+        new()
+        {
+            Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 100,
+            DistributedLoad = 46, Standard = 500, Disciplines = new List<Discipline>()
+            {
+                new()
+                {
+                    Code = "002187", ContactLoad = 32,
+                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [CB.5162, весна]",
+                    EducationalProgram = "CB.5162"
+                },
+                new()
+                {
+                    Code = "064851", ContactLoad = 14,
+                    Content = "064851 Производственная практика (преддипломная) [14] [BM.5665, весна]",
+                    EducationalProgram = "BM.5665"
+                }
+            }
+        }
+    };
 
     private static object[] getLecturersTestCases =
     {
         new object[]
         {
-            severalLecturersSheet, new Lecturer[]
-            {
-                new()
-                {
-                    Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 209, Standard = 500, Disciplines =
-                        new List<Discipline>
-                        {
-                            new()
-                            { Code = "058505", ContactLoad = 9, Content = "058505 Учебная практика (научно-исследовательская работа) [9] [BM.5665, осень]", EducationalProgram = "BM.5665"
-                            },
-                            new()
-                            { Code = "002212", ContactLoad = 128, Content = "002212 Программирование [128] [CB.5162, осень-весна]", EducationalProgram = "CB.5162" },
-                            new()
-                            { Code = "002211", ContactLoad = 64, Content = "002211 Информатика [64] [CB.5162, осень-весна]", EducationalProgram = "CB.5162" }
-                        }
-                },
-                new()
-                {
-                    Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 100, DistributedLoad = 46, Standard = 500, Disciplines = new List<Discipline>()
-                    {
-                        new()
-                        { Code = "002187", ContactLoad = 32, Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [CB.5162, весна]", EducationalProgram = "CB.5162" },
-                        new()
-                        { Code = "064851", ContactLoad = 14, Content = "064851 Производственная практика (преддипломная) [14] [BM.5665, весна]", EducationalProgram = "BM.5665" }
-                    }
-                }
-            }
+            singleLecturerSheet, new[] {sampleLecturers[0]}
         },
         new object[]
         {
-             singleLecturerSheet, new Lecturer[]
-            {
-                new()
-                {
-                    Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 137, Standard = 500,
-                    Disciplines =
-                        new List<Discipline>
-                        {
-                            new()
-                            { Code = "058505", ContactLoad = 9, Content = "058505 Учебная практика (научно-исследовательская работа) [9] [BM.5665, осень]", EducationalProgram = "BM.5665" },
-                            new()
-                            { Code = "002212", ContactLoad = 128, Content = "002212 Программирование [128] [CB.5162, осень-весна]", EducationalProgram = "CB.5162" },
-                        }
-                }
-            }
+            severalLecturersSheet, sampleLecturers
         }
     };
 
@@ -82,8 +83,7 @@ public class SpreadsheetsClientTest
     [TestCaseSource(nameof(getLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
     {
-        spreadsheetsClient.SetSheetTitle(sheetTitle);
-        var lecturers = await spreadsheetsClient.GetLecturersAsync(spreadsheetId);
+        var lecturers = await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
@@ -118,12 +118,31 @@ public class SpreadsheetsClientTest
     public async Task Test_SpreadsheetsClient_ReturnsCorrectConfigTableRowModels(
         string sheetTitle, ConfigTableRow[] expectedTableRows)
     {
-        spreadsheetsClient.SetSheetTitle(sheetTitle);
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId);
+        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
         for (var i = 0; i < expectedTableRows.Length; i++)
         {
             Assert.That(expectedTableRows[i].EqualsTo(configTableRows[i]));
         }
         
+    }
+
+    private static string exportLecturersSheet = "ExportLecturers";
+    
+    private static object[] exportLecturersTestCases = 
+    {
+        new object [] {sampleLecturers, exportLecturersSheet}
+    };
+
+    [Test]
+    [TestCaseSource(nameof(exportLecturersTestCases))]
+    public async Task Test_SpreadsheetsClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
+    {
+        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
+        var responseLecturers =  await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        Assert.AreEqual(lecturers.Length, responseLecturers.Length);
+        for (var i = 0; i < lecturers.Length; i++)
+        {
+            Assert.That(lecturers[i].EqualsTo(responseLecturers[i]));
+        }
     }
 }

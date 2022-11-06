@@ -33,7 +33,7 @@ public class TablesService : ITablesService
 
     public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers)
     {
-        await spreadsheetsClient.ExportLecturersAsync(lecturers);
+        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers);
     }
 
 
