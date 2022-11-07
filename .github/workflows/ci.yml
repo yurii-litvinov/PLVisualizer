@@ -10,6 +10,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - id: 'auth'
+      name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0.4.0
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
