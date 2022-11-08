@@ -25,9 +25,7 @@ public class SpreadsheetsClient : ISpreadsheetsClient
     {
         using var stream = new FileStream("../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/SpreadsheetsClient/credentials.json", 
             FileMode.Open, FileAccess.Read);
-        credential = GoogleCredential
-            .FromStream(stream)
-            .CreateScoped(scopes);
+        credential = GoogleCredential.GetApplicationDefault();
         service = new SheetsService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
