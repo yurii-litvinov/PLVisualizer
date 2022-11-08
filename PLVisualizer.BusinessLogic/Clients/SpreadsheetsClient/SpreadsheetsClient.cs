@@ -35,6 +35,11 @@ public class SpreadsheetsClient : ISpreadsheetsClient
     public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)
     {
         var range = $"{sheetTitle}!A:F";
+        
+        //delete existing data in spreadsheet
+        var deleteRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), spreadsheetId, range); 
+        await deleteRequest.ExecuteAsync();
+        
         var valueRange = new ValueRange();
         var values = ToValues(lecturers);
         valueRange.Values = values;

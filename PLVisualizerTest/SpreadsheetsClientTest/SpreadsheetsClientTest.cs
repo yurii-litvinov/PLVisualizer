@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
@@ -17,7 +18,7 @@ public class SpreadsheetsClientTest
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalLecturersSheet = "SeveralLecturers";
     private static string singleLecturerSheet = "SingleLecturer";
-
+    
     private static Lecturer[] sampleLecturers = {
         new()
         {
@@ -137,6 +138,7 @@ public class SpreadsheetsClientTest
     [TestCaseSource(nameof(exportLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
     {
+        var t = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
         await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
         var responseLecturers =  await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(lecturers.Length, responseLecturers.Length);
