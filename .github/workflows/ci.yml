@@ -15,7 +15,7 @@ jobs:
       with:
         credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
     - name: Export credentials
-      run: export $GOOGLE_APPLICATION_CREDENTIALS='/PLVisualizer/PLVisualizer.BusinessLogic/Clients/SpreadsheetsClient/credentials.json'
+      run: export ${{ GITHUB_WORKSPACE.GOOGLE_APPLICATION_CREDENTIALS }}= /PLVisualizer/PLVisualizer.BusinessLogic/Clients/SpreadsheetsClient/credentials.json
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
