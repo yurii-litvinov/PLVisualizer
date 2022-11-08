@@ -2,6 +2,7 @@ name: .NET
 
 on: [push, pull_request]
 
+
 jobs:
   build:
 
@@ -13,12 +14,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      
+      # Configure Workload Identity Federation via a credentials file.
     - id: 'auth'
       name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v0
       with:
         workload_identity_provider: projects/767680492690/locations/global/workloadIdentityPools/visualizer-pool/providers/visualizer-provider
         service_account: visualizer@snappy-mark-365811.iam.gserviceaccount.com
+        
+      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`. 
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
+      
+      # Now you can run gcloud commands authenticated as the impersonated service account.
+    - id: 'gcloud'
+      name: 'gcloud'
+      run: |-
+        gcloud secrets versions access "latest" --secret "my-secret"
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
