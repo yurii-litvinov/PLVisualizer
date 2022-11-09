@@ -3,15 +3,15 @@ using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizerTest.Extensions;
 
-namespace PLVisualizerTest;
+namespace PLVisualizerTest.TestXlsxClient;
 
-public class XlsxClientTests
+public class TestXlsxClient
 {
-    private XlsxClient xlsxClient = new XlsxClient();
+    private IXlsxClient xlsxClient = new XlsxClient();
     [SetUp]
     public void Setup()
     {
-        xlsxClient.SetFile("../../../XlsxClientTest/test.xlsx");
+        xlsxClient.SetFile("../../../TestXlsxClient/test.xlsx");
     }
 
     private static XlsxTableRow[] testTableRows =

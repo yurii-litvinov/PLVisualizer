@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.Api", "PLVisua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.BusinessLogic", "PLVisualizer.BusinessLogic/PLVisualizer.BusinessLogic.csproj", "{0BC99D5B-FD05-4EBB-91D5-A66F9CF2E1B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlVisualizer.Api.Dto", "PlVisualizer.Api.Dto/PlVisualizer.Api.Dto.csproj", "{9479FD9D-4127-467C-87AF-1DA5ACFD1A58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.Api.Dto", "PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj", "{9479FD9D-4127-467C-87AF-1DA5ACFD1A58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{8D85966D-22E6-40DD-913F-A7097DE163AB}"
 EndProject

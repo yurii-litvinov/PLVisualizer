@@ -30,29 +30,14 @@ public class TablesController : Controller
         }
         
     }
-    
-    [HttpPost]
-    [Route("import/file")]
-    public async Task<ActionResult> UploadFile([FromBody] IFormFile file)
-    {
-        try
-        {
-            await tablesService.UploadFile(file);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest();
-        }
-    }
 
     [HttpGet]
     [Route("import/config/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId)
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromBody] IFormFile file)
     {
         try
         {
-            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId);
+            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, file);
         }
         catch (SpreadsheetNotFoundException e)
         {
