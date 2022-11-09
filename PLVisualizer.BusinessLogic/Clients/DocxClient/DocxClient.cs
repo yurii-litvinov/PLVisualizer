@@ -9,29 +9,23 @@ namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
 public class DocxClient : IDocxClient
 {
-    public void FillDisciplinesTerms(Lecturer[] lecturers)
+    public void FillDisciplinesTerms(IEnumerable<Discipline> disciplines)
     {
-        var disciplines = new List<Discipline>();
-        foreach (var lecturer in lecturers)
-        {
-            disciplines.AddRange(lecturer.Disciplines);
-        }
-
+        var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
         var groupedByProgramDisciplines = disciplines.GroupBy(discipline => discipline.EducationalProgram);
         foreach (var  groupedByProgramDiscipline in groupedByProgramDisciplines)
         {
-            var parser = new DocxCurriculum($"{groupedByProgramDiscipline.Key}");
+            var parser = new DocxCurriculum($"{pathTemplate}/{groupedByProgramDiscipline.Key}.docx");
             foreach (var discipline in groupedByProgramDiscipline)
             {
-                var disciplineCode = discipline.Content[..discipline.Content.IndexOf(' ')];
-                var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == disciplineCode);
-                discipline.Terms = disciplineFromParser.Implementations[0].Semester.ToString();
+                var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == discipline.Code);
+                discipline.Terms = string.Join(' ', disciplineFromParser.Implementations.Select(implementation => implementation.Semester));
             }
         }
         
     }
 
-    public Dictionary<string, Lecturer> GetLecturersWithDisciplines(XlsxTableRow[] tableRows)
+    public Dictionary<string, Lecturer> GetLecturersWithDisciplines(IEnumerable<XlsxTableRow> tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
         
@@ -40,11 +34,12 @@ public class DocxClient : IDocxClient
         foreach (var groupedByProgramRow in groupedByProgramRows)
         {
             var eduProgramCode = groupedByProgramRow.Key
-                .Split(':')[0][1..] // slicing №
+                [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
-            var curriculumName = GetCurriculumName(eduProgramCode);
-            var parser = new DocxCurriculum(curriculumName);
+            var pathTemplate = "../../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+            var curriculumName = GetCurriculumName(pathTemplate, eduProgramCode);
+            var parser = new DocxCurriculum($"{pathTemplate}/{curriculumName}");
             var parserDisciplines = parser.Disciplines;
             var groupedByNameRows = groupedByProgramRow.GroupBy(row => row.DisciplineName);
             
@@ -68,6 +63,7 @@ public class DocxClient : IDocxClient
                     var discipline = CreateDiscipline(
                         implementations: disciplineFromParser!.Implementations,
                         curriculumName: curriculumName, groupedByNameRow: groupedByNameRow);
+                    // remaining properties will be filled via config spreadsheet
                     lecturers.Add(groupedByNameRow.First().Lecturer, new Lecturer
                     {
                         Name = groupedByNameRow.First().Lecturer,
@@ -81,32 +77,32 @@ public class DocxClient : IDocxClient
         return lecturers;
     }
 
-    private string GetCurriculumName(string curriculumCode)
+    private static string GetCurriculumName(string pathTemplate, string curriculumCode)
     {
-        var workingPlans = Directory.GetFiles("WorkingPlans");
+        var workingPlans = Directory.GetFiles(pathTemplate);
         return workingPlans.FirstOrDefault(plan => plan.Contains(curriculumCode)) ?? string.Empty;
     }
 
-    private int GetTermNumber(string term)
+    private  static int GetTermNumber(string term)
     {
         return int.Parse(term.Replace("Семестр", string.Empty));
     }
 
-    private int GetContactLoad(string workHours)
+    private static int GetContactLoad(string workHours)
     {
         var castedHours = workHours.Split().Select(int.Parse).ToArray();
         return castedHours.Take(9).Sum() + castedHours[10];
     }
 
-    private Discipline CreateDiscipline(List<DisciplineImplementation> implementations, 
+    private static Discipline CreateDiscipline(List<DisciplineImplementation> implementations, 
         string curriculumName,  IGrouping<string,XlsxTableRow> groupedByNameRow)
     {
         var contactLoad = GetContactLoad(implementations.First().WorkHours ?? string.Empty);
-        var content = $"{groupedByNameRow.First().DisciplineName} ({contactLoad}) ({curriculumName})";
+        var content = $"{groupedByNameRow.First().DisciplineName} [{contactLoad}] [{curriculumName}]";
         return  new Discipline
         {
             EducationalProgram = curriculumName,
-            Terms = string.Join(' ', groupedByNameRow.Select(row => GetTermNumber(row.Term))),
+            Terms = string.Join(' ', groupedByNameRow.Select(row => GetTermNumber(row.Term))).Trim(),
             Content = content,
             ContactLoad = contactLoad
         };

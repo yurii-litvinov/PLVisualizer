@@ -7,6 +7,5 @@ public interface ITablesService
 {
     Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId);
     Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers);
-    Task UploadFile(IFormFile file);
-    Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId);
+    Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, IFormFile file);
 }

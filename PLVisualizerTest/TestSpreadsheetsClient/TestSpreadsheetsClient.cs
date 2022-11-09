@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizerTest.Extensions;
 
-namespace PLVisualizerTest;
+namespace PLVisualizerTest.TestSpreadsheetsClient;
 
-public class SpreadsheetsClientTest
+public class TestSpreadsheetsClient
 {
     private ISpreadsheetsClient spreadsheetsClient = new SpreadsheetsClient();
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
@@ -29,18 +25,18 @@ public class SpreadsheetsClientTest
                     new()
                     {
                         Code = "058505", ContactLoad = 9,
-                        Content = "058505 Учебная практика (научно-исследовательская работа) [9] [BM.5665, осень]",
-                        EducationalProgram = "BM.5665"
+                        Content = "058505 Учебная практика (научно-исследовательская работа) [9] [BM.5665-2022, осень]",
+                        EducationalProgram = "BM.5665-2022"
                     },
                     new()
                     {
                         Code = "002212", ContactLoad = 128,
-                        Content = "002212 Программирование [128] [CB.5162, осень-весна]", EducationalProgram = "CB.5162"
+                        Content = "002212 Программирование [128] [CB.5162-2022, осень-весна]", EducationalProgram = "CB.5162-2022"
                     },
                     new()
                     {
-                        Code = "002211", ContactLoad = 64, Content = "002211 Информатика [64] [CB.5162, осень-весна]",
-                        EducationalProgram = "CB.5162"
+                        Code = "002211", ContactLoad = 64, Content = "002211 Информатика [64] [CB.5162-2022, осень-весна]",
+                        EducationalProgram = "CB.5162-2022"
                     }
                 }
         },
@@ -52,14 +48,14 @@ public class SpreadsheetsClientTest
                 new()
                 {
                     Code = "002187", ContactLoad = 32,
-                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [CB.5162, весна]",
-                    EducationalProgram = "CB.5162"
+                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [CB.5162-2022, весна]",
+                    EducationalProgram = "CB.5162-2022"
                 },
                 new()
                 {
                     Code = "064851", ContactLoad = 14,
-                    Content = "064851 Производственная практика (преддипломная) [14] [BM.5665, весна]",
-                    EducationalProgram = "BM.5665"
+                    Content = "064851 Производственная практика (преддипломная) [14] [BM.5665-2022, весна]",
+                    EducationalProgram = "BM.5665-2022"
                 }
             }
         }
@@ -138,7 +134,6 @@ public class SpreadsheetsClientTest
     [TestCaseSource(nameof(exportLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
     {
-        var t = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
         await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
         var responseLecturers =  await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(lecturers.Length, responseLecturers.Length);

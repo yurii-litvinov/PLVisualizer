@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PlVisualizer.Api.Dto\PlVisualizer.Api.Dto.csproj" />
+      <ProjectReference Include="..\PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj" />
       <ProjectReference Include="..\PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj" />
     </ItemGroup>
 

@@ -116,7 +116,6 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         // otherwise response from google will contain 4 elements in a row
         const int lecturerHeaderCount = 6;
         var models = new List<Lecturer>();
-        var previousLecturer = lecturers[0];
         var disciplines = new List<Discipline>();
         var lecturer = new Lecturer();
         for(var i = 0; i < lecturers.Count; i++)
@@ -148,23 +147,6 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         }
 
         return models.ToArray();
-    }
-
-    private static Discipline CreateDiscipline(string content)
-    {
-        // take content in [ ]
-        var pattern = @"(?<=\[).+?(?=\])";
-        var matches = Regex.Matches(content, pattern);
-        var curriculum = matches[^1].Value;
-        var contactLoad = int.Parse(matches[^2].Value);
-        return new Discipline
-        {
-            //fill remaining properties using docx client
-            Content = content,
-            Code = content[..content.IndexOf(' ')],
-            ContactLoad = contactLoad,
-            EducationalProgram = curriculum[..curriculum.IndexOf(',')]
-        };
     }
 
     private static List<Request> GetFormatTableRequests(Lecturer[] lecturers, int? sheetId)
@@ -213,5 +195,21 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         };
     }
     
+    private static Discipline CreateDiscipline(string content)
+    {
+        // take content in [ ]
+        var pattern = @"(?<=\[).+?(?=\])";
+        var matches = Regex.Matches(content, pattern);
+        var curriculum = matches[^1].Value;
+        var contactLoad = int.Parse(matches[^2].Value);
+        return new Discipline
+        {
+            //fill remaining properties using docx client
+            Content = content,
+            Code = content[..content.IndexOf(' ')],
+            ContactLoad = contactLoad,
+            EducationalProgram = curriculum[..curriculum.IndexOf(',')]
+        };
+    }
     
 }

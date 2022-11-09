@@ -14,7 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\curriculum-parser\CurriculumParser\CurriculumParser.csproj" />
-      <ProjectReference Include="..\PlVisualizer.Api.Dto\PlVisualizer.Api.Dto.csproj" />
+      <ProjectReference Include="..\PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj" />
     </ItemGroup>
 
     <ItemGroup>

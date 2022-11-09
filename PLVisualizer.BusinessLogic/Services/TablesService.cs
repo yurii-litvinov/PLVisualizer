@@ -27,7 +27,12 @@ public class TablesService : ITablesService
     public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId)
     {
         var lecturersWithoutTerms = await spreadsheetsClient.GetLecturersAsync(spreadsheetId);
-        docxClient.FillDisciplinesTerms(lecturersWithoutTerms);
+        var disciplines = new List<Discipline>();
+        foreach (var lecturer in lecturersWithoutTerms)
+        {
+            disciplines.AddRange(lecturer.Disciplines);
+        }
+        docxClient.FillDisciplinesTerms(disciplines);
         return lecturersWithoutTerms;
     }
 
@@ -35,18 +40,15 @@ public class TablesService : ITablesService
     {
         await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers);
     }
+    
 
-
-
-    public async Task UploadFile(IFormFile file)
+    public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, IFormFile file)
     {
         xlsxClient.SetFile(file);
-    }
-
-    public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId)
-    {
         var xlsxTableRows = xlsxClient.GetTableRows();
+        
         var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId);
+        
         var lecturersWithDisciplines = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
         foreach (var configTableRow in configTableRows)
         {
