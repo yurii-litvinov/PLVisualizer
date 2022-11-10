@@ -4,6 +4,7 @@ using PLVisualizer.BusinessLogic.Clients;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Extensions;
 
 namespace PLVisualizer.BusinessLogic.Services;
 
@@ -44,20 +45,13 @@ public class TablesService : ITablesService
 
     public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, IFormFile file)
     {
-        xlsxClient.SetFile(file);
-        var xlsxTableRows = xlsxClient.GetTableRows();
+        var xlsxTableRows = xlsxClient.GetTableRows(file);
         
         var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId);
         
-        var lecturersWithDisciplines = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
-        foreach (var configTableRow in configTableRows)
-        {
-            var lecturer = lecturersWithDisciplines[configTableRow.LecturerName];
-            lecturer.Post = configTableRow.Post;
-            lecturer.InterestRate = configTableRow.InterestRate;
-        }
-
-        return lecturersWithDisciplines.Values.ToArray();
+        return docxClient.GetLecturersWithDisciplines(xlsxTableRows)
+            .WithConfigInformation(configTableRows)
+            .WithStandards()
+            .WithDistributedLoad();
     }
-    
 }

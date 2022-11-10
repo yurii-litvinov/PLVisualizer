@@ -7,4 +7,5 @@ public class Discipline
     public string Terms { get; set; }
     public string Code { get; set; }
     public string EducationalProgram { get; set; }
+    public bool HasPracticesHours { get; set; }
 }

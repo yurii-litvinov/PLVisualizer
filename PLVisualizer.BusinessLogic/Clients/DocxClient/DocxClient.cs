@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json.Converters;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
@@ -38,36 +39,29 @@ public class DocxClient : IDocxClient
                 .Replace(',', '-');
 
             var pathTemplate = "../../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
-            var curriculumName = GetCurriculumName(pathTemplate, eduProgramCode);
-            var parser = new DocxCurriculum($"{pathTemplate}/{curriculumName}");
+            var curriculumCode = GetCurriculumCode(pathTemplate, eduProgramCode);
+            var parser = new DocxCurriculum($"{pathTemplate}/{curriculumCode}");
             var parserDisciplines = parser.Disciplines;
-            var groupedByNameRows = groupedByProgramRow.GroupBy(row => row.DisciplineName);
+            var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.DisciplineName);
             
-            foreach (var groupedByNameRow in groupedByNameRows)
+            foreach (var groupedByNameRow in groupedByDisciplineNameRows)
             {
                 var disciplineCode = groupedByNameRow.Key[..groupedByNameRow.Key.IndexOf(' ')];
                 var disciplineFromParser =
                     parserDisciplines.FirstOrDefault(discipline => discipline.Code == disciplineCode);
 
                 var currentLecturer = groupedByNameRow.First().Lecturer;
+                var discipline = CreateDiscipline(discipline: disciplineFromParser, curriculumCode: curriculumCode);
                 if (lecturers.ContainsKey(currentLecturer))
                 {
-                    lecturers[currentLecturer].Disciplines.Add(CreateDiscipline(
-                        implementations: disciplineFromParser!.Implementations,
-                        curriculumName: curriculumName, groupedByNameRow: groupedByNameRow));
-                    lecturers[currentLecturer].DistributedLoad +=
-                        lecturers[currentLecturer].Disciplines[^1].ContactLoad;
+                    lecturers[currentLecturer].Disciplines.Add(discipline);
                 }
                 else
                 {
-                    var discipline = CreateDiscipline(
-                        implementations: disciplineFromParser!.Implementations,
-                        curriculumName: curriculumName, groupedByNameRow: groupedByNameRow);
                     // remaining properties will be filled via config spreadsheet
                     lecturers.Add(groupedByNameRow.First().Lecturer, new Lecturer
                     {
                         Name = groupedByNameRow.First().Lecturer,
-                        DistributedLoad = discipline.ContactLoad,
                         Disciplines = new List<Discipline> {discipline}
                     });
                 }
@@ -77,34 +71,49 @@ public class DocxClient : IDocxClient
         return lecturers;
     }
 
-    private static string GetCurriculumName(string pathTemplate, string curriculumCode)
+    private static string GetCurriculumCode(string pathTemplate, string curriculumCode)
     {
         var workingPlans = Directory.GetFiles(pathTemplate);
         return workingPlans.FirstOrDefault(plan => plan.Contains(curriculumCode)) ?? string.Empty;
     }
-
-    private  static int GetTermNumber(string term)
+    
+    private static int GetContactLoad(CurriculumParser.Discipline discipline)
     {
-        return int.Parse(term.Replace("Семестр", string.Empty));
+        const int workInLecturerPresenceColumn = 10, classroomWorkColumnsCount = 9;
+        return  discipline.Implementations.Select(implementation => 
+            implementation.WorkHours.Split()
+                .Select(int.Parse)
+                .ToArray())
+            .Select(castedHours => castedHours.Take(classroomWorkColumnsCount).Sum() + 
+                                   castedHours[workInLecturerPresenceColumn]).Sum(); 
     }
 
-    private static int GetContactLoad(string workHours)
+    private static string GetTerms(CurriculumParser.Discipline discipline)
     {
-        var castedHours = workHours.Split().Select(int.Parse).ToArray();
-        return castedHours.Take(9).Sum() + castedHours[10];
+        return string.Join(' ', discipline.Implementations.Select(implementation => implementation.Semester));
     }
-
-    private static Discipline CreateDiscipline(List<DisciplineImplementation> implementations, 
-        string curriculumName,  IGrouping<string,XlsxTableRow> groupedByNameRow)
+    
+    private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline, 
+        string curriculumCode)
     {
-        var contactLoad = GetContactLoad(implementations.First().WorkHours ?? string.Empty);
-        var content = $"{groupedByNameRow.First().DisciplineName} [{contactLoad}] [{curriculumName}]";
+        var contactLoad = GetContactLoad(discipline);
+        var terms = GetTerms(discipline);
+        var content = $"{discipline.Code} {discipline.RussianName} [{contactLoad}] [{curriculumCode}]";
         return  new Discipline
         {
-            EducationalProgram = curriculumName,
-            Terms = string.Join(' ', groupedByNameRow.Select(row => GetTermNumber(row.Term))).Trim(),
+            Code = discipline.Code,
+            EducationalProgram = curriculumCode,
+            Terms = terms,
             Content = content,
-            ContactLoad = contactLoad
+            ContactLoad = contactLoad,
+            HasPracticesHours = DisciplineHasPracticesHours(discipline)
         };
+    }
+
+    private  static bool DisciplineHasPracticesHours(CurriculumParser.Discipline discipline)
+    {
+        const int practicesColumn = 3;
+        return discipline.Implementations.Any(implementation =>
+            implementation.WorkHours.Split().Select(int.Parse).ToArray()[practicesColumn] != 0);
     }
 }

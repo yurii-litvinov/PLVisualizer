@@ -8,12 +8,7 @@ namespace PLVisualizerTest.TestXlsxClient;
 public class TestXlsxClient
 {
     private IXlsxClient xlsxClient = new XlsxClient();
-    [SetUp]
-    public void Setup()
-    {
-        xlsxClient.SetFile("../../../TestXlsxClient/test.xlsx");
-    }
-
+    
     private static XlsxTableRow[] testTableRows =
     {
         new()
@@ -41,7 +36,7 @@ public class TestXlsxClient
     [Test]
     public void Test_XlsxClient_ReturnsCorrectModels()
     {
-        var tableRows = xlsxClient.GetTableRows();
+        var tableRows = xlsxClient.GetTableRows("../../../TestXlsxClient/test.xlsx");
         for (var i = 0; i < tableRows.Length; i++)
         {
             Assert.That(tableRows[i].EqualsTo(testTableRows[i]));
