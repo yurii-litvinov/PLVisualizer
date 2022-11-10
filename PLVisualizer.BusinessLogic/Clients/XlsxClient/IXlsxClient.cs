@@ -5,7 +5,6 @@ namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
 
 public interface IXlsxClient
 {
-    public void SetFile(IFormFile file);
-    public void SetFile(string path);
-    XlsxTableRow[] GetTableRows();
+    XlsxTableRow[] GetTableRows(IFormFile file);
+    XlsxTableRow[] GetTableRows(string path);
 }
