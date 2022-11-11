@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizerTest.Extensions;
 
 namespace PLVisualizerTest.TestSpreadsheetsClient;

@@ -52,6 +52,7 @@ public class TablesService : ITablesService
         return docxClient.GetLecturersWithDisciplines(xlsxTableRows)
             .WithConfigInformation(configTableRows)
             .WithStandards()
-            .WithDistributedLoad();
+            .WithDistributedLoad()
+            .ToArray();
     }
 }
