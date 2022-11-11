@@ -1,8 +1,4 @@
 ﻿using CurriculumParser;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json.Converters;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 

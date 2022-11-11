@@ -5,39 +5,43 @@ namespace PLVisualizer.BusinessLogic.Extensions;
 
 public static class LecturersConfiguration
 {
-    public static Lecturer[] WithConfigInformation(this Dictionary<string, Lecturer> lecturers,
-        ConfigTableRow[] configTableRows)
+    public static IEnumerable<Lecturer> WithConfigInformation(this Dictionary<string, Lecturer> lecturers,
+        IEnumerable<ConfigTableRow> configTableRows)
     {
+        var lecturersViaConfig = new List<Lecturer>();
         foreach (var configTableRow in configTableRows)
         {
             if (lecturers.ContainsKey(configTableRow.LecturerName))
             {
                 lecturers[configTableRow.LecturerName].Post = configTableRow.Post;
                 lecturers[configTableRow.LecturerName].InterestRate = configTableRow.InterestRate;
+                lecturersViaConfig.Add(lecturers[configTableRow.LecturerName]);
             }
         }
 
-        return lecturers.Values.ToArray();
+        return lecturersViaConfig;
     }
 
-    public static Lecturer[] WithStandards(this Lecturer[] lecturers)
+    public static IEnumerable<Lecturer> WithStandards(this IEnumerable<Lecturer> lecturers)
     {
-        foreach (var lecturer in lecturers)
+        var withStandards = lecturers as Lecturer[] ?? lecturers.ToArray();
+        foreach (var lecturer in withStandards)
         {
             lecturer.Standard = GetStandard(lecturer);
         }
 
-        return lecturers;
+        return withStandards;
     }
 
-    public static Lecturer[] WithDistributedLoad(this Lecturer[] lecturers)
+    public static IEnumerable<Lecturer> WithDistributedLoad(this IEnumerable<Lecturer> lecturers)
     {
-        foreach (var lecturer in lecturers)
+        var withDistributedLoad = lecturers as Lecturer[] ?? lecturers.ToArray();
+        foreach (var lecturer in withDistributedLoad)
         {
             lecturer.DistributedLoad = lecturer.Disciplines.Select(discipline => discipline.ContactLoad).Sum();
         }
 
-        return lecturers;
+        return withDistributedLoad;
     }
 
     private static int GetStandard(Lecturer lecturer)

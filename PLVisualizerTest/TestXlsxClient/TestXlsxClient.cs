@@ -37,6 +37,7 @@ public class TestXlsxClient
     public void Test_XlsxClient_ReturnsCorrectModels()
     {
         var tableRows = xlsxClient.GetTableRows("../../../TestXlsxClient/test.xlsx");
+        Assert.AreEqual(2, tableRows.Length);
         for (var i = 0; i < tableRows.Length; i++)
         {
             Assert.That(tableRows[i].EqualsTo(testTableRows[i]));
