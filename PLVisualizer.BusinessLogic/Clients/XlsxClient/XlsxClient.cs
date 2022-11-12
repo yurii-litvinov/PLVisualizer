@@ -23,7 +23,18 @@ public class XlsxClient : IXlsxClient
     {
         using var stream = new FileStream(path, FileMode.Open);
         using var spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
-        return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
+        var xlsxTableRows = new XlsxTableRow[]{};
+        try
+        {
+            xlsxTableRows = GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
+        }
+        catch (InvalidDataException)
+        {
+            stream.Dispose();
+            spreadsheetDocument.Dispose();
+        }
+
+        return xlsxTableRows;
     }
 
     private XlsxTableRow[] GetTableRowsFromSpreadsheetDoc(SpreadsheetDocument spreadsheetDocument)
