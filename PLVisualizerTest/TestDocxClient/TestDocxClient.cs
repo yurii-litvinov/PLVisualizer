@@ -82,7 +82,7 @@ public class TestDocxClient
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
         var xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.xlsx");
+        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.zip");
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
