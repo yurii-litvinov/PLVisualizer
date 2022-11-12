@@ -9,7 +9,7 @@ public class DocxClient : IDocxClient
 {
     public void FillDisciplinesTerms(IEnumerable<Discipline> disciplines)
     {
-        var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+        var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
         var groupedByProgramDisciplines = disciplines.GroupBy(discipline => discipline.EducationalProgram);
         foreach (var  groupedByProgramDiscipline in groupedByProgramDisciplines)
         {
@@ -35,7 +35,7 @@ public class DocxClient : IDocxClient
                 [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
-            var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+            var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
             var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..curriculumPath.LastIndexOf('.')];
             var parser = new DocxCurriculum(curriculumPath);
