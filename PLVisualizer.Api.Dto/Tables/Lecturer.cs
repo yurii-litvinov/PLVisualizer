@@ -10,4 +10,22 @@ public class Lecturer
     public List<Discipline> Disciplines { get; set; }
     public int DistributedLoad { get; set; }
     public int Standard { get; set; }
+    
+    public override bool Equals(object obj)
+    {
+        if (obj is not Lecturer lecturer) return false;
+        if (Disciplines.Count != lecturer.Disciplines.Count) return false;
+        if (Disciplines.Intersect(lecturer.Disciplines).Count() != Disciplines.Count)
+        {
+            return false;
+        }
+
+
+        return Name == lecturer.Name &&
+               DistributedLoad == lecturer.DistributedLoad &&
+               Standard == lecturer.Standard &&
+               Post == lecturer.Post &&
+               InterestRate == lecturer.InterestRate;
+    }
+
 }
