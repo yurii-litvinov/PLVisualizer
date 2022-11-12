@@ -39,6 +39,7 @@ public class TestDocxClient
     {
         var xlsxClient = new XlsxClient();
         var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.zip");
+        docxClient.GetLecturersWithDisciplines(tableRows);
         docxClient.FillDisciplinesTerms(disciplines);
         for (var i = 0; i < disciplines.Length; i++)
         {
