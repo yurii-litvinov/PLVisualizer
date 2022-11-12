@@ -21,10 +21,9 @@ public class XlsxClient : IXlsxClient
     
     public XlsxTableRow[] GetTableRows(string path)
     {
-        using (var spreadsheetDocument = SpreadsheetDocument.Open(path, false))
-        {
-            return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
-        }
+        using var stream = new FileStream(path, FileMode.Open);
+        using var spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
+        return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
     }
 
     private XlsxTableRow[] GetTableRowsFromSpreadsheetDoc(SpreadsheetDocument spreadsheetDocument)
