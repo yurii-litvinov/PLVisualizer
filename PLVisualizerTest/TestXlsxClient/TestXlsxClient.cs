@@ -1,3 +1,4 @@
+using CurriculumParser;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;

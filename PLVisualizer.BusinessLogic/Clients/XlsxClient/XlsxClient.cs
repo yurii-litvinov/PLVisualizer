@@ -12,15 +12,16 @@ public class XlsxClient : IXlsxClient
 {
     public XlsxTableRow[] GetTableRows(IFormFile file)
     {
-        var stream = file.OpenReadStream();
+        
+        using var stream = file.OpenReadStream();
         stream.Position = 0;
         using var spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
         return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
     }
-    
+
     public XlsxTableRow[] GetTableRows(string path)
     {
-        using var spreadsheetDocument = SpreadsheetDocument.Open(path, false);
+        var spreadsheetDocument = SpreadsheetDocument.Open(path, false);
         return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
     }
 

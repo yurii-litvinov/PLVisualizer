@@ -9,7 +9,7 @@ public class DocxClient : IDocxClient
 {
     public void FillDisciplinesTerms(IEnumerable<Discipline> disciplines)
     {
-        var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+        var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
         var groupedByProgramDisciplines = disciplines.GroupBy(discipline => discipline.EducationalProgram);
         foreach (var  groupedByProgramDiscipline in groupedByProgramDisciplines)
         {
@@ -17,7 +17,7 @@ public class DocxClient : IDocxClient
             foreach (var discipline in groupedByProgramDiscipline)
             {
                 var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == discipline.Code);
-                discipline.Terms = string.Join(' ', disciplineFromParser.Implementations.Select(implementation => implementation.Semester));
+                discipline.Terms = GetTerms(disciplineFromParser);
             }
         }
         
@@ -32,16 +32,17 @@ public class DocxClient : IDocxClient
         foreach (var groupedByProgramRow in groupedByProgramRows)
         {
             var curriculumCode = groupedByProgramRow.Key
-                [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
+                    [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
-            var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+            var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
-            var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..];
+            var curriculumTitle =
+                curriculumPath[(curriculumPath.LastIndexOfAny(new char[]{'/', '\\'}) + 1)..curriculumPath.LastIndexOf('.')];
             var parser = new DocxCurriculum(curriculumPath);
             var parserDisciplines = parser.Disciplines;
             var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
-            
+
             foreach (var groupedByDisciplineName in groupedByDisciplineNameRows)
             {
                 var disciplineCode = groupedByDisciplineName.Key[..groupedByDisciplineName.Key.IndexOf(' ')];
@@ -49,10 +50,13 @@ public class DocxClient : IDocxClient
                     parserDisciplines.FirstOrDefault(discipline => discipline.Code == disciplineCode);
                 if (disciplineFromParser == null)
                 {
-                    throw new DisciplineNotFoundException($"{disciplineCode} not found in {curriculumCode} working plan");
+                    throw new DisciplineNotFoundException(
+                        $"{disciplineCode} not found in {curriculumCode} working plan");
                 }
+
                 var lecturer = groupedByDisciplineName.First().Lecturer;
-                var discipline = CreateDiscipline(discipline: disciplineFromParser, curriculumTitle: curriculumTitle);
+                var discipline =
+                    CreateDiscipline(discipline: disciplineFromParser, curriculumTitle: curriculumTitle);
                 if (lecturers.ContainsKey(lecturer))
                 {
                     lecturers[lecturer].Disciplines.Add(discipline);
@@ -63,11 +67,12 @@ public class DocxClient : IDocxClient
                     lecturers.Add(groupedByDisciplineName.First().Lecturer, new Lecturer
                     {
                         Name = groupedByDisciplineName.First().Lecturer,
-                        Disciplines = new List<Discipline> {discipline}
+                        Disciplines = new List<Discipline> { discipline }
                     });
                 }
             }
         }
+    
 
         return lecturers;
     }
@@ -98,9 +103,13 @@ public class DocxClient : IDocxClient
     private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline, 
         string curriculumTitle)
     {
+        var realization = discipline.Implementations.First().Realization;
+        var disciplineName = realization == null
+            ? discipline.RussianName
+            : $"{discipline.RussianName} ({realization})";
         var contactLoad = GetContactLoad(discipline);
         var terms = GetTerms(discipline);
-        var content = $"{discipline.Code} {discipline.RussianName} [{contactLoad}] [{curriculumTitle}]";
+        var content = $"{discipline.Code} {disciplineName} [{contactLoad}] [{curriculumTitle}]";
         return  new Discipline
         {
             Code = discipline.Code,

@@ -28,4 +28,13 @@ public class Lecturer
                InterestRate == lecturer.InterestRate;
     }
 
+    protected bool Equals(Lecturer other)
+    {
+        return Name == other.Name && Post == other.Post && InterestRate == other.InterestRate && Disciplines.Equals(other.Disciplines) && DistributedLoad == other.DistributedLoad && Standard == other.Standard;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Name, Post, InterestRate, Disciplines, DistributedLoad, Standard);
+    }
 }
