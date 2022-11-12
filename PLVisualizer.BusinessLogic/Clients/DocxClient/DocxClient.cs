@@ -37,7 +37,7 @@ public class DocxClient : IDocxClient
 
             var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
-            var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..];
+            var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..curriculumPath.LastIndexOf('.')];
             var parser = new DocxCurriculum(curriculumPath);
             var parserDisciplines = parser.Disciplines;
             var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
@@ -98,9 +98,13 @@ public class DocxClient : IDocxClient
     private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline, 
         string curriculumTitle)
     {
+        var realization = discipline.Implementations.First().Realization;
+        var disciplineName = realization == null
+            ? discipline.RussianName
+            : $"{discipline.RussianName} ({realization})";
         var contactLoad = GetContactLoad(discipline);
         var terms = GetTerms(discipline);
-        var content = $"{discipline.Code} {discipline.RussianName} [{contactLoad}] [{curriculumTitle}]";
+        var content = $"{discipline.Code} {disciplineName} [{contactLoad}] [{curriculumTitle}]";
         return  new Discipline
         {
             Code = discipline.Code,
