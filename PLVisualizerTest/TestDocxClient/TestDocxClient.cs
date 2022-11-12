@@ -37,6 +37,8 @@ public class TestDocxClient
     [TestCaseSource(nameof(termsFillingCases))] 
     public void Test_DocxClient_FillsTermsCorrectly(Discipline[] disciplines, IList<string> expectedTerms)
     {
+        var xlsxClient = new XlsxClient();
+        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.zip");
         docxClient.FillDisciplinesTerms(disciplines);
         for (var i = 0; i < disciplines.Length; i++)
         {

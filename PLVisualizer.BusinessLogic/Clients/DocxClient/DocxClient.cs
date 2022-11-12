@@ -17,7 +17,7 @@ public class DocxClient : IDocxClient
             foreach (var discipline in groupedByProgramDiscipline)
             {
                 var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == discipline.Code);
-                discipline.Terms = string.Join(' ', disciplineFromParser.Implementations.Select(implementation => implementation.Semester));
+                discipline.Terms = GetTerms(disciplineFromParser);
             }
         }
         
