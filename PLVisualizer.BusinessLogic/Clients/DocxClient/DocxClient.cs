@@ -1,4 +1,5 @@
 ﻿using CurriculumParser;
+using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
@@ -30,34 +31,38 @@ public class DocxClient : IDocxClient
         var groupedByProgramRows = tableRows.GroupBy(row => row.EducationalProgram);
         foreach (var groupedByProgramRow in groupedByProgramRows)
         {
-            var eduProgramCode = groupedByProgramRow.Key
+            var curriculumCode = groupedByProgramRow.Key
                 [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
-            var pathTemplate = "../../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
-            var curriculumCode = GetCurriculumCode(pathTemplate, eduProgramCode);
-            var parser = new DocxCurriculum($"{pathTemplate}/{curriculumCode}");
+            var pathTemplate = "../../../../../PLVisualizer/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
+            var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
+            var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..];
+            var parser = new DocxCurriculum(curriculumPath);
             var parserDisciplines = parser.Disciplines;
-            var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.DisciplineName);
+            var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
             
-            foreach (var groupedByNameRow in groupedByDisciplineNameRows)
+            foreach (var groupedByDisciplineName in groupedByDisciplineNameRows)
             {
-                var disciplineCode = groupedByNameRow.Key[..groupedByNameRow.Key.IndexOf(' ')];
+                var disciplineCode = groupedByDisciplineName.Key[..groupedByDisciplineName.Key.IndexOf(' ')];
                 var disciplineFromParser =
                     parserDisciplines.FirstOrDefault(discipline => discipline.Code == disciplineCode);
-
-                var currentLecturer = groupedByNameRow.First().Lecturer;
-                var discipline = CreateDiscipline(discipline: disciplineFromParser, curriculumCode: curriculumCode);
-                if (lecturers.ContainsKey(currentLecturer))
+                if (disciplineFromParser == null)
                 {
-                    lecturers[currentLecturer].Disciplines.Add(discipline);
+                    throw new DisciplineNotFoundException($"{disciplineCode} not found in {curriculumCode} working plan");
+                }
+                var lecturer = groupedByDisciplineName.First().Lecturer;
+                var discipline = CreateDiscipline(discipline: disciplineFromParser, curriculumTitle: curriculumTitle);
+                if (lecturers.ContainsKey(lecturer))
+                {
+                    lecturers[lecturer].Disciplines.Add(discipline);
                 }
                 else
                 {
                     // remaining properties will be filled via config spreadsheet
-                    lecturers.Add(groupedByNameRow.First().Lecturer, new Lecturer
+                    lecturers.Add(groupedByDisciplineName.First().Lecturer, new Lecturer
                     {
-                        Name = groupedByNameRow.First().Lecturer,
+                        Name = groupedByDisciplineName.First().Lecturer,
                         Disciplines = new List<Discipline> {discipline}
                     });
                 }
@@ -81,7 +86,8 @@ public class DocxClient : IDocxClient
                 .Select(int.Parse)
                 .ToArray())
             .Select(castedHours => castedHours.Take(classroomWorkColumnsCount).Sum() + 
-                                   castedHours[workInLecturerPresenceColumn]).Sum(); 
+                                   castedHours[workInLecturerPresenceColumn])
+            .Sum(); 
     }
 
     private static string GetTerms(CurriculumParser.Discipline discipline)
@@ -90,15 +96,15 @@ public class DocxClient : IDocxClient
     }
     
     private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline, 
-        string curriculumCode)
+        string curriculumTitle)
     {
         var contactLoad = GetContactLoad(discipline);
         var terms = GetTerms(discipline);
-        var content = $"{discipline.Code} {discipline.RussianName} [{contactLoad}] [{curriculumCode}]";
+        var content = $"{discipline.Code} {discipline.RussianName} [{contactLoad}] [{curriculumTitle}]";
         return  new Discipline
         {
             Code = discipline.Code,
-            EducationalProgram = curriculumCode,
+            EducationalProgram = curriculumTitle,
             Terms = terms,
             Content = content,
             ContactLoad = contactLoad,

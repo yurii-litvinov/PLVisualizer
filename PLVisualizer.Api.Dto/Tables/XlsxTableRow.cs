@@ -45,4 +45,17 @@ public class XlsxTableRow
     /// </summary>
     public string SAPSubdivision1 { get; set; }
     public string EducationalProgram { get; set; }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not XlsxTableRow xlsxTableRow) return false;
+        return Term == xlsxTableRow.Term &&
+               Subdivision == xlsxTableRow.Subdivision &&
+               PedagogicalTask == xlsxTableRow.PedagogicalTask &&
+               DisciplineName == xlsxTableRow.DisciplineName &&
+               WorkType == xlsxTableRow.WorkType &&
+               Lecturer == xlsxTableRow.Lecturer &&
+               SAPSubdivision2 == xlsxTableRow.SAPSubdivision2 &&
+               SAPSubdivision1 == xlsxTableRow.SAPSubdivision1;
+    }
 }

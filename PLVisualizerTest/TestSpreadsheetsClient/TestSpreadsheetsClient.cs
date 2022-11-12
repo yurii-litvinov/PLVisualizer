@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
-using PLVisualizerTest.Extensions;
+
 
 namespace PLVisualizerTest.TestSpreadsheetsClient;
 
@@ -85,7 +83,7 @@ public class TestSpreadsheetsClient
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
-            Assert.That(expectedLecturers[i].EqualsTo(lecturers[i]));
+            Assert.That(expectedLecturers[i].Equals(lecturers[i]));
         }
     }
 
@@ -119,7 +117,7 @@ public class TestSpreadsheetsClient
         var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
         for (var i = 0; i < expectedTableRows.Length; i++)
         {
-            Assert.That(expectedTableRows[i].EqualsTo(configTableRows[i]));
+            Assert.That(expectedTableRows[i].Equals(configTableRows[i]));
         }
         
     }
@@ -140,7 +138,7 @@ public class TestSpreadsheetsClient
         Assert.AreEqual(lecturers.Length, responseLecturers.Length);
         for (var i = 0; i < lecturers.Length; i++)
         {
-            Assert.That(lecturers[i].EqualsTo(responseLecturers[i]));
+            Assert.That(lecturers[i].Equals(responseLecturers[i]));
         }
     }
 }

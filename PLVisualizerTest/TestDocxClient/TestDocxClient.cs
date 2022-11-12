@@ -5,7 +5,6 @@ using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
-using PLVisualizerTest.Extensions;
 
 namespace PLVisualizerTest.TestDocxClient;
 
@@ -53,22 +52,26 @@ public class TestDocxClient
             {
                 Name = "Литвинов Юрий Викторович", Disciplines = new List<Discipline>
                 {
-                    new () { Code = "058595",  Terms = "1", ContactLoad = 15,
-                        Content = "058505 Учебная практика (научно-исследовательская работа) [15] [ВМ.5665-2022]", EducationalProgram = "ВМ.5665-2022", },
+                    new () { Code = "058595",  Terms = "1", ContactLoad = 17,
+                        Content = "058505 Учебная практика (научно-исследовательская работа) [17] [ВМ.5665-2021]", EducationalProgram = "ВМ.5665-2021", },
                     new () { Code = "002212",  Terms = "1 2 3", ContactLoad = 128,
                         Content = "002212 Программирование [128] [СВ.5162-2022]", EducationalProgram = "СВ.5162-2022" },
-                    new () { Code = "002211",  Terms = "1 2 3", ContactLoad = 104,
-                    Content = "002211 Информатика [104] [СВ.5162-2022]", EducationalProgram = "СВ.5162-2022" }
+                    new () { Code = "002212",  Terms = "1 2 3", ContactLoad = 128,
+                    Content = "002212 Программирование [128] [СВ.5162-2021]", EducationalProgram = "СВ.5162-2021" },
+                    new () { Code = "002211",  Terms = "1 2 3", ContactLoad = 106,
+                    Content = "002211 Информатика [104] [СВ.5162-2022]", EducationalProgram = "СВ.5162-2022" },
+                    new () { Code = "002212",  Terms = "3", ContactLoad = 18,
+                    Content = "064792 Учебная практика 1 (научно-исследовательская работа) [18] [СВ.5162-2021]", EducationalProgram = "СВ.5162-2021" }
                 }
             },
             new ()
             {
                 Name = "Кириленко Яков Александрович", Disciplines = new List<Discipline>
                 {
-                    new () { Code = "064851",  Terms = "4", ContactLoad = 12,
-                        Content = "064851 Производственная практика (преддипломная) [12] [ВМ.5665-2022]", EducationalProgram = "ВМ.5665-2022" },
+                    new () { Code = "064851",  Terms = "4", ContactLoad = 14,
+                        Content = "064851 Производственная практика (преддипломная) [14] [ВМ.5665-2021]", EducationalProgram = "ВМ.5665-2021" },
                     new () { Code = "002187",  Terms = "4", ContactLoad = 32,
-                        Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [СВ.5162-2022]", EducationalProgram = "ВМ.5162-2022" }
+                        Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [СВ.5162-2022]", EducationalProgram = "СВ.5162-2022" }
                 }
             }
         }
@@ -79,12 +82,12 @@ public class TestDocxClient
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
         var xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/test.xlsx");
+        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.xlsx");
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
-        Assert.AreEqual(expectedLecturers.Count, tableRows.Length);
+        Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
         {
-            Assert.That(expectedLecturers[i].EqualsTo(lecturers[i]));
+            Assert.That(expectedLecturers[i].Equals(lecturers[i]));
         }
     }
     

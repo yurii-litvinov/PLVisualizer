@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
-using PLVisualizerTest.Extensions;
 
 namespace PLVisualizerTest.TestXlsxClient;
 
@@ -40,7 +39,7 @@ public class TestXlsxClient
         Assert.AreEqual(2, tableRows.Length);
         for (var i = 0; i < tableRows.Length; i++)
         {
-            Assert.That(tableRows[i].EqualsTo(testTableRows[i]));
+            Assert.That(tableRows[i].Equals(testTableRows[i]));
         }
     }
 }
