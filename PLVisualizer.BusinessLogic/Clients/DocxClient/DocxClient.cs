@@ -32,16 +32,25 @@ public class DocxClient : IDocxClient
         foreach (var groupedByProgramRow in groupedByProgramRows)
         {
             var curriculumCode = groupedByProgramRow.Key
-                [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
+                    [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
             var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
-            var curriculumTitle = curriculumPath[(curriculumPath.LastIndexOf('/')+1)..curriculumPath.LastIndexOf('.')];
-            var parser = new DocxCurriculum(curriculumPath);
+            var curriculumTitle =
+                curriculumPath[(curriculumPath.LastIndexOf('/') + 1)..curriculumPath.LastIndexOf('.')];
+            DocxCurriculum parser = new DocxCurriculum("../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2021.docx");
+            try
+            {
+                parser = new DocxCurriculum(curriculumPath);
+            }
+            catch (InvalidDataException)
+            {
+                Console.WriteLine($"{curriculumPath} faaailed");
+            }
             var parserDisciplines = parser.Disciplines;
             var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
-            
+
             foreach (var groupedByDisciplineName in groupedByDisciplineNameRows)
             {
                 var disciplineCode = groupedByDisciplineName.Key[..groupedByDisciplineName.Key.IndexOf(' ')];
@@ -49,10 +58,13 @@ public class DocxClient : IDocxClient
                     parserDisciplines.FirstOrDefault(discipline => discipline.Code == disciplineCode);
                 if (disciplineFromParser == null)
                 {
-                    throw new DisciplineNotFoundException($"{disciplineCode} not found in {curriculumCode} working plan");
+                    throw new DisciplineNotFoundException(
+                        $"{disciplineCode} not found in {curriculumCode} working plan");
                 }
+
                 var lecturer = groupedByDisciplineName.First().Lecturer;
-                var discipline = CreateDiscipline(discipline: disciplineFromParser, curriculumTitle: curriculumTitle);
+                var discipline =
+                    CreateDiscipline(discipline: disciplineFromParser, curriculumTitle: curriculumTitle);
                 if (lecturers.ContainsKey(lecturer))
                 {
                     lecturers[lecturer].Disciplines.Add(discipline);
@@ -63,11 +75,12 @@ public class DocxClient : IDocxClient
                     lecturers.Add(groupedByDisciplineName.First().Lecturer, new Lecturer
                     {
                         Name = groupedByDisciplineName.First().Lecturer,
-                        Disciplines = new List<Discipline> {discipline}
+                        Disciplines = new List<Discipline> { discipline }
                     });
                 }
             }
         }
+    
 
         return lecturers;
     }

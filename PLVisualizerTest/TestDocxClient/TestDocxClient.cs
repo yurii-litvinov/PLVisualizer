@@ -86,7 +86,7 @@ public class TestDocxClient
         var docx1 = new DocxCurriculum(
             "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/ВМ.5665-2021.docx");
         var docx2 = new DocxCurriculum(
-            "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2021.docx");
+            "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2021.docx");    
         var docx3 = new DocxCurriculum(
             "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2022.docx");
         var xlsxClient = new XlsxClient();
