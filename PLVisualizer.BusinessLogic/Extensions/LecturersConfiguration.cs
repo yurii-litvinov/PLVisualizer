@@ -1,4 +1,4 @@
-using PlVisualizer.Api.Dto.Exceptions;
+using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
 
 namespace PLVisualizer.BusinessLogic.Extensions;

@@ -1,8 +1,10 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Google.Apis.Sheets.v4.Data;
 using Microsoft.AspNetCore.Http;
 using PlVisualizer.Api.Dto.Tables;
+using Sheet = DocumentFormat.OpenXml.Spreadsheet.Sheet;
 
 namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
 
@@ -10,39 +12,66 @@ public class XlsxClient : IXlsxClient
 {
     public XlsxTableRow[] GetTableRows(IFormFile file)
     {
-        var stream = file.OpenReadStream();
+        
+        using var stream = file.OpenReadStream();
         stream.Position = 0;
         using var spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
         return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
     }
-    
+
     public XlsxTableRow[] GetTableRows(string path)
     {
-        using var spreadsheetDocument = SpreadsheetDocument.Open(path, false);
+        var spreadsheetDocument = SpreadsheetDocument.Open(path, false);
         return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
     }
 
     private XlsxTableRow[] GetTableRowsFromSpreadsheetDoc(SpreadsheetDocument spreadsheetDocument)
     {
         var tableRows = new List<XlsxTableRow>();
-        var workbookPart = spreadsheetDocument.WorkbookPart;
-        var worksheetPart = workbookPart.WorksheetParts.First();
-        var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+
+        var (workbookPart, sheetData) = OpenXlsxSheet(spreadsheetDocument);
+        
         var rows = sheetData.Elements<Row>();
+       
+        
         tableRows.AddRange(rows.Skip(1).Select(row => row.Elements<Cell>().ToArray())
+            .Where(cells => cells.Length > 0)
             .Select(cells => new XlsxTableRow
             {
-                Term = cells[0].CellValue?.Text ?? string.Empty,
-                Subdivision = cells[1].CellValue?.Text ?? string.Empty,
-                PedagogicalTask = cells[2].CellValue?.Text ?? string.Empty,
-                DisciplineName = cells[3].CellValue?.Text ?? string.Empty,
-                WorkType = cells[4].CellValue?.Text ?? string.Empty,
-                Lecturer = cells[5].CellValue?.Text ?? string.Empty,
-                SAPSubdivision2 = cells[6].CellValue?.Text ?? string.Empty,
-                SAPSubdivision1 = cells[7].CellValue?.Text ?? string.Empty,
-                EducationalProgram = cells[8].CellValue?.Text ?? string.Empty
+                Term = GetCellValue(cells[0], workbookPart),
+                Subdivision = GetCellValue(cells[1], workbookPart),
+                PedagogicalTask = GetCellValue(cells[2], workbookPart),
+                DisciplineName = GetCellValue(cells[3], workbookPart),
+                WorkType = GetCellValue(cells[4], workbookPart),
+                Lecturer = GetCellValue(cells[5], workbookPart),
+                SAPSubdivision2 = GetCellValue(cells[6], workbookPart),
+                SAPSubdivision1 = GetCellValue(cells[7], workbookPart),
+                EducationalProgram = GetCellValue(cells[8], workbookPart)
             }));
 
         return tableRows.ToArray();
+    }
+
+    private static string GetCellValue(Cell cell, WorkbookPart workbookPart)
+    {
+        var sstPart = workbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+        var sst = sstPart.SharedStringTable;
+        if (cell.DataType == null || cell.CellValue == null) return string.Empty;
+        if (cell.DataType == CellValues.SharedString)
+        {
+            var ssid = int.Parse(cell.CellValue.Text);
+            return sst.ChildElements[ssid].InnerText;
+        }
+        return cell.CellValue.InnerText;
+    }
+
+    private static (WorkbookPart, SheetData) OpenXlsxSheet(SpreadsheetDocument spreadsheetDocument)
+    {
+        var workbookPart = spreadsheetDocument.WorkbookPart;
+        var sheet = (Sheet)workbookPart.Workbook.Sheets.FirstOrDefault();
+        var sheetId = sheet.Id.Value;
+        var worksheet = ((WorksheetPart)workbookPart.GetPartById(sheetId)).Worksheet;
+        var sheetData = worksheet.Elements<SheetData>().FirstOrDefault();
+        return (workbookPart, sheetData);
     }
 }
