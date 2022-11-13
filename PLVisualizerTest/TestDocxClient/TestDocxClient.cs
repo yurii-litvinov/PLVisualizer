@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CurriculumParser;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
 namespace PLVisualizerTest.TestDocxClient;
 
@@ -81,6 +83,12 @@ public class TestDocxClient
     [TestCaseSource(nameof(getLecturersWithDisciplinesTestCases))]
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
+        var docx1 = new DocxCurriculum(
+            "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/ВМ.5665-2021.docx");
+        var docx2 = new DocxCurriculum(
+            "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2021.docx");
+        var docx3 = new DocxCurriculum(
+            "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2022.docx");
         var xlsxClient = new XlsxClient();
         var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/test.xlsx");
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
