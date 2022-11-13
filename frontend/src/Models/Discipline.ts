@@ -1,6 +1,7 @@
 export interface Discipline{
+    content: string
     contactLoad : number
-    term: number
+    terms: string
     code: string
     educationalProgram: string
 }
