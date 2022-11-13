@@ -1,8 +1,10 @@
+import {Discipline} from "./Discipline";
+
 export interface Lecturer{
     name: string
     post: string
     interestRate: number
-    disciplineIds: string[]
+    disciplines: Discipline[]
     distributedLoad: number
     standard: number
 }
