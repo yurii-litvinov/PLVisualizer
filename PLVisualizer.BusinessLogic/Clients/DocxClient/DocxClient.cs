@@ -38,7 +38,7 @@ public class DocxClient : IDocxClient
             var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
             var curriculumTitle =
-                curriculumPath[(curriculumPath.LastIndexOf('\\') + 1)..curriculumPath.LastIndexOf('.')];
+                curriculumPath[(curriculumPath.LastIndexOfAny(new char[]{'/', '\\'}) + 1)..curriculumPath.LastIndexOf('.')];
             var parser = new DocxCurriculum(curriculumPath);
             var parserDisciplines = parser.Disciplines;
             var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
