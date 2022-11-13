@@ -37,9 +37,6 @@ public class TestDocxClient
     [TestCaseSource(nameof(termsFillingCases))] 
     public void Test_DocxClient_FillsTermsCorrectly(Discipline[] disciplines, IList<string> expectedTerms)
     {
-        var xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.zip");
-        docxClient.GetLecturersWithDisciplines(tableRows);
         docxClient.FillDisciplinesTerms(disciplines);
         for (var i = 0; i < disciplines.Length; i++)
         {
@@ -85,7 +82,7 @@ public class TestDocxClient
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
         var xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.zip");
+        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/docxtest.xlsx");
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
@@ -93,5 +90,4 @@ public class TestDocxClient
             Assert.That(expectedLecturers[i].Equals(lecturers[i]));
         }
     }
-    
 }
