@@ -39,15 +39,7 @@ public class DocxClient : IDocxClient
             var curriculumPath = GetCurriculumCode(pathTemplate, curriculumCode);
             var curriculumTitle =
                 curriculumPath[(curriculumPath.LastIndexOf('/') + 1)..curriculumPath.LastIndexOf('.')];
-            DocxCurriculum parser = new DocxCurriculum("../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans/СВ.5162-2021.docx");
-            try
-            {
-                parser = new DocxCurriculum(curriculumPath);
-            }
-            catch (InvalidDataException)
-            {
-                Console.WriteLine($"{curriculumPath} faaailed");
-            }
+            var parser = new DocxCurriculum(curriculumPath);
             var parserDisciplines = parser.Disciplines;
             var groupedByDisciplineNameRows = groupedByProgramRow.GroupBy(row => row.PedagogicalTask);
 
