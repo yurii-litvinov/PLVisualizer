@@ -26,7 +26,6 @@ public class DocxClient : IDocxClient
     public Dictionary<string, Lecturer> GetLecturersWithDisciplines(IEnumerable<XlsxTableRow> tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
-        
         //group by program in order to parse the working plan at once
         var groupedByProgramRows = tableRows.GroupBy(row => row.EducationalProgram);
         foreach (var groupedByProgramRow in groupedByProgramRows)
