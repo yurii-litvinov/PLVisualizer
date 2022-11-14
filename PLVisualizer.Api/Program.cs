@@ -3,6 +3,6 @@ var app = builder.Build();
 
 
 
-app.MapGet("/", () => "Hello phaser -->>>>>>>>>");
+app.MapGet("/", () => "bye world");
 
 app.Run();
