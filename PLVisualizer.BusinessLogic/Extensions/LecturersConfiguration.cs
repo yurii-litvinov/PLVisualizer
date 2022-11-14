@@ -51,18 +51,18 @@ public static class LecturersConfiguration
         {
             return lecturer.Post.ToLower() switch
             {
-                "профессор" => 250,
-                "доцент" => 500,
-                "старший преподаватель" => 650,
-                "ассистент" => 600,
+                "доцент" => 650,
+                "старший преподаватель" => 700,
+                "ассистент" => 750,
                 _ => throw new UnknownLecturerPostException()
             };
         }
         return lecturer.Post.ToLower() switch
         {
-            "доцент" => 650,
-            "старший преподаватель" => 700,
-            "ассистент" => 750,
+            "профессор" => 250,
+            "доцент" => 500,
+            "старший преподаватель" => 650,
+            "ассистент" => 600,
             _ => throw new UnknownLecturerPostException()
         };
     }

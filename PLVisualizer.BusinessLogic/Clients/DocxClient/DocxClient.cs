@@ -7,7 +7,7 @@ namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
 public class DocxClient : IDocxClient
 {
-    public void FillDisciplinesTerms(IEnumerable<Discipline> disciplines)
+    public void FillDisciplinesTermsAndPracticesHours(IEnumerable<Discipline> disciplines)
     {
         var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans";
         var groupedByProgramDisciplines = disciplines.GroupBy(discipline => discipline.EducationalProgram);
@@ -18,6 +18,7 @@ public class DocxClient : IDocxClient
             {
                 var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == discipline.Code);
                 discipline.Terms = GetTerms(disciplineFromParser);
+                discipline.HasPracticesHours = DisciplineHasPracticesHours(disciplineFromParser);
             }
         }
         

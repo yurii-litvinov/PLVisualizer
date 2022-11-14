@@ -10,22 +10,7 @@ namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
 
 public class XlsxClient : IXlsxClient
 {
-    public XlsxTableRow[] GetTableRows(IFormFile file)
-    {
-        
-        using var stream = file.OpenReadStream();
-        stream.Position = 0;
-        using var spreadsheetDocument = SpreadsheetDocument.Open(stream, false);
-        return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
-    }
-
-    public XlsxTableRow[] GetTableRows(string path)
-    {
-        var spreadsheetDocument = SpreadsheetDocument.Open(path, false);
-        return GetTableRowsFromSpreadsheetDoc(spreadsheetDocument);
-    }
-
-    private XlsxTableRow[] GetTableRowsFromSpreadsheetDoc(SpreadsheetDocument spreadsheetDocument)
+    public XlsxTableRow[] GetTableRows(SpreadsheetDocument spreadsheetDocument)
     {
         var tableRows = new List<XlsxTableRow>();
 

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Packaging;
 using PlVisualizer.Api.Dto.Tables;
-using PLVisualizer.BusinessLogic.Clients;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
@@ -25,29 +24,30 @@ public class TablesService : ITablesService
     }
 
 
-    public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId)
+    public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId, string sheetTitle)
     {
-        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturersAsync(spreadsheetId);
+        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         var disciplines = new List<Discipline>();
         foreach (var lecturer in lecturersWithoutTerms)
         {
             disciplines.AddRange(lecturer.Disciplines);
         }
-        docxClient.FillDisciplinesTerms(disciplines);
+        docxClient.FillDisciplinesTermsAndPracticesHours(disciplines);
         return lecturersWithoutTerms;
     }
 
-    public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers)
+    public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)
     {
-        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers);
+        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
     }
     
-
-    public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, IFormFile file)
+    public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, 
+        SpreadsheetDocument spreadsheetDocument,
+        string sheetTitle)
     {
-        var xlsxTableRows = xlsxClient.GetTableRows(file);
+        var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId);
+        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         
         return docxClient.GetLecturersWithDisciplines(xlsxTableRows)
             .WithConfigInformation(configTableRows)

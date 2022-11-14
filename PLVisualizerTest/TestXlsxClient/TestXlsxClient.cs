@@ -2,11 +2,13 @@ using CurriculumParser;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 
 namespace PLVisualizerTest.TestXlsxClient;
 
 public class TestXlsxClient
 {
+    private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private IXlsxClient xlsxClient = new XlsxClient();
     
     private static XlsxTableRow[] testTableRows =
@@ -36,7 +38,9 @@ public class TestXlsxClient
     [Test]
     public void Test_XlsxClient_ReturnsCorrectModels()
     {
-        var tableRows = xlsxClient.GetTableRows("../../../TestXlsxClient/test.xlsx");
+        var spreadsheetDocument =
+            spreadsheetProvider.GetSpreadsheetDocument("../../../TestXlsxClient/SmallFileTest.xlsx");
+        var tableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         Assert.AreEqual(2, tableRows.Length);
         for (var i = 0; i < tableRows.Length; i++)
         {

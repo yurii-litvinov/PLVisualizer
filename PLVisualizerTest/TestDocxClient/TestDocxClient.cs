@@ -6,6 +6,7 @@ using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
 namespace PLVisualizerTest.TestDocxClient;
@@ -13,36 +14,43 @@ namespace PLVisualizerTest.TestDocxClient;
 public class TestDocxClient
 {
     private IDocxClient docxClient = new DocxClient();
+    private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
 
-    private static object[] termsFillingCases =
+    private static object[] termsAndPracticesHoursFillingCases =
     {
         new object[] {new Discipline[]
         {
-            new() { Code = "002187", EducationalProgram = "СВ.5162-2021" },
-            new() { Code = "002211", EducationalProgram = "СВ.5162-2021" },
-            new() { Code = "002212", EducationalProgram = "СВ.5162-2021" },
-            new() { Code = "058505", EducationalProgram = "ВМ.5665-2021" }
+            new() { Code = "002187", EducationalProgram = "СВ.5162-2021"},
+            new() { Code = "002211", EducationalProgram = "СВ.5162-2021"},
+            new() { Code = "002212", EducationalProgram = "СВ.5162-2021"},
+            new() { Code = "058505", EducationalProgram = "ВМ.5665-2021"}
         }, 
-            new [] {"4", "1 2 3", "1 2 3", "1"} },
+            new [] {"4", "1 2 3", "1 2 3", "1"},
+            new [] {true, false, true, false}
+        },
         new object[] {new Discipline[]
         {
-            new () { Code = "003574", EducationalProgram = "СВ.5080-2021"},
-            new () { Code = "003565", EducationalProgram = "СВ.5080-2021"},
-            new () { Code = "003574", EducationalProgram = "СВ.5080-2022"},
-            new () { Code = "003565", EducationalProgram = "СВ.5080-2022"}
+            new () { Code = "003574", EducationalProgram = "СВ.5080-2021", HasPracticesHours = false},
+            new () { Code = "003565", EducationalProgram = "СВ.5080-2021", HasPracticesHours = true},
+            new () { Code = "003574", EducationalProgram = "СВ.5080-2022", HasPracticesHours = false}, 
+            new () { Code = "003565", EducationalProgram = "СВ.5080-2022", HasPracticesHours = true}
         },
-            new [] { "1 2", "1 2", "1 2", "1 2"}
+            new [] { "1 2", "1 2", "1 2", "1 2"},
+            new [] {false, true, false, true}
         }
     };
     
     [Test]
-    [TestCaseSource(nameof(termsFillingCases))] 
-    public void Test_DocxClient_FillsTermsCorrectly(Discipline[] disciplines, IList<string> expectedTerms)
+    [TestCaseSource(nameof(termsAndPracticesHoursFillingCases))] 
+    public void Test_DocxClient_FillsTermsCorrectly(Discipline[] disciplines, 
+        IList<string> expectedTerms,
+        bool[] expectedPracticesHours)
     {
-        docxClient.FillDisciplinesTerms(disciplines);
+        docxClient.FillDisciplinesTermsAndPracticesHours(disciplines);
         for (var i = 0; i < disciplines.Length; i++)
         {
             Assert.AreEqual(expectedTerms[i], disciplines[i].Terms);
+            Assert.AreEqual(expectedPracticesHours[i], disciplines[i].HasPracticesHours);
         }
     }
 
@@ -83,8 +91,10 @@ public class TestDocxClient
     [TestCaseSource(nameof(getLecturersWithDisciplinesTestCases))]
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
+        var spreadsheetDocument =
+            spreadsheetProvider.GetSpreadsheetDocument("../../../TestDocxClient/LargeFileTest.xlsx");
         var xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows("../../../TestDocxClient/test.xlsx");
+        var tableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
