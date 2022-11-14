@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PlVisualizer.Api.Dto.Tables;
 using PlVisualizer.Api.Dto.Exceptions;
+using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
 
 namespace PlVisualizer.Controllers;
@@ -10,10 +11,12 @@ namespace PlVisualizer.Controllers;
 [Route("tables")]
 public class TablesController : Controller
 {
+    private ISpreadsheetProvider spreadsheetProvider;
     private ITablesService tablesService;
-    public TablesController(ITablesService tablesService)
+    public TablesController(ITablesService tablesService, ISpreadsheetProvider spreadsheetProvider)
     {
         this.tablesService = tablesService;
+        this.spreadsheetProvider = spreadsheetProvider;
     }
 
     [HttpGet]
@@ -37,7 +40,8 @@ public class TablesController : Controller
     {
         try
         {
-            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, file);
+            var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
+            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
         }
         catch (SpreadsheetNotFoundException e)
         {
