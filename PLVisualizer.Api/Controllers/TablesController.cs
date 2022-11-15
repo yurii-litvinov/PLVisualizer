@@ -34,9 +34,9 @@ public class TablesController : Controller
         
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("import/config/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromBody] IFormFile file)
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm] IFormFile file)
     {
         try
         {
