@@ -7,9 +7,9 @@ using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
 using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Tables;
+using Google.Apis.Sheets.v4;
 
 namespace PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
-using Google.Apis.Sheets.v4;
 
 /// <summary>
 /// Represents google spreadsheets client
