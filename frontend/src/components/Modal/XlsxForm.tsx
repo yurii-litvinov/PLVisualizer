@@ -1,7 +1,7 @@
 import React, {FC} from "react";
 import styled from "styled-components";
 
-export const AddXlsxTable : FC = () => {
+export const XlsxForm : FC = () => {
     return(
         <>
         <DropZone type={"file"} placeholder={'Или перетащите файл сюда'}>

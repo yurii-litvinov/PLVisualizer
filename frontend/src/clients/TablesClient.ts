@@ -11,7 +11,7 @@ export interface ITablesClient {
 }
 
 export const createTablesClient = () : ITablesClient => {
-    let url = 'https://localhost:5001/tables'
+    let url = 'https://localhost:7064/tables'
     const exportTableAsync = (spreadsheetId : string, lecturers : Lecturer[]) => axios.post(`${url}/export/${spreadsheetId}`, lecturers)
     const importTableViaLecturersTableAsync = (spreadsheetId: string) => axios.get<Lecturer[]>(`${url}/import/${spreadsheetId}`)
     const importTableViaConfigAsync = (spreadsheetId: string, file: FormData) => axios.post<Lecturer[]>(`${url}/import/config/${spreadsheetId}`)
