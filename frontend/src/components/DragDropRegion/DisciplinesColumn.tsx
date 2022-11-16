@@ -2,24 +2,25 @@ import React, {FC, useState} from "react";
 import styled from "styled-components"
 import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
+import {Discipline} from "../../Models/Discipline";
 
 export interface columnProps {
     handleResetClick : () => void
-    disciplineIds: string[]
+    disciplines: Discipline[]
 }
 
 interface disciplinesListProps {
     readonly isDraggingOver: boolean
 }
 
-export const DisciplinesColumn : FC<columnProps> = ({disciplineIds, handleResetClick}) =>{
+export const DisciplinesColumn : FC<columnProps> = ({disciplines, handleResetClick}) =>{
     return ( <Container>
             <Title>Дисциплины</Title>
             <Droppable droppableId={'column'}>
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
-                        {disciplineIds.map((id, index) => {
-                            return(<DndDiscipline key={id} name={id} index={index}/>)
+                        {disciplines.map((discipline, index) => {
+                            return(<DndDiscipline key={`${discipline.content} $name={id}`} content={discipline.content} index={index}/>)
                         })}
                         {provided.placeholder}
                     </DisciplinesList>)}

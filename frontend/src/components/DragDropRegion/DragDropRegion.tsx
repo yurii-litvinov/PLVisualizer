@@ -5,85 +5,85 @@ import {LecturersTable, tableProps} from "./LecturersTable";
 import styled from "styled-components";
 import { Lecturer } from "../../Models/Lecturer";
 import {Discipline} from "../../Models/Discipline";
+import {duration} from "@material-ui/core";
 
 
 export interface dragDropRegionProps {
     lecturers : Lecturer[]
-    disciplines: {[key:string]:Discipline}
     setLecturers: Dispatch<SetStateAction<Lecturer[]>>
+    columnDisciplines: Discipline[]
+    setColumnDisciplines: Dispatch<SetStateAction<Discipline[]>>
 }
 
-export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, disciplines, setLecturers}) => {
-    // const handleResetClick = () => {
-        // setColumnData(({disciplineIds, handleResetClick}) => {
-        //     const newIds = Array.from(disciplineIds)
-        //     tableData.lecturerIds.map(lecturerId => {
-        //         tableData.lecturers[lecturerId].disciplineIds.map(disciplineId => {
-        //             newIds.splice(0, 0, disciplineId)
-        //         })
-        //     })
-        //     disciplineIds = newIds;
-        //     return {disciplineIds, handleResetClick}
-        // })
+export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecturers, columnDisciplines, setColumnDisciplines}) => {
+    const handleResetClick = () => {
+        setColumnDisciplines((disciplines) => {
+            const newDisciplines = Array.from(disciplines)
+            lecturers.map(lecturer => lecturer.disciplines.map(discipline =>
+                    newDisciplines.splice(0,0,discipline)))
+            disciplines = newDisciplines;
+            return disciplines
+        })
 
-    //     setTableData(({disciplines, lecturerIds, lecturers}) => {
-    //         const newDisciplineIds = [] as string[]
-    //         lecturerIds.map(lecturerId => {
-    //             lecturers[lecturerId].disciplineIds = newDisciplineIds
-    //         })
-    //         return {disciplines, lecturerIds, lecturers}
-    //
-    //     })
-    // }
+        setLecturers((lecturers) => {
+            const newLecturers = Array.from(lecturers)
+            const newDisciplines = [] as Discipline[]
+            newLecturers.map(lecturer => lecturer.disciplines = newDisciplines)
+            lecturers = newLecturers
+            return lecturers
+        })
+    }
 
-    // const [columnData, setColumnData] = useState<columnProps>({disciplineIds, handleResetClick})
-
-    // const handleDndAffectingColumn = (result: DropResult) => {
-    //     const destination = result.destination
-    //     const source = result.source
+    const handleDndAffectingColumn = (result: DropResult) => {
+        const destination = result.destination
+        const source = result.source
         //dnd between disciplines in column
-        // if (destination!.droppableId === source.droppableId){
-        //     setColumnData(({disciplineIds, handleResetClick}) => {
-        //         const destinationIds = Array.from(disciplineIds)
-        //         destinationIds.splice(source.index, 1)
-        //         destinationIds.splice(destination!.index, 0, result.draggableId)
-        //         disciplineIds = destinationIds;
-        //         return {disciplineIds,  handleResetClick}
-        //     })
-        // }
-        // dnd from column to table
-        // else if (source.droppableId === 'column'){
-        //     setColumnData(({disciplineIds, handleResetClick}) => {
-        //         const sourceIds = Array.from(disciplineIds)
-        //         sourceIds.splice(source.index, 1)
-        //         disciplineIds = sourceIds
-        //         return {disciplineIds, handleResetClick}
-        //     })
-        //     setTableData(({lecturers, lecturerIds, disciplines}) => {
-        //         const lecturer = lecturers[destination!.droppableId];
-        //         const destinationIds = Array.from(lecturer.disciplineIds)
-        //         destinationIds.splice(destination!.index, 0, result.draggableId)
-        //         lecturers[destination!.droppableId].disciplineIds = destinationIds;
-        //         return {lecturers, lecturerIds, disciplines};
-        //     })
-        // }
-        // dnd from table to column
-    //     else if (destination?.droppableId === 'column'){
-    //         setColumnData(({disciplineIds, handleResetClick}) => {
-    //             const destinationIds = Array.from(disciplineIds)
-    //             destinationIds.splice(destination.index, 0, result.draggableId)
-    //             disciplineIds = destinationIds;
-    //             return {disciplineIds, handleResetClick};
-    //         })
-    //         setTableData(({lecturers, lecturerIds, disciplines}) => {
-    //             const lecturer = lecturers[source.droppableId]
-    //             const sourceIds = Array.from(lecturer.disciplineIds)
-    //             sourceIds.splice(source.index, 1)
-    //             lecturers[source.droppableId].disciplineIds = sourceIds;
-    //             return {lecturers, lecturerIds, disciplines};
-    //         })
-    //     }
-    // }
+        if (destination!.droppableId === source.droppableId){
+            setColumnDisciplines((disciplines) => {
+                const newDisciplines = Array.from(disciplines)
+                newDisciplines.splice(destination!.index, 0, disciplines[source.index])
+                newDisciplines.splice(source.index, 1)
+                disciplines = newDisciplines
+                return disciplines
+            })
+        }
+        //dnd from column to table
+            // тут надо посмотреть, нормально ли работает без копирования всего массива лекторов
+        else if (source.droppableId === 'column'){
+            setLecturers((lecturers) => {
+                const lecturerIndex = lecturers.findIndex(lecturer => lecturer.name === destination?.droppableId);
+                const newLecturerDisciplines = Array.from(lecturers[lecturerIndex].disciplines)
+                newLecturerDisciplines.splice(destination!.index, 0, columnDisciplines[source.index])
+                lecturers[lecturerIndex].disciplines = newLecturerDisciplines
+                return lecturers
+            })
+
+            setColumnDisciplines((disciplines) => {
+                const newDisciplines = Array.from(disciplines)
+                newDisciplines.splice(source.index, 1)
+                disciplines = newDisciplines
+                return disciplines
+            })
+        }
+        //dnd from table to column
+        else if (destination?.droppableId === 'column'){
+            setColumnDisciplines((disciplines) => {
+                const lecturerIndex = lecturers.findIndex(lecturer => lecturer.name === source.droppableId)
+                const newDisciplines = Array.from(disciplines)
+                newDisciplines.splice(destination.index, 0, lecturers[lecturerIndex].disciplines[source.index])
+                disciplines = newDisciplines;
+                return disciplines
+            })
+            // тут тоже массив лекторов не копируется
+            setLecturers((lecturers) => {
+                const lecturerIndex = lecturers.findIndex(lecturer => lecturer.name == source.droppableId)
+                const newDisciplines = Array.from(lecturers[lecturerIndex].disciplines)
+                newDisciplines.splice(source.index, 1)
+                lecturers[lecturerIndex].disciplines  = newDisciplines;
+                return lecturers;
+            })
+        }
+    }
 
     const handleTableDnd = (result: DropResult) => {
         const destination = result.destination
@@ -98,8 +98,8 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, discipline
             setLecturers(lecturers => {
                 const lecturerIndex = lecturers.findIndex(lecturer => lecturer.name === source.droppableId)
                 const newLecturers = Array.from(lecturers)
-                newLecturers[lecturerIndex].disciplineIds.splice(source.index,1)
-                newLecturers[lecturerIndex].disciplineIds.splice(destination!.index,0, result.draggableId)
+                newLecturers[lecturerIndex].disciplines.splice(destination!.index,0, lecturers[lecturerIndex].disciplines[source.index])
+                newLecturers[lecturerIndex].disciplines.splice(source.index,1)
                 lecturers = newLecturers
                 return lecturers
             })
@@ -107,10 +107,10 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, discipline
         else if (result.source.droppableId !== destination.droppableId) {
             setLecturers(lecturers => {
                 const newLecturers = Array.from(lecturers)
-                const sourceLectorId = lecturers.findIndex(lecturer => lecturer.name === source.droppableId)
-                const destinationLectorId = lecturers.findIndex(lecturer => lecturer.name === destination.droppableId)
-                newLecturers[sourceLectorId].disciplineIds.splice(source.index, 1)
-                newLecturers[destinationLectorId].disciplineIds.splice(destination.index, 0, result.draggableId)
+                const sourceLecturerIndex = lecturers.findIndex(lecturer => lecturer.name === source.droppableId)
+                const destinationLecturerIndex = lecturers.findIndex(lecturer => lecturer.name === destination.droppableId)
+                newLecturers[destinationLecturerIndex].disciplines.splice(destination.index, 0, lecturers[sourceLecturerIndex].disciplines[source.index] )
+                newLecturers[sourceLecturerIndex].disciplines.splice(source.index, 1)
                 lecturers = newLecturers
                 return lecturers
             })
@@ -135,8 +135,8 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, discipline
     return(
     <DragDropContext onDragEnd={handleDragEnd}>
         <DragDropContextContainer>
-            {/*<DisciplinesColumn disciplineIds={columnData.disciplineIds} handleResetClick={handleResetClick} />*/}
-            <LecturersTable lecturers={lecturers} disciplines={disciplines}/>
+            <DisciplinesColumn handleResetClick={handleResetClick} disciplines={columnDisciplines}/>
+            <LecturersTable lecturers={lecturers}/>
         </DragDropContextContainer>
     </DragDropContext>)
 }

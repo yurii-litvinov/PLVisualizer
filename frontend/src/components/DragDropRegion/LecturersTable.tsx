@@ -7,7 +7,6 @@ import {Discipline} from "../../Models/Discipline";
 
 export interface tableProps {
     lecturers: Lecturer[]
-    disciplines: {[key: string] : Discipline}
 }
 
 
@@ -46,9 +45,9 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                         style={{backgroundColor: snapshot.isDraggingOver ? 'skyblue' : 'white'}}
                                         ref={provided.innerRef}
                                     >
-                                            {lecturer.disciplineIds.map((disciplineId, index) =>
+                                            {lecturer.disciplines.map((discipline, index) =>
                                             { return(
-                                                <DndDiscipline key={disciplineId} name={disciplineId} index={index} />
+                                                <DndDiscipline key={`${discipline.content} ${index}`} content={discipline.content} index={index} />
                                             )
                                             })}
                                         {provided.placeholder}
@@ -56,8 +55,8 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                 }
                                 }
                             </Droppable>
-                            <TableCell align={"left"}>Распределённая нагрузка</TableCell>
-                            <TableCell align={"left"}>Норматив</TableCell>
+                            <TableCell align={"left"}>{lecturer.distributedLoad}</TableCell>
+                            <TableCell align={"left"}>{lecturer.standard}</TableCell>
                         </TableRow>
                     })}
                     </TableBody>

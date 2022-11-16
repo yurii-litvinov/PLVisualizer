@@ -4,7 +4,7 @@ import {Draggable} from "react-beautiful-dnd";
 
 
 interface disciplineProps {
-    name: string
+    content: string
     index: number
 }
 
@@ -12,16 +12,16 @@ interface containerProps  {
     readonly isDragging: boolean
 }
 
-export const DndDiscipline : FC<disciplineProps> =  ({name, index} : disciplineProps) => {
+export const DndDiscipline : FC<disciplineProps> =  ({content, index} : disciplineProps) => {
     return (
-        <Draggable draggableId={name} index={index}>
+        <Draggable draggableId={content} index={index}>
             { (provided, snapshot) =>
                 <Container
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
                 isDragging={snapshot.isDragging}>
-                {name}
+                {content}
             </Container>}
         </Draggable>
     )

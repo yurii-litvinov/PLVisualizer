@@ -19,7 +19,7 @@ function App() {
     const toggleExportModal = () => setExportModal(value => !value)
 
     const [lecturers, setLecturers] = useState([] as Lecturer[])
-    const [disciplines, setDisciplines] = useState({} as {[key:string]:Discipline})
+    const [columnDisciplines, setColumnDisciplines] = useState([] as Discipline[])
 
     const tablesClient = createTablesClient()
 
