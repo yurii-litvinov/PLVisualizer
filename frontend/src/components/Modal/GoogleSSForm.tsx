@@ -5,7 +5,7 @@ interface addGoogleSSProps {
     setUrl: Dispatch<React.SetStateAction<string>>
 }
 
-export const AddGoogleSS : FC<addGoogleSSProps> = ({setUrl}) =>{
+export const GoogleSSForm : FC<addGoogleSSProps> = ({setUrl}) =>{
     const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
         setUrl(prevUrl => {
             prevUrl = e.currentTarget.value

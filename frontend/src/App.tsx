@@ -4,7 +4,7 @@ import {AppBar} from "./components/Appbar/Appbar";
 import {Modal} from "./components/Modal/Modal";
 import {SelectImport} from "./components/Modal/SelectImport";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
-import {AddGoogleSS} from "./components/Modal/AddGoogleSS";
+import {GoogleSSForm} from "./components/Modal/GoogleSSForm";
 import {Lecturer} from "./Models/Lecturer"
 import {Discipline} from "./Models/Discipline";
 import {createTablesClient} from "./clients/TablesClient";
@@ -35,7 +35,8 @@ function App() {
                 tablesClient={tablesClient}
                 lecturers={lecturers} />
             }
-            <DragDropRegion  lecturers={lecturers} disciplines={disciplines} setLecturers={setLecturers}/>
+            <DragDropRegion  lecturers={lecturers} setLecturers={setLecturers} columnDisciplines={columnDisciplines}
+                             setColumnDisciplines={setColumnDisciplines} />
     </div>
     )
 }
