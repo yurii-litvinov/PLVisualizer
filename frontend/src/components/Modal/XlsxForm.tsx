@@ -1,11 +1,15 @@
-import React, {FC} from "react";
+import React, {Dispatch, FC, SetStateAction} from "react";
 import styled from "styled-components";
+import {GoogleSSForm} from "./GoogleSSForm";
+
+ interface xlsxFormProps{
+    setImportUrl : Dispatch<SetStateAction<string>>
+}
 
 export const XlsxForm : FC = () => {
     return(
         <>
         <DropZone type={"file"} placeholder={'Или перетащите файл сюда'}>
-
         </DropZone>
         </>
     )

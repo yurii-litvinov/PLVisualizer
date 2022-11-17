@@ -7,15 +7,13 @@ interface addGoogleSSProps {
 
 export const GoogleSSForm : FC<addGoogleSSProps> = ({setUrl}) =>{
     const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
-        setUrl(prevUrl => {
-            prevUrl = e.currentTarget.value
-            return prevUrl
-        })
+        const newUrl = e.currentTarget.value
+        setUrl( prevUrl => newUrl)
     }
 
     return(
     <Container>
-        <InputContainer type={"text"}  placeholder={'Ссылка на Google Spreadsheet таблицу'} onChange={handleInputChange}/>
+        <InputContainer type={"text"}  placeholder={'Ссылка на Google Spreadsheet таблицу'}  onInput={handleInputChange}/>
     </Container>)
 }
 
@@ -33,6 +31,7 @@ const InputContainer = styled.input`
   box-sizing: border-box;
   width: 100%;
   border-radius: 4px;
+  margin-left: -16px;
   border: 2px solid skyblue;
   padding: 10px 15px;
   font-size: 14px;
