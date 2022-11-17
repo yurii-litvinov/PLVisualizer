@@ -22,7 +22,7 @@ export const Modal : FC<modalProps> = ({title, onClose, onSubmit, children}) => 
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
                 {children}
-                <ButtonSubmit type={'submit'} onSubmit={onSubmit}>Подтвердить</ButtonSubmit>
+                <ButtonSubmit  onClick={onSubmit}>Подтвердить</ButtonSubmit>
                 <ButtonCancel onClick={onClose}> Отмена </ButtonCancel>
             </ModalBox>
         </ModalContainer>

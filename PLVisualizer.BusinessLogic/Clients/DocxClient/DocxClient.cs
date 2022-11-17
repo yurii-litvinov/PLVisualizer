@@ -18,7 +18,6 @@ public class DocxClient : IDocxClient
             {
                 var disciplineFromParser = parser.Disciplines.FirstOrDefault(disc => disc.Code == discipline.Code);
                 discipline.Terms = GetTerms(disciplineFromParser);
-                discipline.HasPracticesHours = DisciplineHasPracticesHours(disciplineFromParser);
             }
         }
         
@@ -117,14 +116,6 @@ public class DocxClient : IDocxClient
             Terms = terms,
             Content = content,
             ContactLoad = contactLoad,
-            HasPracticesHours = DisciplineHasPracticesHours(discipline)
         };
-    }
-
-    private  static bool DisciplineHasPracticesHours(CurriculumParser.Discipline discipline)
-    {
-        const int practicesColumn = 3;
-        return discipline.Implementations.Any(implementation =>
-            implementation.WorkHours.Split().Select(int.Parse).ToArray()[practicesColumn] != 0);
     }
 }

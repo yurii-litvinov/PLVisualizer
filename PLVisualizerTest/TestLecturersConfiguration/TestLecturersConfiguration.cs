@@ -50,15 +50,15 @@ public class TestLecturersConfiguration
             singleConfigLecturersSheet, largeXlsxFilePath, new Lecturer[] {
                 new ()
             {
-                Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 650, DistributedLoad = 399
+                Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 399
             }}
         },
         new object[]
         {
             severalConfigLecturersSheet, largeXlsxFilePath,  new Lecturer[]
             {
-                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 650, DistributedLoad = 399},
-                new () { Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50, Standard = 700, DistributedLoad = 46},
+                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 399},
+                new () { Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50, Standard = 650, DistributedLoad = 46},
             }
         }
     };

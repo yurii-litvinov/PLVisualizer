@@ -7,7 +7,6 @@ public class Discipline
     public string Terms { get; set; }
     public string Code { get; set; }
     public string EducationalProgram { get; set; }
-    public bool HasPracticesHours { get; set; }
 
     public override bool Equals(object? obj)
     {
@@ -16,12 +15,11 @@ public class Discipline
                Content == discipline.Content &&
                ContactLoad == discipline.ContactLoad &&
                EducationalProgram == discipline.EducationalProgram &&
-               Terms == discipline.Terms &&
-               HasPracticesHours == discipline.HasPracticesHours;
+               Terms == discipline.Terms;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Content, ContactLoad, Terms, Code, EducationalProgram, HasPracticesHours);
+        return HashCode.Combine(Content, ContactLoad, Terms, Code, EducationalProgram);
     }
 }

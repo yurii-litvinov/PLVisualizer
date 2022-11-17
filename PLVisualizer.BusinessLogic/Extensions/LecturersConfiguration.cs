@@ -46,7 +46,7 @@ public static class LecturersConfiguration
 
     private static int GetStandard(Lecturer lecturer)
     {
-        var isPractician = lecturer.Disciplines.Any(discipline => discipline.HasPracticesHours);
+        var isPractician = lecturer.Post.Contains("практик");
         if (isPractician)
         {
             return lecturer.Post.ToLower() switch
