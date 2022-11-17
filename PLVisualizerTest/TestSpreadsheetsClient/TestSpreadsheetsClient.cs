@@ -18,7 +18,7 @@ public class TestSpreadsheetsClient
         new()
         {
             Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 201,
-            Standard = 650, Disciplines =
+            Standard = 500, Disciplines =
                 new List<Discipline>
                 {
                     new()
@@ -42,7 +42,7 @@ public class TestSpreadsheetsClient
         new()
         {
             Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50,
-            DistributedLoad = 46, Standard = 700, Disciplines = new List<Discipline>()
+            DistributedLoad = 46, Standard = 500, Disciplines = new List<Discipline>()
             {
                 new() {
                     Code = "002187", ContactLoad = 32,

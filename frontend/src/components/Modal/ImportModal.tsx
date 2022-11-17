@@ -4,8 +4,6 @@ import {GoogleSSForm} from "./GoogleSSForm";
 import {Lecturer} from "../../Models/Lecturer";
 import {ITablesClient} from "../../clients/TablesClient";
 import {SelectImport} from "./SelectImport";
-import {tab} from "@testing-library/user-event/dist/tab";
-import {createWriteStream} from "fs";
 
 interface importModalProps{
     setLecturers: Dispatch<SetStateAction<Lecturer[]>>
