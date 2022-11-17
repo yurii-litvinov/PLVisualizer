@@ -1,9 +1,8 @@
-import React, {FC, useState} from 'react'
-import {Table, TableBody, TableCell, TableCellProps, TableContainer, TableHead, TableRow} from "@material-ui/core";
-import {DragDropContext, Droppable, DroppableProvided, DropResult} from "react-beautiful-dnd";
+import React, {FC} from 'react'
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {Droppable} from "react-beautiful-dnd";
 import {Lecturer} from "../../Models/Lecturer";
 import {DndDiscipline} from "./DndDiscipline";
-import {Discipline} from "../../Models/Discipline";
 
 export interface tableProps {
     lecturers: Lecturer[]
@@ -47,7 +46,7 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                     >
                                             {lecturer.disciplines.map((discipline, index) =>
                                             { return(
-                                                <DndDiscipline key={`${discipline.content} ${index}`} content={discipline.content} index={index} />
+                                                <DndDiscipline  index={index} key={`${discipline.content} ${index} ${lecturer.name}`} content={discipline.content} />
                                             )
                                             })}
                                         {provided.placeholder}
@@ -55,7 +54,9 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                 }
                                 }
                             </Droppable>
-                            <TableCell align={"left"}>{lecturer.distributedLoad}</TableCell>
+                            <TableCell align={"left"}>{lecturer.disciplines.length === 0 ? 0
+                                : lecturer.disciplines.map(discipline => discipline.contactLoad)
+                                .reduce((accumulator, current) => accumulator += current)}</TableCell>
                             <TableCell align={"left"}>{lecturer.standard}</TableCell>
                         </TableRow>
                     })}
