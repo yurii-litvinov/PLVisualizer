@@ -106,11 +106,18 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 const destinationLecturer = lecturers.find(lecturer => lecturer.name === destination.droppableId)
                 const discipline = sourceLecturer!.disciplines[source.index];
                 destinationLecturer!.disciplines.splice(destination.index, 0, discipline )
+                console.log('destination')
+                console.log(destinationLecturer!.distributedLoad)
                 destinationLecturer!.distributedLoad += discipline.contactLoad;
+                console.log(destinationLecturer!.distributedLoad)
                 sourceLecturer!.disciplines.splice(source.index, 1)
+                console.log('source')
+                console.log(sourceLecturer!.distributedLoad)
                 sourceLecturer!.distributedLoad -= discipline.contactLoad
+                console.log(sourceLecturer!.distributedLoad)
                 return lecturers
             })
+            setColumnDisciplines(columnDisciplines => columnDisciplines)
         }
     }
 
