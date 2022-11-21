@@ -15,7 +15,7 @@ public class TestXlsxClient
     {
         new()
         {
-            Term = "Семестр 1", Subdivision = "Математико-механический факультет",
+            Term = 1, Subdivision = "Математико-механический факультет",
             PedagogicalTask = "058505 Учебная практика (научно-исследовательская работа)",
             DisciplineName = "Учебная практика (научно-исследовательская работа)",
             WorkType = "В присутствии преподавателя", Lecturer = "Литвинов Ю. В., доцент",
@@ -25,7 +25,7 @@ public class TestXlsxClient
         },
         new()
         {
-            Term = "Семестр 1", Subdivision = "Математико-механический факультет",
+            Term = 1, Subdivision = "Математико-механический факультет",
             PedagogicalTask = "002212 Программирование",
             DisciplineName = "Программирование",
             WorkType = "Промежуточная аттестация (зач)", Lecturer = "Литвинов Ю. В., доцент",

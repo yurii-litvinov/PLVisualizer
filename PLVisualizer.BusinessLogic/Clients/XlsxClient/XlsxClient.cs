@@ -23,7 +23,7 @@ public class XlsxClient : IXlsxClient
             .Where(cells => cells.Length > 0)
             .Select(cells => new XlsxTableRow
             {
-                Term = GetCellValue(cells[0], workbookPart),
+                Term = int.Parse(GetCellValue(cells[0], workbookPart).Replace("Семестр", string.Empty).Trim()),
                 Subdivision = GetCellValue(cells[1], workbookPart),
                 PedagogicalTask = GetCellValue(cells[2], workbookPart),
                 DisciplineName = GetCellValue(cells[3], workbookPart),

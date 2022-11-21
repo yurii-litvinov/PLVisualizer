@@ -15,7 +15,8 @@ public class Lecturer
     {
         if (obj is not Lecturer lecturer) return false;
         if (Disciplines.Count != lecturer.Disciplines.Count) return false;
-        if (Disciplines.Intersect(lecturer.Disciplines).Count() != Disciplines.Count)
+        var t = Disciplines.Intersect(lecturer.Disciplines).Count();
+        if (Disciplines.Any(discipline => !lecturer.Disciplines.Contains(discipline)))
         {
             return false;
         }
@@ -30,7 +31,8 @@ public class Lecturer
 
     protected bool Equals(Lecturer other)
     {
-        return Name == other.Name && Post == other.Post && InterestRate == other.InterestRate && Disciplines.Equals(other.Disciplines) && DistributedLoad == other.DistributedLoad && Standard == other.Standard;
+        return Name == other.Name && Post == other.Post && InterestRate == other.InterestRate && 
+               Disciplines.Equals(other.Disciplines) && DistributedLoad == other.DistributedLoad && Standard == other.Standard;
     }
 
     public override int GetHashCode()

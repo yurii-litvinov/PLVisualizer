@@ -26,14 +26,7 @@ public class TablesService : ITablesService
 
     public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId, string sheetTitle)
     {
-        var lecturersWithoutTerms = await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
-        var disciplines = new List<Discipline>();
-        foreach (var lecturer in lecturersWithoutTerms)
-        {
-            disciplines.AddRange(lecturer.Disciplines);
-        }
-        docxClient.FillDisciplinesTermsAndPracticesHours(disciplines);
-        return lecturersWithoutTerms;
+        return await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
     }
 
     public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)

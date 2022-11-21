@@ -8,18 +8,18 @@ public class XlsxTableRow
     /// <summary>
     /// Term
     /// </summary>
-    public string Term { get; set; }
-    
+    public int Term { get; set; }
+
     /// <summary>
     /// Faculty etc
     /// </summary>
     public string Subdivision { get; set; }
-    
+
     /// <summary>
     /// Pedagogical task
     /// </summary>
     public string PedagogicalTask { get; set; }
-    
+
     /// <summary>
     /// Discipline name
     /// </summary>
@@ -29,17 +29,17 @@ public class XlsxTableRow
     /// Type of study
     /// </summary>
     public string WorkType { get; set; }
-    
+
     /// <summary>
     /// Teacher name
     /// </summary>
     public string Lecturer { get; set; }
-    
+
     /// <summary>
     /// Department
     /// </summary>
     public string SAPSubdivision2 { get; set; }
-    
+
     /// <summary>
     /// Faculty etc
     /// </summary>

@@ -200,16 +200,18 @@ public class SpreadsheetsClient : ISpreadsheetsClient
         // take content in [ ]
         var pattern = @"(?<=\[).+?(?=\])";
         var matches = Regex.Matches(content, pattern);
-        var curriculum = matches[^1].Value;
-        var contactLoad = int.Parse(matches[^2].Value);
+        var term = int.Parse(matches[0].Value);
+        var contactLoad = int.Parse(matches[^1].Value);
+        var curriculum = matches[^2].Value;
+
         return new Discipline
         {
-            //fill remaining properties using docx client
+            Term = term,
             Content = content,
             Code = content[..content.IndexOf(' ')],
             ContactLoad = contactLoad,
-            EducationalProgram = curriculum[..curriculum.IndexOf(',')]
+            EducationalProgram = curriculum,
+            WorkType = matches.Count == 4 ? matches[1].Value : string.Empty
         };
     }
-    
 }
