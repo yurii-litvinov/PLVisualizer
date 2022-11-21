@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
-using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizer.BusinessLogic.Extensions;
 
@@ -14,24 +14,24 @@ public class TablesService : ITablesService
 {
     private IDocxClient docxClient;
     private IXlsxClient xlsxClient;
-    private ISpreadsheetsClient spreadsheetsClient;
+    private IGoogleClient googleClient;
 
-    public TablesService(IDocxClient docxClient, IXlsxClient xlsxClient, ISpreadsheetsClient spreadsheetsClient)
+    public TablesService(IDocxClient docxClient, IXlsxClient xlsxClient, IGoogleClient googleClient)
     {
         this.docxClient = docxClient;
         this.xlsxClient = xlsxClient;
-        this.spreadsheetsClient = spreadsheetsClient;
+        this.googleClient = googleClient;
     }
 
 
     public async Task<Lecturer[]> GetLecturersViaLecturersTableAsync(string spreadsheetId, string sheetTitle)
     {
-        return await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        return await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
     }
 
     public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)
     {
-        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
+        await googleClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
     }
     
     public async Task<Lecturer[]> GetLecturersViaConfigAsync(string spreadsheetId, 
@@ -40,7 +40,7 @@ public class TablesService : ITablesService
     {
         var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
+        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         
         return docxClient.GetLecturersWithDisciplines(xlsxTableRows)
             .WithConfigInformation(configTableRows)

@@ -9,19 +9,19 @@ using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Google.Apis.Sheets.v4;
 
-namespace PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+namespace PLVisualizer.BusinessLogic.Clients.GoogleClient;
 
 /// <summary>
 /// Represents google spreadsheets client
 /// </summary>
-public class SpreadsheetsClient : ISpreadsheetsClient
+public class GoogleClient : IGoogleClient
 {
     private readonly string applicationName = "PLVisualizer";
     private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
     private readonly GoogleCredential credential;
     private readonly SheetsService service;
 
-    public SpreadsheetsClient()
+    public GoogleClient()
     {
         credential = GoogleCredential.GetApplicationDefault().CreateScoped(scopes);
         service = new SheetsService(new BaseClientService.Initializer

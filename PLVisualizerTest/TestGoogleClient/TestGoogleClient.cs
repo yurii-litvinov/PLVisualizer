@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
-using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 
 
 namespace PLVisualizerTest.TestSpreadsheetsClient;
 
 public class TestSpreadsheetsClient
 {
-    private ISpreadsheetsClient spreadsheetsClient = new SpreadsheetsClient();
+    private IGoogleClient googleClient = new GoogleClient();
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalLecturersSheet = "SeveralLecturers";
     private static string singleLecturerSheet = "SingleLecturer";
@@ -51,7 +51,7 @@ public class TestSpreadsheetsClient
             DistributedLoad = 46, Standard = 650, Disciplines = new List<Discipline>()
             {
                 new() { Code = "002187", ContactLoad = 32, Term = 4, WorkType = "Практики", EducationalProgram = "СВ.5162-2022",
-                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [Практики] [СВ.5162-2022] [32]",},
+                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [СВ.5162-2022] [32]",},
                 new()
                 {Code = "064851", ContactLoad = 14, Term = 1, WorkType = string.Empty, EducationalProgram = "ВМ.5665-2021",
                     Content = "064851 Производственная практика (преддипломная) [1] [ВМ.5665-2021] [14]",}
@@ -75,7 +75,7 @@ public class TestSpreadsheetsClient
     [TestCaseSource(nameof(getLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
     {
-        var lecturers = await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        var lecturers = await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
@@ -110,7 +110,7 @@ public class TestSpreadsheetsClient
     public async Task Test_SpreadsheetsClient_ReturnsCorrectConfigTableRowModels(
         string sheetTitle, ConfigTableRow[] expectedTableRows)
     {
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
+        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
         for (var i = 0; i < expectedTableRows.Length; i++)
         {
             Assert.That(expectedTableRows[i].Equals(configTableRows[i]));
@@ -129,8 +129,8 @@ public class TestSpreadsheetsClient
     [TestCaseSource(nameof(exportLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
     {
-        await spreadsheetsClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
-        var responseLecturers =  await spreadsheetsClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        await googleClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
+        var responseLecturers =  await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(lecturers.Length, responseLecturers.Length);
         for (var i = 0; i < lecturers.Length; i++)
         {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
-using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizer.BusinessLogic.Extensions;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
@@ -14,7 +14,7 @@ public class TestLecturersConfiguration
 {
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private IDocxClient docxClient = new DocxClient();
-    private ISpreadsheetsClient spreadsheetsClient = new SpreadsheetsClient();
+    private IGoogleClient googleClient = new GoogleClient();
     private IXlsxClient xlsxClient = new XlsxClient();
     private string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string largeXlsxFilePath = "../../../TestDocxClient/LargeFileTest.xlsx";
@@ -26,7 +26,7 @@ public class TestLecturersConfiguration
     public void Setup()
     {
         docxClient = new DocxClient();
-        spreadsheetsClient = new SpreadsheetsClient();
+        googleClient = new GoogleClient();
         xlsxClient = new XlsxClient();
     }
 
@@ -69,7 +69,7 @@ public class TestLecturersConfiguration
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
         var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
+        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var filteredLecturers = lecturers.WithConfigInformation(configTableRows).ToArray();
         Assert.AreEqual(expectedLecturers.Length, filteredLecturers.Length);
         foreach (var expectedLecturer in expectedLecturers)
@@ -91,7 +91,7 @@ public class TestLecturersConfiguration
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
         var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
+        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var lecturersWithStandards =
             lecturers.WithConfigInformation(configTableRows)
             .WithStandards()
@@ -114,7 +114,7 @@ public class TestLecturersConfiguration
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
         var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
-        var configTableRows = await spreadsheetsClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
+        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var lecturersWithDistributedLoad =
             lecturers.WithConfigInformation(configTableRows)
                 .WithDistributedLoad()
