@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
-using PLVisualizer.BusinessLogic.Clients.SpreadsheetsClient;
+using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
@@ -14,7 +14,7 @@ public class TestTablesService
 {
     private IXlsxClient xlsxClient = new XlsxClient();
     private IDocxClient docxClient = new DocxClient();
-    private ISpreadsheetsClient spreadsheetsClient = new SpreadsheetsClient();
+    private IGoogleClient googleClient = new GoogleClient();
     private ITablesService tablesService;
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private static string largeFileXlsxPath = "../../../TestDocxClient/LargeFileTest.xlsx";
@@ -24,7 +24,7 @@ public class TestTablesService
     [SetUp]
     public void Setup()
     {
-        tablesService = new TablesService(docxClient, xlsxClient, spreadsheetsClient);
+        tablesService = new TablesService(docxClient, xlsxClient, googleClient);
     }
     
     private static object[] getLecturersViaConfigTestCases =
