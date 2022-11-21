@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
@@ -23,7 +20,7 @@ public class TestLecturersConfiguration
     private static string largeXlsxFilePath = "../../../TestDocxClient/LargeFileTest.xlsx";
 
     private static string lecturerWithoutPracticesXlsxPath =
-        "../../../TestLecturersConfiguration/LecturerWithoutPracticesTest.xlsx";
+        "../../../TestLecturersConfiguration/SingleLecturerWithoutPracticesTest.xlsx";
 
     [SetUp]
     public void Setup()
@@ -42,7 +39,7 @@ public class TestLecturersConfiguration
         {
             singleConfigLecturersSheet, lecturerWithoutPracticesXlsxPath,  new Lecturer[]
             {
-                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 17},
+                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 0},
             }
         },
         new object[]
@@ -50,15 +47,15 @@ public class TestLecturersConfiguration
             singleConfigLecturersSheet, largeXlsxFilePath, new Lecturer[] {
                 new ()
             {
-                Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 399
+                Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 349
             }}
         },
         new object[]
         {
             severalConfigLecturersSheet, largeXlsxFilePath,  new Lecturer[]
             {
-                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 399},
-                new () { Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50, Standard = 650, DistributedLoad = 46},
+                new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 349},
+                new () { Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50, Standard = 650, DistributedLoad = 58},
             }
         }
     };

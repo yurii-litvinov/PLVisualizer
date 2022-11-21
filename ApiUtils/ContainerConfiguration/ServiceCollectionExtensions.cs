@@ -6,7 +6,7 @@ using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
 
 namespace ApiUtils.ContainerConfiguration;
-
+    
 public static class ContainerConfiguration
 {
     public static IServiceCollection ConfigureLogicServices(this IServiceCollection services)

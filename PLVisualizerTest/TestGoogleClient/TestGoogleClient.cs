@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -17,44 +18,43 @@ public class TestSpreadsheetsClient
     private static Lecturer[] sampleLecturers = {
         new()
         {
-            Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 201,
+            Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 241,
             Standard = 500, Disciplines =
                 new List<Discipline>
                 {
                     new()
-                    {
-                        Code = "058505", ContactLoad = 9,
-                        Content = "058505 Учебная практика (научно-исследовательская работа) [9] [ВМ.5665-2021, осень]",
-                        EducationalProgram = "ВМ.5665-2021"
-                    },
+                    { Code = "058505", ContactLoad = 9, Content = "058505 Учебная практика (научно-исследовательская работа) [3] [ВМ.5665-2021] [9]",
+                        EducationalProgram = "ВМ.5665-2021", Term = 3, WorkType = string.Empty},
                     new()
-                    {
-                        Code = "002212", ContactLoad = 128,
-                        Content = "002212 Программирование [128] [СВ.5162-2022, осень-весна]", EducationalProgram = "СВ.5162-2022"
-                    },
+                    {Code = "002212", ContactLoad = 64, WorkType = string.Empty, Term = 1,
+                        Content = "002212 Программирование [1] [СВ.5162-2022] [64]", EducationalProgram = "СВ.5162-2022"},
                     new()
-                    {
-                        Code = "002211", ContactLoad = 64, Content = "002211 Информатика [64] [СВ.5162-2022, осень-весна]",
-                        EducationalProgram = "СВ.5162-2022"
-                    }
+                    {Code = "002212", ContactLoad = 32, WorkType = string.Empty, Term = 2,
+                        Content = "002212 Программирование [2] [СВ.5162-2022] [32]", EducationalProgram = "СВ.5162-2022"},
+                    new()
+                    {Code = "002212", ContactLoad = 32, WorkType = string.Empty, Term = 3,
+                        Content = "002212 Программирование [3] [СВ.5162-2022] [32]", EducationalProgram = "СВ.5162-2022"},
+                    new()
+                    {Code = "002211", ContactLoad = 36, Content = "002211 Информатика [1] [СВ.5162-2022] [36]",
+                        EducationalProgram = "СВ.5162-2022", WorkType = string.Empty, Term = 1 },
+                    new()
+                    {Code = "002211", ContactLoad = 32, Content = "002211 Информатика [2] [СВ.5162-2022] [32]",
+                        EducationalProgram = "СВ.5162-2022", WorkType = string.Empty, Term = 2 },
+                    new()
+                    {Code = "002211", ContactLoad = 36, Content = "002211 Информатика [3] [СВ.5162-2022] [36]",
+                        EducationalProgram = "СВ.5162-2022", WorkType = string.Empty, Term = 3 }
                 }
         },
         new()
         {
             Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50,
-            DistributedLoad = 46, Standard = 500, Disciplines = new List<Discipline>()
+            DistributedLoad = 46, Standard = 650, Disciplines = new List<Discipline>()
             {
-                new() {
-                    Code = "002187", ContactLoad = 32,
-                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [32] [СВ.5162-2022, весна]",
-                    EducationalProgram = "СВ.5162-2022"
-                },
+                new() { Code = "002187", ContactLoad = 32, Term = 4, WorkType = "Практики", EducationalProgram = "СВ.5162-2022",
+                    Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [Практики] [СВ.5162-2022] [32]",},
                 new()
-                {
-                    Code = "064851", ContactLoad = 14,
-                    Content = "064851 Производственная практика (преддипломная) [14] [ВМ.5665-2021, весна]",
-                    EducationalProgram = "ВМ.5665-2021"
-                }
+                {Code = "064851", ContactLoad = 14, Term = 1, WorkType = string.Empty, EducationalProgram = "ВМ.5665-2021",
+                    Content = "064851 Производственная практика (преддипломная) [1] [ВМ.5665-2021] [14]",}
             }
         }
     };
@@ -70,10 +70,7 @@ public class TestSpreadsheetsClient
             severalLecturersSheet, sampleLecturers
         }
     };
-
-
-
-
+    
     [Test]
     [TestCaseSource(nameof(getLecturersTestCases))]
     public async Task Test_SpreadsheetsClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
