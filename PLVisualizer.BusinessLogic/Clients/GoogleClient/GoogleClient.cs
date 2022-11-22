@@ -36,18 +36,6 @@ public class GoogleClient : IGoogleClient
     {
         var range = $"{sheetTitle}!A:F";
         
-        //delete existing data in spreadsheet
-        var deleteRequest = service.Spreadsheets.Values.Clear(new ClearValuesRequest(), spreadsheetId, range); 
-        await deleteRequest.ExecuteAsync();
-        
-        var valueRange = new ValueRange();
-        var values = ToValues(lecturers);
-        valueRange.Values = values;
-        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
-        appendRequest.ValueInputOption =
-            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-        await appendRequest.ExecuteAsync();
-
         var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
         var sheet = spreadsheet.Sheets.FirstOrDefault(sheet => sheet.Properties.Title == sheetTitle);
         if (sheet == null)
@@ -56,6 +44,24 @@ public class GoogleClient : IGoogleClient
         }
         var sheetId = sheet.Properties.SheetId;
         
+        //delete existing data in spreadsheet
+        await service.Spreadsheets.Values
+            .Clear(new ClearValuesRequest(), spreadsheetId, range)
+            .ExecuteAsync();
+        
+        var unmergeRequest = GetUnmergeCellsRequest(sheetId);
+        await service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest()
+            { Requests = new List<Request> { unmergeRequest } }, spreadsheetId)
+            .ExecuteAsync();
+
+        var valueRange = new ValueRange();
+        var values = ToValues(lecturers);
+        valueRange.Values = values;
+        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
+        appendRequest.ValueInputOption =
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+        await appendRequest.ExecuteAsync();
+
         var formatTableRequests = GetFormatTableRequests(lecturers, sheetId);
         var formatRequest = service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest
         {
@@ -167,7 +173,7 @@ public class GoogleClient : IGoogleClient
             {
                 MergeCells = GetMergeCellsRequest(sheetId, startRowIndex: currentDisciplinesCount + 1,
                     endRowIndex: currentDisciplinesCount + lecturer.Disciplines.Count + 1,
-                    startColumnIndex: disciplinesColumnIndex + 1, endColumnIndex: columnsCount + 1)
+                    startColumnIndex: disciplinesColumnIndex + 1, endColumnIndex: columnsCount)
             };
             requests.Add(mergeLeftColumns);
             requests.Add(mergeRightColumns);
@@ -178,6 +184,19 @@ public class GoogleClient : IGoogleClient
         return requests;
     }
 
+    private static Request GetUnmergeCellsRequest(int? spreadsheetId)
+    {
+        return new Request()
+        {
+            UnmergeCells = new UnmergeCellsRequest
+            {
+                Range = new GridRange
+                {
+                    SheetId = spreadsheetId
+                }
+            }
+        };
+    }
     private static MergeCellsRequest GetMergeCellsRequest(int? spreadsheetId, int startRowIndex, int endRowIndex,
         int startColumnIndex, int endColumnIndex)
     {
