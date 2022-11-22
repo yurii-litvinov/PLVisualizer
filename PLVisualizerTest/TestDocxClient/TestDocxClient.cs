@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -24,38 +25,38 @@ public class TestDocxClient
             {
                 Name = "Литвинов Юрий Викторович", Disciplines = new List<Discipline>
                 {
-                    new () { Code = "058505",  Term = 1, ContactLoad = 15,
+                    new () { Code = "058505",  Term = 1, ContactLoad = 15, WorkType = string.Empty,
                         Content = "058505 Учебная практика (научно-исследовательская работа) [1] [ВМ.5665-2021] [15]", EducationalProgram = "ВМ.5665-2021", },
-                    new () { Code = "002212",  Term = 1, ContactLoad = 64,
+                    new () { Code = "002212",  Term = 1, ContactLoad = 64, WorkType = string.Empty,
                         Content = "002212 Программирование [1] [СВ.5162-2022] [64]", EducationalProgram = "СВ.5162-2022"},
-                    new () { Code = "002212",  Term = 2 , ContactLoad = 32,
+                    new () { Code = "002212",  Term = 2 , ContactLoad = 32, WorkType = string.Empty,
                         Content = "002212 Программирование [2] [СВ.5162-2022] [32]", EducationalProgram = "СВ.5162-2022"},
-                    new () { Code = "002212",  Term = 3, ContactLoad = 32,
+                    new () { Code = "002212",  Term = 3, ContactLoad = 32, WorkType = string.Empty,
                         Content = "002212 Программирование [3] [СВ.5162-2021] [32]", EducationalProgram = "СВ.5162-2021"},
-                    new () { Code = "002212",  Term = 3, ContactLoad = 32,
+                    new () { Code = "002212",  Term = 3, ContactLoad = 32,WorkType = string.Empty,
                         Content = "002212 Программирование [3] [СВ.5162-2021] [32]", EducationalProgram = "СВ.5162-2021"},
-                    new () { Code = "002212",  Term = 3, ContactLoad = 32,
+                    new () { Code = "002212",  Term = 3, ContactLoad = 32,WorkType = string.Empty,
                         Content = "002212 Программирование [3] [СВ.5162-2021] [32]", EducationalProgram = "СВ.5162-2021"},
-                    new () { Code = "002212",  Term = 3, ContactLoad = 32,
+                    new () { Code = "002212",  Term = 3, ContactLoad = 32,WorkType = string.Empty,
                         Content = "002212 Программирование [3] [СВ.5162-2021] [32]", EducationalProgram = "СВ.5162-2021"},
-                    new () { Code = "002211",  Term = 1, ContactLoad = 48,
+                    new () { Code = "002211",  Term = 1, ContactLoad = 48,WorkType = string.Empty,
                     Content = "002211 Информатика [1] [СВ.5162-2022] [48]", EducationalProgram = "СВ.5162-2022" },
-                    new () { Code = "002211",  Term = 2, ContactLoad = 46,
+                    new () { Code = "002211",  Term = 2, ContactLoad = 46, WorkType = string.Empty,
                         Content = "002211 Информатика [2] [СВ.5162-2022] [46]", EducationalProgram = "СВ.5162-2022" },
-                    new () { Code = "064792",  Term = 3, ContactLoad = 16,
+                    new () { Code = "064792",  Term = 3, ContactLoad = 16, 
                     Content = "064792 Учебная практика 1 (научно-исследовательская работа) [3] [СВ.5162-2021] [16]",
-                    EducationalProgram = "СВ.5162-2021" }
+                    EducationalProgram = "СВ.5162-2021",WorkType = string.Empty, }
                 }
             },
             new ()
             {
                 Name = "Кириленко Яков Александрович", Disciplines = new List<Discipline>
                 {
-                    new () { Code = "064851", Term = 4, ContactLoad = 14,
+                    new () { Code = "064851", Term = 4, ContactLoad = 14, WorkType = string.Empty,
                         Content = "064851 Производственная практика (преддипломная) [4] [ВМ.5665-2021] [14]", EducationalProgram = "ВМ.5665-2021" },
-                    new () { Code = "064851", Term = 4, ContactLoad = 14,
+                    new () { Code = "064851", Term = 4, ContactLoad = 14, WorkType = string.Empty,
                         Content = "064851 Производственная практика (преддипломная) [4] [ВМ.5665-2021] [14]", EducationalProgram = "ВМ.5665-2021" },
-                    new () { Code = "002187",  Term = 4, ContactLoad = 30,
+                    new () { Code = "002187",  Term = 4, ContactLoad = 30, WorkType = string.Empty,
                         Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [СВ.5162-2021] [30]", EducationalProgram = "СВ.5162-2021" }
                 }
             }

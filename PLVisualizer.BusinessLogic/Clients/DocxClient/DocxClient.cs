@@ -88,11 +88,13 @@ public class DocxClient : IDocxClient
                         contactLoad = lectureDisciplines.Sum(lectureDiscipline => lectureDiscipline.ContactLoad);
                         mergedDisciplines.Add(new Discipline
                         {
+                            Id = Guid.NewGuid(),
                             Code = exampleDiscipline.Code,
                             ContactLoad = contactLoad,
                             EducationalProgram = exampleDiscipline.EducationalProgram,
                             Term = exampleDiscipline.Term,
-                            Content = $"{exampleDiscipline.Content} [{contactLoad}]"
+                            Content = $"{exampleDiscipline.Content} [{contactLoad}]",
+                            WorkType = GetCommonWorkType(exampleDiscipline)
                         });
 
                     }
@@ -120,6 +122,8 @@ public class DocxClient : IDocxClient
                     {
                         mergedDisciplines.Add(new Discipline
                         {
+                            WorkType = GetCommonWorkType(exampleDiscipline),
+                            Id = Guid.NewGuid(),
                             Code = exampleDiscipline.Code,
                             ContactLoad = contactLoad,
                             EducationalProgram = exampleDiscipline.EducationalProgram,
@@ -213,6 +217,13 @@ public class DocxClient : IDocxClient
     private static bool IsLecturerType(string workType)
     {
         return (workType.ToLower() is "лекции" or "промежуточная аттестация (экз)" or "консультации");
+    }
+
+    private static string GetCommonWorkType(Discipline discipline)
+    {
+        if (discipline.Content.Contains("[Практики]")) return "Практики";
+        if (discipline.Content.Contains("[Лекции]")) return "Лекции";
+        return string.Empty;
     }
          
 }

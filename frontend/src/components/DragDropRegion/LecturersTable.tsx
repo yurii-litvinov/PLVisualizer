@@ -3,6 +3,7 @@ import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "
 import {Droppable} from "react-beautiful-dnd";
 import {Lecturer} from "../../Models/Lecturer";
 import {DndDiscipline} from "./DndDiscipline";
+import {Guid} from "guid-typescript";
 
 export interface tableProps {
     lecturers: Lecturer[]
@@ -45,8 +46,11 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                         ref={provided.innerRef}
                                     >
                                             {lecturer.disciplines.map((discipline, index) =>
-                                            { return(
-                                                <DndDiscipline  index={index} key={`${discipline.content} ${index} ${lecturer.name}`} content={discipline.content} />
+                                            {
+                                                const id = discipline.id.toString()
+                                                console.log(id)
+                                                return(
+                                                <DndDiscipline  index={index} key={discipline.id.toString()} discipline={discipline} />
                                             )
                                             })}
                                         {provided.placeholder}
@@ -54,9 +58,7 @@ export const LecturersTable : FC<tableProps> = (tableData) => {
                                 }
                                 }
                             </Droppable>
-                            <TableCell align={"left"}>{lecturer.disciplines.length === 0 ? 0
-                                : lecturer.disciplines.map(discipline => discipline.contactLoad)
-                                .reduce((accumulator, current) => accumulator += current)}</TableCell>
+                            <TableCell align={"left"}>{lecturer.distributedLoad}</TableCell>
                             <TableCell align={"left"}>{lecturer.standard}</TableCell>
                         </TableRow>
                     })}
