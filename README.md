@@ -27,4 +27,8 @@ cd Debug
 cd net6.0
 startProduction
 ```
+```console
+cd frontend
+npm start
+```
 
