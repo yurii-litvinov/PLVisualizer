@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import {FC} from "react";
 import {Draggable} from "react-beautiful-dnd";
+import {Discipline} from "../../Models/Discipline";
 
 
 interface disciplineProps {
-    content: string
+    discipline: Discipline
     index: number
 }
 
@@ -12,16 +13,16 @@ interface containerProps  {
     readonly isDragging: boolean
 }
 
-export const DndDiscipline : FC<disciplineProps> =  ({content, index} : disciplineProps) => {
+export const DndDiscipline : FC<disciplineProps> =  ({discipline, index} : disciplineProps) => {
     return (
-        <Draggable draggableId={content} index={index}>
+        <Draggable draggableId={discipline.id.toString()} index={index}>
             { (provided, snapshot) =>
                 <Container
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 ref={provided.innerRef}
                 isDragging={snapshot.isDragging}>
-                {content}
+                {discipline.content}
             </Container>}
         </Draggable>
     )

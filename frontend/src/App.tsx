@@ -4,7 +4,7 @@ import {AppBar} from "./components/Appbar/Appbar";
 import {Modal} from "./components/Modal/Modal";
 import {SelectImport} from "./components/Modal/SelectImport";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
-import {GoogleSSForm} from "./components/Modal/GoogleSSForm";
+import {GoogleForm} from "./components/Modal/GoogleForm";
 import {Lecturer} from "./Models/Lecturer"
 import {Discipline} from "./Models/Discipline";
 import {createTablesClient} from "./clients/TablesClient";

@@ -1,5 +1,5 @@
 import React, {Dispatch, FC, SetStateAction, useState} from "react";
-import {GoogleSSForm} from "./GoogleSSForm";
+import {GoogleForm} from "./GoogleForm";
 import {XlsxForm} from "./XlsxForm";
 import {FormControlLabel, RadioGroup, Radio} from "@material-ui/core";
 import styled from "styled-components";
@@ -8,9 +8,10 @@ interface selectImportProps{
     setGoogleSSForm : Dispatch<SetStateAction<boolean>>
     xlsxForm: boolean
     setXlsxForm : Dispatch<SetStateAction<boolean>>
+    setFormData : Dispatch<SetStateAction<FormData>>
 }
 
-export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxForm, xlsxForm}) => {
+export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxForm, xlsxForm, setFormData}) => {
 
     const toggleForm = () => {
         setGoogleSSForm(value => !value)
@@ -26,7 +27,7 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
                     <FormControlLabel control={<Radio />} label={'.xlsx файл'} value={'xlsx файл'}  />
                 </RadioGroup>
         </fieldset>
-         {xlsxForm && <XlsxForm/>}
+         {xlsxForm && <XlsxForm setFormData={setFormData}/>}
         </>
     )
 }

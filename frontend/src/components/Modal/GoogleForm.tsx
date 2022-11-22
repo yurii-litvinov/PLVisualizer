@@ -1,11 +1,11 @@
 import React, {Dispatch, FC, FormEvent} from "react";
 import styled from "styled-components";
 
-interface addGoogleSSProps {
+interface googleFormProps {
     setUrl: Dispatch<React.SetStateAction<string>>
 }
 
-export const GoogleSSForm : FC<addGoogleSSProps> = ({setUrl}) =>{
+export const GoogleForm : FC<googleFormProps> = ({setUrl}) =>{
     const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
         const newUrl = e.currentTarget.value
         setUrl( prevUrl => newUrl)

@@ -6,9 +6,9 @@ using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 
 
-namespace PLVisualizerTest.TestSpreadsheetsClient;
+namespace PLVisualizerTest.TestGoogleClient;
 
-public class TestSpreadsheetsClient
+public class TestGoogleClient
 {
     private IGoogleClient googleClient = new GoogleClient();
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
@@ -50,7 +50,7 @@ public class TestSpreadsheetsClient
             Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50,
             DistributedLoad = 46, Standard = 650, Disciplines = new List<Discipline>()
             {
-                new() { Code = "002187", ContactLoad = 32, Term = 4, WorkType = "Практики", EducationalProgram = "СВ.5162-2022",
+                new() { Code = "002187", ContactLoad = 32, Term = 4, WorkType = string.Empty, EducationalProgram = "СВ.5162-2022",
                     Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [СВ.5162-2022] [32]",},
                 new()
                 {Code = "064851", ContactLoad = 14, Term = 1, WorkType = string.Empty, EducationalProgram = "ВМ.5665-2021",
@@ -73,7 +73,7 @@ public class TestSpreadsheetsClient
     
     [Test]
     [TestCaseSource(nameof(getLecturersTestCases))]
-    public async Task Test_SpreadsheetsClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
+    public async Task Test_GoogleClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
     {
         var lecturers = await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
@@ -107,7 +107,7 @@ public class TestSpreadsheetsClient
     
     [Test]
     [TestCaseSource(nameof(getConfigTableRowsTestCases))]
-    public async Task Test_SpreadsheetsClient_ReturnsCorrectConfigTableRowModels(
+    public async Task Test_GoogleClient_ReturnsCorrectConfigTableRowModels(
         string sheetTitle, ConfigTableRow[] expectedTableRows)
     {
         var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
@@ -127,7 +127,7 @@ public class TestSpreadsheetsClient
 
     [Test]
     [TestCaseSource(nameof(exportLecturersTestCases))]
-    public async Task Test_SpreadsheetsClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
+    public async Task Test_GoogleClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
     {
         await googleClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
         var responseLecturers =  await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);

@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var CorsConfigurationName = "AllowOrigins";
+var corsConfigurationName = "AllowOrigins";
 
 builder.Services.AddCors(options =>
 {
@@ -27,7 +27,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(CorsConfigurationName);
+app.UseCors(corsConfigurationName);
 app.UseHttpsRedirection();
 app.MapControllers();
 

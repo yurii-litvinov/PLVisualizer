@@ -206,6 +206,7 @@ public class GoogleClient : IGoogleClient
 
         return new Discipline
         {
+            Id = Guid.NewGuid(),
             Term = term,
             Content = content,
             Code = content[..content.IndexOf(' ')],

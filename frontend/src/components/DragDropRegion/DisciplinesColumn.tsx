@@ -3,6 +3,7 @@ import styled from "styled-components"
 import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
 import {Discipline} from "../../Models/Discipline";
+import {Guid} from "guid-typescript";
 
 export interface columnProps {
     handleResetClick : () => void
@@ -21,7 +22,7 @@ export const DisciplinesColumn : FC<columnProps> = ({disciplines, handleResetCli
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
                         {disciplines.map((discipline, index) => {
-                            return(<DndDiscipline key={`${discipline.content} $name={id}`} content={discipline.content} index={index}/>)
+                            return(<DndDiscipline key={discipline.id.toString()} discipline={discipline} index={index}/>)
                         })}
                         {provided.placeholder}
                     </DisciplinesList>)}
@@ -43,6 +44,7 @@ const Container = styled.div`
 const DisciplinesList = styled.div<disciplinesListProps>`
   min-height: 50px;
     padding: 8px;
+  overflow-y: scroll;
   background-color: ${(props) => props.isDraggingOver ? 'skyblue' : 'white'}`
 
 const Title = styled.h3`

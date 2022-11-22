@@ -5,6 +5,7 @@ import {LecturersTable} from "./LecturersTable";
 import styled from "styled-components";
 import { Lecturer } from "../../Models/Lecturer";
 import {Discipline} from "../../Models/Discipline";
+import matchers from "@testing-library/jest-dom/matchers";
 
 export interface dragDropRegionProps {
     lecturers : Lecturer[]
@@ -50,12 +51,13 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
             // тут надо посмотреть, нормально ли работает без копирования всего массива лекторов
         else if (source.droppableId === 'column'){
             setLecturers((lecturers) => {
-                const lecturerIndex = lecturers.findIndex(lecturer => lecturer.name === destination?.droppableId);
-                const newLecturerDisciplines = Array.from(lecturers[lecturerIndex].disciplines)
+                const newLecturers = Array.from(lecturers)
+                const lecturer = newLecturers.find(lecturer => lecturer.name === destination?.droppableId);
+                const newLecturerDisciplines = Array.from(lecturer!.disciplines)
                 newLecturerDisciplines.splice(destination!.index, 0, columnDisciplines[source.index])
-                lecturers[lecturerIndex].disciplines = newLecturerDisciplines
-                lecturers[lecturerIndex].distributedLoad += columnDisciplines[source.index].contactLoad
-                return lecturers
+                lecturer!.disciplines = newLecturerDisciplines
+                lecturer!.distributedLoad += columnDisciplines[source.index].contactLoad
+                return newLecturers
             })
 
             setColumnDisciplines((disciplines) => {
@@ -71,14 +73,18 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 const lecturer = lecturers.find(lecturer => lecturer.name === source.droppableId)
                 const discipline = lecturer!.disciplines[source.index]
                 disciplines.splice(destination.index, 0, discipline)
-                lecturer!.distributedLoad -= discipline.contactLoad
                 return  disciplines
             })
             // тут тоже массив лекторов не копируется
             setLecturers((lecturers) => {
-                const lecturer = lecturers.find(lecturer => lecturer.name === source.droppableId)
-                lecturer!.disciplines.splice(source.index, 1)
-                return lecturers;
+                const newLecturers = Array.from(lecturers)
+                const lecturer = newLecturers.find(lecturer => lecturer.name === source.droppableId)
+                const discipline = lecturer!.disciplines[source.index]
+                lecturer!.distributedLoad -= discipline.contactLoad
+                const newLecturerDisciplines = Array.from(lecturer!.disciplines)
+                newLecturerDisciplines.splice(source.index, 1)
+                lecturer!.disciplines = newLecturerDisciplines
+                return newLecturers;
             })
         }
     }
@@ -102,20 +108,15 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
         }  // another lecturer
         else if (result.source.droppableId !== destination.droppableId) {
             setLecturers(lecturers => {
-                const sourceLecturer = lecturers.find(lecturer => lecturer.name === source.droppableId)
-                const destinationLecturer = lecturers.find(lecturer => lecturer.name === destination.droppableId)
+                const newLecturers = Array.from(lecturers)
+                const sourceLecturer = newLecturers.find(lecturer => lecturer.name === source.droppableId)
+                const destinationLecturer = newLecturers.find(lecturer => lecturer.name === destination.droppableId)
                 const discipline = sourceLecturer!.disciplines[source.index];
                 destinationLecturer!.disciplines.splice(destination.index, 0, discipline )
-                console.log('destination')
-                console.log(destinationLecturer!.distributedLoad)
-                destinationLecturer!.distributedLoad += discipline.contactLoad;
-                console.log(destinationLecturer!.distributedLoad)
+                destinationLecturer!.distributedLoad += discipline.contactLoad
                 sourceLecturer!.disciplines.splice(source.index, 1)
-                console.log('source')
-                console.log(sourceLecturer!.distributedLoad)
                 sourceLecturer!.distributedLoad -= discipline.contactLoad
-                console.log(sourceLecturer!.distributedLoad)
-                return lecturers
+                return newLecturers
             })
             setColumnDisciplines(columnDisciplines => columnDisciplines)
         }

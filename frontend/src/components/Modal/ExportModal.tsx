@@ -2,7 +2,7 @@ import {Modal, modalProps} from "./Modal";
 import {createTablesClient, ITablesClient} from "../../clients/TablesClient";
 import {FC, useState} from 'react'
 import {Lecturer} from "../../Models/Lecturer";
-import {GoogleSSForm} from "./GoogleSSForm";
+import {GoogleForm} from "./GoogleForm";
 import exp from "constants";
 import {ColorRing} from "react-loader-spinner";
 import styled from "styled-components";
@@ -26,7 +26,7 @@ export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , on
     }
     return(
     <Modal onClose={onClose} title={'Экспортирование таблицы'} onSubmit={handleExportSubmit}>
-        <GoogleSSForm setUrl={setExportUrl}></GoogleSSForm>
+        <GoogleForm setUrl={setExportUrl}></GoogleForm>
         {loading && <LoadingSpinnerContainer>
             <ColorRing
                 visible={true}

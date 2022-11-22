@@ -1,7 +1,10 @@
-﻿namespace PlVisualizer.Api.Dto.Tables;
+﻿using System.Diagnostics;
+
+namespace PlVisualizer.Api.Dto.Tables;
 
 public class Discipline
 {
+    public Guid Id { get; set; }
     public string Content { get; set; }
     public int ContactLoad { get; set; }
     public int Term { get; set; }
@@ -16,11 +19,12 @@ public class Discipline
                Content == discipline.Content &&
                ContactLoad == discipline.ContactLoad &&
                EducationalProgram == discipline.EducationalProgram &&
-               Term == discipline.Term;
+               Term == discipline.Term &&
+               WorkType == discipline.WorkType;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Content, ContactLoad, Term, Code, EducationalProgram);
+        return HashCode.Combine(Content, ContactLoad, Term, WorkType, Code, EducationalProgram);
     }
 }

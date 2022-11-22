@@ -1,6 +1,6 @@
 import {Dispatch, FC, ReactNode, SetStateAction, useState} from "react";
 import {Modal} from "./Modal";
-import {GoogleSSForm} from "./GoogleSSForm";
+import {GoogleForm} from "./GoogleForm";
 import {Lecturer} from "../../Models/Lecturer";
 import {ITablesClient} from "../../clients/TablesClient";
 import {SelectImport} from "./SelectImport";
@@ -16,7 +16,8 @@ interface importModalProps{
 export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers , onClose}) => {
     const [loading, setLoading] = useState(false)
     const [importUrl, setImportUrl] = useState('')
-    const [googleSSForm, setGoogleSSForm] = useState(true)
+    const [formData, setFormData] = useState<FormData>(new FormData())
+    const [googleForm, setGoogleSSForm] = useState(true)
     const [xlsxForm, setXlsxForm] = useState(false)
 
     const handleImportSubmit = async () => {
@@ -24,25 +25,25 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
         const matches = regExp.exec(importUrl)
         const spreadsheetId = matches![0];
         setLoading(value => !value)
-        if (googleSSForm){
+        if (googleForm){
             await tablesClient.importTableViaLecturersTableAsync(spreadsheetId).then(response => {
                 const {data} = response
-                setLecturers(prevState => {
-                    prevState = data
-                    return prevState
-                })
-                setLoading(value => !value)
+                setLecturers(prevState => data)
             })
         }
         else {
-            await tablesClient.importTableViaLecturersTableAsync
+            await tablesClient.importTableViaConfigAsync(spreadsheetId, formData).then(response =>{
+                const {data} = response
+                setLecturers(prevState => data)
+                }).catch(error => console.error())
+            }
+        setLoading(value => !value)
         }
-    }
 
     return(
         <Modal onClose={onClose} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>
-            <SelectImport  xlsxForm={xlsxForm} setXlsxForm={setXlsxForm} setGoogleSSForm={setGoogleSSForm}/>
-            <GoogleSSForm setUrl={setImportUrl}/>
+            <SelectImport  xlsxForm={xlsxForm} setXlsxForm={setXlsxForm} setGoogleSSForm={setGoogleSSForm} setFormData={setFormData}/>
+            <GoogleForm setUrl={setImportUrl}/>
             {loading && <LoadingSpinnerContainer>
                 <ColorRing
                     visible={true}
