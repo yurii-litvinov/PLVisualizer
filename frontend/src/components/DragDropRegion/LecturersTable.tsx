@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@material-ui/core";
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {Droppable} from "react-beautiful-dnd";
 import {Lecturer} from "../../Models/Lecturer";
 import {DndDiscipline} from "./DndDiscipline";

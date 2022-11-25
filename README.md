@@ -9,11 +9,16 @@
 git clone --recurse-submodules https://github.com/oveeernight/PLVisualizer
 ```
 ```console
+cd PLVisualizer
+```
+```console
 dotnet build
 ```
 ```console
+cd frontend
 npm install
 ```
+Из корня репозитория:
 ```console
 cd PLVisualizer.Api
 cd bin

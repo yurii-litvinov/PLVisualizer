@@ -2,7 +2,6 @@ import React, {FC, useState} from "react";
 import styled from "styled-components";
 import {Actions} from "./Actions";
 
-
 export interface appBarProps{
     onImportClick: () => void
     onExportClick: () => void
