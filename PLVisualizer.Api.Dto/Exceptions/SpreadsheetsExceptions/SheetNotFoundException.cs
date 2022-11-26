@@ -1,6 +1,6 @@
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
-namespace PlVisualizer.Api.Dto.Exceptions;
+namespace PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 
 public class SheetNotFoundException : PLVisualizerApiNotFoundException
 {
