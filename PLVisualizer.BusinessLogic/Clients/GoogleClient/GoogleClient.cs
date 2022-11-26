@@ -5,7 +5,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json;
-using PlVisualizer.Api.Dto.Exceptions;
+using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Google.Apis.Sheets.v4;
 
@@ -37,6 +37,11 @@ public class GoogleClient : IGoogleClient
         var range = $"{sheetTitle}!A:F";
         
         var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
+        if (spreadsheet == null)
+        {
+            throw new SpreadsheetNotFoundException();
+        }
+        
         var sheet = spreadsheet.Sheets.FirstOrDefault(sheet => sheet.Properties.Title == sheetTitle);
         if (sheet == null)
         {
@@ -44,15 +49,7 @@ public class GoogleClient : IGoogleClient
         }
         var sheetId = sheet.Properties.SheetId;
         
-        //delete existing data in spreadsheet
-        await service.Spreadsheets.Values
-            .Clear(new ClearValuesRequest(), spreadsheetId, range)
-            .ExecuteAsync();
-        
-        var unmergeRequest = GetUnmergeCellsRequest(sheetId);
-        await service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest()
-            { Requests = new List<Request> { unmergeRequest } }, spreadsheetId)
-            .ExecuteAsync();
+        await ClearSpreadsheet(spreadsheetId, sheetId, range);
 
         var valueRange = new ValueRange();
         var values = ToValues(lecturers);
@@ -72,6 +69,11 @@ public class GoogleClient : IGoogleClient
 
     public async Task<Lecturer[]> GetLecturersAsync(string spreadsheetId, string sheetTitle)
     {
+        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
+        if (spreadsheet == null)
+        {
+            throw new SpreadsheetNotFoundException();
+        }
         var range = $"{sheetTitle}!A:F";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
@@ -81,6 +83,11 @@ public class GoogleClient : IGoogleClient
 
     public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId, string sheetTitle)
     {
+        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
+        if (spreadsheet == null)
+        {
+            throw new SpreadsheetNotFoundException();
+        }
         var range = $"{sheetTitle}!A:C";
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
@@ -233,5 +240,17 @@ public class GoogleClient : IGoogleClient
             EducationalProgram = curriculum,
             WorkType = matches.Count == 4 ? matches[1].Value : string.Empty
         };
+    }
+
+    private  async Task ClearSpreadsheet(string spreadsheetId, int? sheetId, string range)
+    {
+        await service.Spreadsheets.Values
+            .Clear(new ClearValuesRequest(), spreadsheetId, range)
+            .ExecuteAsync();
+        
+        var unmergeRequest = GetUnmergeCellsRequest(sheetId);
+        await service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest()
+                { Requests = new List<Request> { unmergeRequest } }, spreadsheetId)
+            .ExecuteAsync();
     }
 }

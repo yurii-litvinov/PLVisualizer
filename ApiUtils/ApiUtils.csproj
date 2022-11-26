@@ -7,10 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Loggers\Loggers.csproj" />
       <ProjectReference Include="..\PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
     </ItemGroup>

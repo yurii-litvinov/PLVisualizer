@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ApiUtils\ApiUtils.csproj" />
+      <ProjectReference Include="..\Loggers\Loggers.csproj" />
       <ProjectReference Include="..\PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj" />
     </ItemGroup>
 
