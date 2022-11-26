@@ -1,8 +1,10 @@
 using ApiUtils.ContainerConfiguration;
+using ApiUtils.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.ConfigureLogicServices();
+builder.Services.ConfigureLogicServices()
+    .ConfigureLogger();
 
 builder.Services.AddControllers();
 
@@ -29,7 +31,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(corsConfigurationName);
 app.UseHttpsRedirection();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<ExceptionsMiddleware>();
 app.MapControllers();
-
 
 app.Run();

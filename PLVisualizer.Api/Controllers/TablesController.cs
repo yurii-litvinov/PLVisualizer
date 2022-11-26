@@ -1,7 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PlVisualizer.Api.Dto.Tables;
-using PlVisualizer.Api.Dto.Exceptions;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
 
@@ -11,8 +9,8 @@ namespace PlVisualizer.Controllers;
 [Route("tables")]
 public class TablesController : Controller
 {
-    private ISpreadsheetProvider spreadsheetProvider;
-    private ITablesService tablesService;
+    private readonly ISpreadsheetProvider spreadsheetProvider;
+    private readonly ITablesService tablesService;
     public TablesController(ITablesService tablesService, ISpreadsheetProvider spreadsheetProvider)
     {
         this.tablesService = tablesService;
@@ -22,45 +20,23 @@ public class TablesController : Controller
     [HttpGet]
     [Route("import/{spreadsheetId}")]
     public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTableAsync([FromRoute]string spreadsheetId)
-    {
-        try
-        {
-            return await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
-        }
-        catch (SpreadsheetNotFoundException)
-        {
-            return NotFound();
-        }
-        
+    { 
+        return await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
     }
 
     [HttpPost]
     [Route("import/config/{spreadsheetId}")]
     public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm]IFormFile file)
     {
-        try
-        {
-            var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
-            return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
-        }
-        catch (SpreadsheetNotFoundException e)
-        {
-            return BadRequest();
-        }
+        var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
+        return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
     }
 
     [HttpPost]
     [Route("export/{spreadsheetId}")]
     public async Task<ActionResult> ExportLecturersAsync(string spreadsheetId, [FromBody]Lecturer[] lecturers)
     {
-        try
-        {
-            await tablesService.ExportLecturersAsync(spreadsheetId, lecturers);
-            return Ok();
-        }
-        catch (SpreadsheetNotFoundException e)
-        {
-            return NotFound();
-        }
+        await tablesService.ExportLecturersAsync(spreadsheetId, lecturers);
+        return Ok();
     }
 }
