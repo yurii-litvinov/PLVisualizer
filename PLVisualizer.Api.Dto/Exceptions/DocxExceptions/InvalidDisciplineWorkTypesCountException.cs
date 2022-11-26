@@ -1,6 +1,8 @@
-﻿namespace PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
+﻿using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
-public class InvalidDisciplineWorkTypesCountException : PLVisualizerExceptionBase
+namespace PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
+
+public class InvalidDisciplineWorkTypesCountException : PLVisualizerApiBadRequestException
 {
     public InvalidDisciplineWorkTypesCountException(string message) : base(message)
     {
