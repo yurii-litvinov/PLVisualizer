@@ -4,6 +4,7 @@ import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
 import {Discipline} from "../../Models/Discipline";
 import {Guid} from "guid-typescript";
+import {Button} from "../Shared/Buttton";
 
 export interface columnProps {
     handleResetClick : () => void
@@ -16,8 +17,10 @@ interface disciplinesListProps {
 
 export const DisciplinesColumn : FC<columnProps> = ({disciplines, handleResetClick}) =>{
     return ( <Container>
-            <Title>Дисциплины</Title>
-            <ButtonContainer onClick={handleResetClick}> Сбросить </ButtonContainer>
+            <TitleContainer>
+                <h3>Дисциплины</h3>
+            </TitleContainer>
+            <Button color={'black'} backgroundColor={'lightgrey'} onHoverBackgroundColor={'lightblue'} onClick={handleResetClick}> Сбросить </Button>
             <Droppable droppableId={'column'}>
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
@@ -32,39 +35,24 @@ export const DisciplinesColumn : FC<columnProps> = ({disciplines, handleResetCli
 }
 
 const Container = styled.div`
-  height: 600px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-    width: 15%;
+    width: 25%;
     margin: 8px;
     border: 1px solid lightblue; 
     border-radius: 2px`
 
+const TitleContainer = styled.div`
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  justify-items: center`
+
 
 const DisciplinesList = styled.div<disciplinesListProps>`
-  min-height: 50px;
+  min-height: 400px;
     padding: 8px;
   overflow-y: scroll;
   background-color: ${(props) => props.isDraggingOver ? 'skyblue' : 'white'}`
 
-const Title = styled.h3`
-  margin-left: 32px;
-align-items: center`
-
-const ButtonContainer = styled.button`
-margin: 10px;
-    appearance: none;
-    backface-visibility: hidden;
-    background-color: lightblue;
-    border-radius: 9999px;
-    border: 3px solid lightblue;
-    box-sizing: border-box;
-    color: black;
-    cursor: pointer;
-    font-family: "Segoe UI";
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.5;
-    overflow: visible ;
-    padding: 13px 20px;
-`

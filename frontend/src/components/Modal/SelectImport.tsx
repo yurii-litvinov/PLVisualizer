@@ -19,7 +19,7 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
     }
 
     return(
-        <>
+        <Container>
         <fieldset>
             <legend>Способ импортирования таблицы</legend>
                 <RadioGroup onChange={toggleForm} defaultValue={'google spreadsheet таблица'}>
@@ -28,6 +28,9 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
                 </RadioGroup>
         </fieldset>
          {xlsxForm && <XlsxForm setFormData={setFormData}/>}
-        </>
+        </Container>
     )
 }
+
+const Container = styled.div`
+  margin-left: 16px`

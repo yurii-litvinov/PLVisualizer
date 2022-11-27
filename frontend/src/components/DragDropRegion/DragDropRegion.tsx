@@ -140,7 +140,7 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
     <DragDropContext onDragEnd={handleDragEnd}>
         <DragDropContextContainer>
             <DisciplinesColumn handleResetClick={handleResetClick} disciplines={columnDisciplines}/>
-            <LecturersTable lecturers={lecturers}/>
+            <LecturersTable  lecturers={lecturers}/>
         </DragDropContextContainer>
     </DragDropContext>)
 }
