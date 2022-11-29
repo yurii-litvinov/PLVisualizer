@@ -4,7 +4,8 @@ export interface Discipline{
     id: Guid
     content: string
     contactLoad : number
-    terms: string
+    term: number
     code: string
     educationalProgram: string
+    workType: string
 }
