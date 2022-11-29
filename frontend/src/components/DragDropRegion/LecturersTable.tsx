@@ -75,7 +75,8 @@ const DisciplinesCell = styled.div`
   width: 40%`
 const DistributedLoadCell = styled.div`
   margin-left: 16px;
-  width: 15%`
+  width: 15%;
+  background-color: pink`
 const StandardCell = styled.div`
   margin-left: 16px;
   width: 5%`

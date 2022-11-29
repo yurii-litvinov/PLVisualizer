@@ -9,9 +9,10 @@ interface selectImportProps{
     xlsxForm: boolean
     setXlsxForm : Dispatch<SetStateAction<boolean>>
     setFormData : Dispatch<SetStateAction<FormData>>
+    formData : FormData
 }
 
-export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxForm, xlsxForm, setFormData}) => {
+export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxForm, xlsxForm, setFormData, formData}) => {
 
     const toggleForm = () => {
         setGoogleSSForm(value => !value)
@@ -27,7 +28,7 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
                     <FormControlLabel control={<Radio />} label={'.xlsx файл'} value={'xlsx файл'}  />
                 </RadioGroup>
         </fieldset>
-         {xlsxForm && <XlsxForm setFormData={setFormData}/>}
+         {xlsxForm && <XlsxForm formData={formData} setFormData={setFormData}/>}
         </Container>
     )
 }

@@ -42,6 +42,8 @@ const ModalContainer = styled.div`
 `
 
 const ModalBox = styled.div`
+    justify-content: center;
+    justify-items: center;
     position:relative;
     width: 50%;
     margin: 0 10%;
