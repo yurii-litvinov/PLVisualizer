@@ -4,7 +4,7 @@ import styled from "styled-components";
 import {DropDownItem} from "../Shared/DropDownItem";
 
 interface dropDownProps {
-    setDisciplines: Dispatch<SetStateAction<Discipline[]>>
+    setDisciplines: Dispatch<SetStateAction<Array<Discipline>>>
     setVisibility : Dispatch<SetStateAction<boolean>>
 }
 

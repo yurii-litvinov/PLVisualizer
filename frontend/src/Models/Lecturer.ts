@@ -4,7 +4,7 @@ export interface Lecturer{
     name: string
     post: string
     interestRate: number
-    disciplines: Discipline[]
+    disciplines: Array<Discipline>
     distributedLoad: number
     standard: number
 }

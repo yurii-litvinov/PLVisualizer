@@ -10,8 +10,8 @@ import {DropDown} from "./DropDown";
 
 export interface columnProps {
     handleResetClick : () => void
-    setDisciplines: Dispatch<SetStateAction<Discipline[]>>
-    disciplines: Discipline[]
+    setDisciplines: Dispatch<SetStateAction<Array<Discipline>>>
+    disciplines: Array<Discipline>
 }
 
 interface disciplinesListProps {
@@ -48,7 +48,7 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
 
 const Container = styled.div`
   overflow-x: hidden;
-  height: 100%;
+  height: 600px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -5,12 +5,20 @@ import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
 
 export interface tableProps {
-    lecturers: Lecturer[]
+    lecturers: Array<Lecturer>
 }
 
 
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop
 export const LecturersTable : FC<tableProps> = ({lecturers}) => {
+    const getLoadType = (distributedLoad : number, standard: number) : string => {
+        if (distributedLoad === 0) return 'Сильно ниже нормы'
+        const frac = distributedLoad / standard
+        if (frac < 0.5) return 'Сильно ниже нормы'
+        else if (frac < 0.8) return 'Ниже нормы'
+        return 'Сильно выше нормы'
+    }
+
     return(
         <TableContainer>
             <TableRow>
@@ -22,6 +30,7 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
                 <TableHeader style={{width: "5%"}}>Стандарт</TableHeader>
             </TableRow>
             {lecturers.map(lecturer => {
+                const loadType = getLoadType(lecturer.distributedLoad, lecturer.standard)
                 return <Droppable droppableId={lecturer.name}>
                     {((provided, snapshot) => {
                         return (
@@ -33,7 +42,12 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
                                     return (<DndDiscipline discipline={discipline} index={index} key={discipline.id.toString()}/>)
                                 })}
                                 </DisciplinesCell>
-                                <DistributedLoadCell>{lecturer.distributedLoad}</DistributedLoadCell>
+                                <DistributedLoadCell
+                                    loadType={loadType}
+                                >
+                                    <div>{lecturer.distributedLoad}</div>
+                                    <div>{loadType}</div>
+                                </DistributedLoadCell>
                                 <StandardCell>{lecturer.standard}</StandardCell>
                                 {provided.placeholder}
                             </TableRow>
@@ -73,13 +87,37 @@ const InterestRateCell = styled.div`
 const DisciplinesCell = styled.div`
   margin-left: 16px;
   width: 40%`
-const DistributedLoadCell = styled.div`
+
+interface distributedLoadCellProps {
+    loadType: string
+}
+
+const getCellColor = (loadType: string) : string =>{
+    switch (loadType){
+        case "Сильно ниже нормы":
+            return 'white'
+        case "Ниже нормы":
+            return 'lightblue'
+        case "Несколько ниже нормы":
+            return 'lightgreen'
+        case "Нормальная нагрузка":
+            return 'yellow'
+        case "Несколько выше нормы":
+            return  'pink'
+        case "Выше нормы":
+            return "deeppink"
+        case "Сильно выше нормы":
+            return "crimson"
+    }
+    return 'white'
+}
+const DistributedLoadCell = styled.div<distributedLoadCellProps>`
   margin-left: 16px;
   width: 15%;
-  background-color: pink`
+  background-color: ${(props) =>  getCellColor(props.loadType)}`
 const StandardCell = styled.div`
   margin-left: 16px;
-  width: 5%`
+  width: 5%; `
 
 const TableContainer = styled.div`
     width: 100%;

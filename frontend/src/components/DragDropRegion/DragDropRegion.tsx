@@ -6,31 +6,32 @@ import styled from "styled-components";
 import { Lecturer } from "../../Models/Lecturer";
 import {Discipline} from "../../Models/Discipline";
 import matchers from "@testing-library/jest-dom/matchers";
+import {equal} from "assert";
 
 export interface dragDropRegionProps {
-    lecturers : Lecturer[]
-    setLecturers: Dispatch<SetStateAction<Lecturer[]>>
-    columnDisciplines: Discipline[]
-    setColumnDisciplines: Dispatch<SetStateAction<Discipline[]>>
+    lecturers : Array<Lecturer>
+    setLecturers: Dispatch<SetStateAction<Array<Lecturer>>>
+    columnDisciplines: Array<Discipline>
+    setColumnDisciplines: Dispatch<SetStateAction<Array<Discipline>>>
 }
 
 export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecturers, columnDisciplines, setColumnDisciplines}) => {
     const handleResetClick = () => {
         setColumnDisciplines((disciplines) => {
             const newDisciplines = Array.from(disciplines)
-            lecturers.map(lecturer => {
+            lecturers.forEach(lecturer => {
                 lecturer.distributedLoad = 0
-                lecturer.disciplines.map(discipline =>
-                    newDisciplines.splice(0,0,discipline))
+                lecturer.disciplines.forEach(discipline =>
+                {
+                    newDisciplines.splice(0,0,discipline)}
+                )
+            })
+            setLecturers(lecturers => {
+                const newLecturers = Array.from(lecturers)
+                newLecturers.forEach(lecturer => lecturer.disciplines = [])
+                return newLecturers
             })
             return newDisciplines
-        })
-
-        setLecturers((lecturers) => {
-            const newLecturers = Array.from(lecturers)
-            const newDisciplines = [] as Discipline[]
-            newLecturers.map(lecturer => lecturer.disciplines = newDisciplines)
-            return newLecturers
         })
     }
 
@@ -75,7 +76,6 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 disciplines.splice(destination.index, 0, discipline)
                 return  disciplines
             })
-            // тут тоже массив лекторов не копируется
             setLecturers((lecturers) => {
                 const newLecturers = Array.from(lecturers)
                 const lecturer = newLecturers.find(lecturer => lecturer.name === source.droppableId)

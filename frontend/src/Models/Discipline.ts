@@ -7,4 +7,5 @@ export interface Discipline{
     term: number
     code: string
     educationalProgram: string
+    workType: string
 }
