@@ -1,0 +1,12 @@
+﻿version: '4.0'
+
+services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: .dockerfile
+      
+  backend:
+    build:
+      context: PLVisualizer.Api
+      dockerfile: .dockerfile

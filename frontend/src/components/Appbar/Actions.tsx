@@ -1,13 +1,17 @@
 import styled from 'styled-components'
 import React from "react";
 import {appBarProps} from "./Appbar";
+import {Button} from "../Shared/Buttton";
 
 export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) =>{
     return(
             <ActionsContainer>
-                   <ButtonContainer onClick={onImportClick}>Добавить таблицу </ButtonContainer>
-                    <ButtonContainer  onClick={onExportClick}>Экспортировать таблицу</ButtonContainer>
-
+                <Button backgroundColor={'white'} onHoverBackgroundColor={'lightblue'} color={'black'} onClick={onImportClick}>
+                    Добавить таблицу
+                </Button>
+                <Button backgroundColor={'white'} onHoverBackgroundColor={'lightblue'} color={'black'}   onClick={onExportClick}>
+                    Экспортировать таблицу
+                </Button>
             </ActionsContainer>)
 }
 
@@ -17,28 +21,4 @@ const ActionsContainer = styled.div`
   width: 300px;
   justify-content: space-evenly;
   align-items: center;
-`
-
-const ButtonContainer = styled.button`
-  margin: 24px;
-  appearance: none;
-  backface-visibility: hidden;
-  background-color: white;
-  border-radius: 9999px;
-  border-style: none;
-  box-shadow: rgba(39, 174, 96, .15) 0 4px 9px;
-  box-sizing: border-box;
-  color: black;
-  cursor: pointer;
-  display: inline-block;
-  font-family: "Segoe UI";
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: normal;
-  line-height: 1.5;
-  overflow: visible ;
-  padding: 13px 20px;
-  position: relative;
-  text-align: center;
-  white-space: nowrap;
 `

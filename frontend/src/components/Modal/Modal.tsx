@@ -2,6 +2,7 @@ import React, {FC, ReactComponentElement, ReactNode} from "react";
 import closeIcon from "../../img/close.svg"
 import styled from "styled-components";
 import {SelectImport} from "./SelectImport";
+import {Button} from "../Shared/Buttton";
 
 export interface modalProps{
     title: string
@@ -12,7 +13,6 @@ export interface modalProps{
 
 export const Modal : FC<modalProps> = ({title, onClose, onSubmit, children}) => {
     return (
-        <>
         <ModalContainer>
             <ModalOverlay>
             </ModalOverlay>
@@ -22,11 +22,10 @@ export const Modal : FC<modalProps> = ({title, onClose, onSubmit, children}) => 
                 </CloseButton>
                 <ModalTitle> {title} </ModalTitle>
                 {children}
-                <ButtonSubmit  onClick={onSubmit}>Подтвердить</ButtonSubmit>
-                <ButtonCancel onClick={onClose}> Отмена </ButtonCancel>
+                <Button color={'black'} onHoverBackgroundColor={'lightblue'} backgroundColor={'grey'}  onClick={onSubmit}>Подтвердить</Button>
+                <Button color={'black'} onHoverBackgroundColor={'lightblue'} backgroundColor={'lightgrey'}  onClick={onClose}> Отмена </Button>
             </ModalBox>
         </ModalContainer>
-    </>
     )
 }
 
@@ -43,6 +42,8 @@ const ModalContainer = styled.div`
 `
 
 const ModalBox = styled.div`
+    justify-content: center;
+    justify-items: center;
     position:relative;
     width: 50%;
     margin: 0 10%;
@@ -52,11 +53,11 @@ const ModalBox = styled.div`
     background-color: white;
     cursor: auto;
     font-family: inherit;
-  align-items: center;
+     align-items: center;
 `
 
 const ModalTitle = styled.div`
-  margin: 20px;
+  margin: 24px;
     color: black;
     font-size: 30px;
     font-family: inherit
@@ -81,31 +82,4 @@ const ModalOverlay = styled.div`
     background-color: rgba(0, 0, 0, .8);
     cursor: pointer;
     font-family: inherit
-`
-
-const ButtonSubmit = styled.button`
-  padding: 0.8rem 1.2rem;
-  border-style: none;
-  border-radius: 9999px;
-  background-color: black;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  outline: none;
-`
-
-const ButtonCancel = styled.button`
-  margin: 10px;
-  padding: 0.8rem 1.2rem;
-  border-style: none;
-  border-radius: 9999px;
-  background-color: lightgray;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
-  font-size: 1rem;
-  font-weight: 600;
-  color: black;
-  cursor: pointer;
-  outline: none;
 `

@@ -1,10 +1,7 @@
 import React, {FC, useState} from 'react';
 import './App.css';
 import {AppBar} from "./components/Appbar/Appbar";
-import {Modal} from "./components/Modal/Modal";
-import {SelectImport} from "./components/Modal/SelectImport";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";
-import {GoogleForm} from "./components/Modal/GoogleForm";
 import {Lecturer} from "./Models/Lecturer"
 import {Discipline} from "./Models/Discipline";
 import {createTablesClient} from "./clients/TablesClient";
@@ -18,8 +15,8 @@ function App() {
     const toggleImportModal = () => setImportModal(value => !value)
     const toggleExportModal = () => setExportModal(value => !value)
 
-    const [lecturers, setLecturers] = useState([] as Lecturer[])
-    const [columnDisciplines, setColumnDisciplines] = useState([] as Discipline[])
+    const [lecturers, setLecturers] = useState<Array<Lecturer>>([])
+    const [columnDisciplines, setColumnDisciplines] = useState<Array<Discipline>>([])
 
     const tablesClient = createTablesClient()
 

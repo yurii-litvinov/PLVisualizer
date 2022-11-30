@@ -29,6 +29,7 @@ export const DndDiscipline : FC<disciplineProps> =  ({discipline, index} : disci
 }
 
 const Container = styled.div<containerProps>`
+  font-size: 11px;
     border: 1px solid lightblue;
     padding: 8px;
     margin-bottom: 8px;

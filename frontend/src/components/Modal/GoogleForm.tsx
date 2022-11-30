@@ -8,7 +8,7 @@ interface googleFormProps {
 export const GoogleForm : FC<googleFormProps> = ({setUrl}) =>{
     const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
         const newUrl = e.currentTarget.value
-        setUrl( prevUrl => newUrl)
+        setUrl( () => newUrl)
     }
 
     return(
@@ -18,8 +18,9 @@ export const GoogleForm : FC<googleFormProps> = ({setUrl}) =>{
 }
 
 const Container = styled.div`
+  margin-left: 16px;
   box-sizing: border-box;
-  width: 50%;
+  width: 100%;
   border-radius: 4px;
   border: 1px solid white;
   padding: 10px 15px;

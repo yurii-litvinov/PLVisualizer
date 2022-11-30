@@ -42,7 +42,8 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
 
     return(
         <Modal onClose={onClose} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>
-            <SelectImport  xlsxForm={xlsxForm} setXlsxForm={setXlsxForm} setGoogleSSForm={setGoogleSSForm} setFormData={setFormData}/>
+            <SelectImport  xlsxForm={xlsxForm} setXlsxForm={setXlsxForm} setGoogleSSForm={setGoogleSSForm}
+                           formData={formData} setFormData={setFormData}/>
             <GoogleForm setUrl={setImportUrl}/>
             {loading && <LoadingSpinnerContainer>
                 <ColorRing

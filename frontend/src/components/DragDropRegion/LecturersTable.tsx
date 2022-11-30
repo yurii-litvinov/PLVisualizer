@@ -1,69 +1,132 @@
 import React, {FC} from 'react'
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import {Droppable} from "react-beautiful-dnd";
 import {Lecturer} from "../../Models/Lecturer";
+import styled from "styled-components";
+import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
-import {Guid} from "guid-typescript";
 
 export interface tableProps {
-    lecturers: Lecturer[]
+    lecturers: Array<Lecturer>
 }
 
 
 /// Represents a table with a pedagogical load with the possibility of Drag&Drop
-export const LecturersTable : FC<tableProps> = (tableData) => {
+export const LecturersTable : FC<tableProps> = ({lecturers}) => {
+    const getLoadType = (distributedLoad : number, standard: number) : string => {
+        if (distributedLoad === 0) return 'Сильно ниже нормы'
+        const frac = distributedLoad / standard
+        if (frac < 0.5) return 'Сильно ниже нормы'
+        else if (frac < 0.8) return 'Ниже нормы'
+        else if (frac < 1) return 'Несколько ниже нормы'
+        else if (frac < 1.2) return 'Нормальная нагрузка'
+        else if (frac < 1.5) return 'Несколько выше нормы'
+        else if (frac < 2 ) return 'Выше нормы'
+        return 'Сильно выше нормы'
+    }
+
     return(
         <TableContainer>
-            <Table style={{width: 1300}}>
-                <colgroup>
-                    <col style={{width: "10%"}}/>
-                    <col style={{width: "10%"}}/>
-                    <col style={{width: "3%"}}/>
-                    <col style={{width: "20%"}}/>
-                    <col style={{width: "15%"}}/>
-                    <col style={{width: "7%"}}/>
-                </colgroup>
-                <TableHead>
-                    <TableRow>
-                        <TableCell align={"left"}>ФИО</TableCell>
-                        <TableCell align={"left"}>Должность</TableCell>
-                        <TableCell align={"left"}>Процент ставки</TableCell>
-                        <TableCell align={"left"}>Читаемые дисциплины</TableCell>
-                        <TableCell align={"left"}>Распределённая нагрузка</TableCell>
-                        <TableCell align={"left"}>Норматив</TableCell>
-                    </TableRow>
-                </TableHead>
-                    <TableBody>
-                    {tableData.lecturers.map((lecturer) => {
-                        return <TableRow>
-                            <TableCell align={"left"}>{lecturer.name}</TableCell>
-                            <TableCell align={"left"}>{lecturer.post}</TableCell>
-                            <TableCell align={"left"}>{lecturer.interestRate}</TableCell>
-                            <Droppable droppableId={lecturer.name}>
-                                {(provided, snapshot) => { return(
-                                    <TableCell
-                                        style={{backgroundColor: snapshot.isDraggingOver ? 'skyblue' : 'white'}}
-                                        ref={provided.innerRef}
-                                    >
-                                            {lecturer.disciplines.map((discipline, index) =>
-                                            {
-                                                const id = discipline.id.toString()
-                                                console.log(id)
-                                                return(
-                                                <DndDiscipline  index={index} key={discipline.id.toString()} discipline={discipline} />
-                                            )
-                                            })}
-                                        {provided.placeholder}
-                                    </TableCell>)
-                                }
-                                }
-                            </Droppable>
-                            <TableCell align={"left"}>{lecturer.distributedLoad}</TableCell>
-                            <TableCell align={"left"}>{lecturer.standard}</TableCell>
-                        </TableRow>
+            <TableRow>
+                <TableHeader style={{width: "10%"}}>ФИО</TableHeader>
+                <TableHeader style={{width: "10%"}}>Должность</TableHeader>
+                <TableHeader style={{width: "10%"}}>Процент ставки</TableHeader>
+                <TableHeader style={{width: "40%"}}>Дисциплины</TableHeader>
+                <TableHeader style={{width: "15%"}}>Распределенная нагрузка</TableHeader>
+                <TableHeader style={{width: "5%"}}>Стандарт</TableHeader>
+            </TableRow>
+            {lecturers.map(lecturer => {
+                const loadType = getLoadType(lecturer.distributedLoad, lecturer.standard)
+                return <Droppable droppableId={lecturer.name}>
+                    {((provided, snapshot) => {
+                        return (
+                            <TableRow ref={provided.innerRef} style={{backgroundColor : snapshot.isDraggingOver ? 'skyblue' : 'white'}}>
+                                <NameCell>{lecturer.name}</NameCell>
+                                <PostCell>{lecturer.post}</PostCell>
+                                <InterestRateCell>{lecturer.interestRate}</InterestRateCell>
+                                <DisciplinesCell>{lecturer.disciplines.map((discipline, index) => {
+                                    return (<DndDiscipline discipline={discipline} index={index} key={discipline.id.toString()}/>)
+                                })}
+                                </DisciplinesCell>
+                                <DistributedLoadCell
+                                    loadType={loadType}
+                                >
+                                    <div>{lecturer.distributedLoad}</div>
+                                    <div>{loadType}</div>
+                                </DistributedLoadCell>
+                                <StandardCell>{lecturer.standard}</StandardCell>
+                                {provided.placeholder}
+                            </TableRow>
+                        )
                     })}
-                    </TableBody>
-            </Table>
+                </Droppable>
+            })}
+
         </TableContainer>
     )
 }
+
+const TableHeader = styled.div`
+    margin-left: 16px;
+    font-weight: 600;
+    display: flex;
+    flex-flow: row wrap;
+    transition: 0.5s`
+
+const TableRow = styled.div`
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border: 1px solid lightblue;
+`
+
+const NameCell = styled.div`
+  margin-left: 16px;
+  width: 10%`
+const PostCell = styled.div`
+  margin-left: 16px;
+  width: 10%`
+const InterestRateCell = styled.div`
+  margin-left: 16px;
+  width: 10%`
+const DisciplinesCell = styled.div`
+  margin-left: 16px;
+  width: 40%`
+
+interface distributedLoadCellProps {
+    loadType: string
+}
+
+const getCellColor = (loadType: string) : string =>{
+    switch (loadType){
+        case "Сильно ниже нормы":
+            return 'white'
+        case "Ниже нормы":
+            return 'lightblue'
+        case "Несколько ниже нормы":
+            return 'lightgreen'
+        case "Нормальная нагрузка":
+            return 'yellow'
+        case "Несколько выше нормы":
+            return  'pink'
+        case "Выше нормы":
+            return "deeppink"
+        case "Сильно выше нормы":
+            return "crimson"
+    }
+    return 'white'
+}
+const DistributedLoadCell = styled.div<distributedLoadCellProps>`
+  margin-left: 16px;
+  width: 15%;
+  background-color: ${(props) =>  getCellColor(props.loadType)}`
+const StandardCell = styled.div`
+  margin-left: 16px;
+  width: 5%; `
+
+const TableContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column`
+
+
+
