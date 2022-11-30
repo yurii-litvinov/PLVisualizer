@@ -16,6 +16,10 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
         const frac = distributedLoad / standard
         if (frac < 0.5) return 'Сильно ниже нормы'
         else if (frac < 0.8) return 'Ниже нормы'
+        else if (frac < 1) return 'Несколько ниже нормы'
+        else if (frac < 1.2) return 'Нормальная нагрузка'
+        else if (frac < 1.5) return 'Несколько выше нормы'
+        else if (frac < 2 ) return 'Выше нормы'
         return 'Сильно выше нормы'
     }
 
