@@ -48,7 +48,7 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
 
 const Container = styled.div`
   overflow-x: hidden;
-  height: 600px;
+  height: 750px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -4,7 +4,7 @@ using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.GoogleClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Extensions;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 
@@ -15,11 +15,11 @@ public class TestLecturersConfiguration
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private IDocxClient docxClient = new DocxClient();
     private IGoogleClient googleClient = new GoogleClient();
-    private IXlsxClient xlsxClient = new XlsxClient();
+    private IExcelClient excelClient = new ExcelClient();
     private string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
-    private static string largeXlsxFilePath = "../../../TestDocxClient/LargeFileTest.xlsx";
+    private static string largeExcelFilePath = "../../../TestDocxClient/LargeFileTest.xlsx";
 
-    private static string lecturerWithoutPracticesXlsxPath =
+    private static string lecturerWithoutPracticesExcelPath =
         "../../../TestLecturersConfiguration/SingleLecturerWithoutPracticesTest.xlsx";
 
     [SetUp]
@@ -27,7 +27,7 @@ public class TestLecturersConfiguration
     {
         docxClient = new DocxClient();
         googleClient = new GoogleClient();
-        xlsxClient = new XlsxClient();
+        excelClient = new ExcelClient();
     }
 
     private static string severalConfigLecturersSheet = "SeveralConfigLecturers";
@@ -37,14 +37,14 @@ public class TestLecturersConfiguration
     {
         new object[]
         {
-            singleConfigLecturersSheet, lecturerWithoutPracticesXlsxPath,  new Lecturer[]
+            singleConfigLecturersSheet, lecturerWithoutPracticesExcelPath,  new Lecturer[]
             {
                 new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 0},
             }
         },
         new object[]
         {
-            singleConfigLecturersSheet, largeXlsxFilePath, new Lecturer[] {
+            singleConfigLecturersSheet, largeExcelFilePath, new Lecturer[] {
                 new ()
             {
                 Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 349
@@ -52,7 +52,7 @@ public class TestLecturersConfiguration
         },
         new object[]
         {
-            severalConfigLecturersSheet, largeXlsxFilePath,  new Lecturer[]
+            severalConfigLecturersSheet, largeExcelFilePath,  new Lecturer[]
             {
                 new () { Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, Standard = 500, DistributedLoad = 349},
                 new () { Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50, Standard = 650, DistributedLoad = 58},
@@ -67,7 +67,7 @@ public class TestLecturersConfiguration
         Lecturer[] expectedLecturers)
     {
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
-        var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+        var xlsxTableRows = excelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
         var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var filteredLecturers = lecturers.WithConfigInformation(configTableRows).ToArray();
@@ -89,7 +89,7 @@ public class TestLecturersConfiguration
         Lecturer[] expectedLecturers)
     {
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
-        var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+        var xlsxTableRows = excelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
         var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var lecturersWithStandards =
@@ -112,7 +112,7 @@ public class TestLecturersConfiguration
         Lecturer[] expectedLecturers)
     {
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
-        var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+        var xlsxTableRows = excelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(xlsxTableRows);
         var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         var lecturersWithDistributedLoad =

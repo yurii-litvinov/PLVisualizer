@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using CurriculumParser;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
+﻿using CurriculumParser;
 using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
@@ -9,7 +7,7 @@ namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
 public class DocxClient : IDocxClient
 {
-    public Dictionary<string, Lecturer> GetLecturersWithDisciplines(IEnumerable<XlsxTableRow> tableRows)
+    public Dictionary<string, Lecturer> GetLecturersWithDisciplines(IEnumerable<ExcelTableRow> tableRows)
     {
         var lecturers = GetLecturersWithUnmergedDisciplines(tableRows);
         MergeLecturersDisciplines(lecturers);
@@ -17,7 +15,7 @@ public class DocxClient : IDocxClient
     }
     
     
-    private static Dictionary<string, Lecturer> GetLecturersWithUnmergedDisciplines(IEnumerable<XlsxTableRow> tableRows)
+    private static Dictionary<string, Lecturer> GetLecturersWithUnmergedDisciplines(IEnumerable<ExcelTableRow> tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
 
@@ -145,7 +143,7 @@ public class DocxClient : IDocxClient
     }
     
     private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline,
-            XlsxTableRow tableRow,
+            ExcelTableRow tableRow,
             string curriculumCode)
     {
         var term = tableRow.Term;

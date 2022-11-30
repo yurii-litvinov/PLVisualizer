@@ -1,8 +1,8 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
+using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Clients.GoogleClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
 using PLVisualizer.BusinessLogic.Extensions;
 
 namespace PLVisualizer.BusinessLogic.Services;
@@ -13,13 +13,13 @@ namespace PLVisualizer.BusinessLogic.Services;
 public class TablesService : ITablesService
 {
     private IDocxClient docxClient;
-    private IXlsxClient xlsxClient;
+    private IExcelClient excelClient;
     private IGoogleClient googleClient;
 
-    public TablesService(IDocxClient docxClient, IXlsxClient xlsxClient, IGoogleClient googleClient)
+    public TablesService(IDocxClient docxClient, IExcelClient excelClient, IGoogleClient googleClient)
     {
         this.docxClient = docxClient;
-        this.xlsxClient = xlsxClient;
+        this.excelClient = excelClient;
         this.googleClient = googleClient;
     }
 
@@ -38,7 +38,7 @@ public class TablesService : ITablesService
         SpreadsheetDocument spreadsheetDocument,
         string sheetTitle)
     {
-        var xlsxTableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+        var xlsxTableRows = excelClient.GetTableRows(spreadsheetDocument);
         
         var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle);
         

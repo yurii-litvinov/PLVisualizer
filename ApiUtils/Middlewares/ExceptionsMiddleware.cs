@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
 namespace ApiUtils.Middlewares;
@@ -18,13 +19,10 @@ public class ExceptionsMiddleware
         {
             await next(context);
         }
-        catch (PLVisualizerApiNotFoundException exception)
+        catch (PLVisualizerExceptionBase exceptionBase)
         {
-            context.Response.StatusCode = 404;
-        }
-        catch (PLVisualizerApiBadRequestException exception)
-        {
-            context.Response.StatusCode = 400;
+            // add switch case some day ?
+            context.Response.StatusCode = exceptionBase.StatusCode;
         }
         catch (Exception exception)
         {

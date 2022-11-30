@@ -1,17 +1,17 @@
 using CurriculumParser;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 
-namespace PLVisualizerTest.TestXlsxClient;
+namespace PLVisualizerTest.TestExcelClient;
 
-public class TestXlsxClient
+public class TestExcelClient
 {
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
-    private IXlsxClient xlsxClient = new XlsxClient();
+    private IExcelClient excelClient = new ExcelClient();
     
-    private static XlsxTableRow[] testTableRows =
+    private static ExcelTableRow[] testTableRows =
     {
         new()
         {
@@ -36,11 +36,11 @@ public class TestXlsxClient
     };
 
     [Test]
-    public void Test_XlsxClient_ReturnsCorrectModels()
+    public void Test_ExcelClient_ReturnsCorrectModels()
     {
         var spreadsheetDocument =
-            spreadsheetProvider.GetSpreadsheetDocument("../../../TestXlsxClient/SmallFileTest.xlsx");
-        var tableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+            spreadsheetProvider.GetSpreadsheetDocument("../../../TestExcelClient/SmallFileTest.xlsx");
+        var tableRows = excelClient.GetTableRows(spreadsheetDocument);
         Assert.AreEqual(2, tableRows.Length);
         for (var i = 0; i < tableRows.Length; i++)
         {

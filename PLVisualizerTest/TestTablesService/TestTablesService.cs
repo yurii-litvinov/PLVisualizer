@@ -4,7 +4,7 @@ using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.GoogleClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
 
@@ -12,24 +12,24 @@ namespace PLVisualizerTest.TestTablesService;
 
 public class TestTablesService
 {
-    private IXlsxClient xlsxClient = new XlsxClient();
+    private IExcelClient excelClient = new ExcelClient();
     private IDocxClient docxClient = new DocxClient();
     private IGoogleClient googleClient = new GoogleClient();
     private ITablesService tablesService;
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
-    private static string largeFileXlsxPath = "../../../TestDocxClient/LargeFileTest.xlsx";
+    private static string largeFileExcelPath = "../../../TestDocxClient/LargeFileTest.xlsx";
     private static readonly string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalConfigLecturersSheetTitle = "SeveralConfigLecturers";
 
     [SetUp]
     public void Setup()
     {
-        tablesService = new TablesService(docxClient, xlsxClient, googleClient);
+        tablesService = new TablesService(docxClient, excelClient, googleClient);
     }
     
     private static object[] getLecturersViaConfigTestCases =
     {
-        new object[] { severalConfigLecturersSheetTitle, largeFileXlsxPath,
+        new object[] { severalConfigLecturersSheetTitle, largeFileExcelPath,
             new Lecturer[]
         {
             new ()

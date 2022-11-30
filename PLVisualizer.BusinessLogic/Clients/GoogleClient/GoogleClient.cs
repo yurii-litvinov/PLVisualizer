@@ -45,7 +45,7 @@ public class GoogleClient : IGoogleClient
         var sheet = spreadsheet.Sheets.FirstOrDefault(sheet => sheet.Properties.Title == sheetTitle);
         if (sheet == null)
         {
-            throw new SheetNotFoundException();
+            throw new SheetNotFoundException() ;
         }
         var sheetId = sheet.Properties.SheetId;
         

@@ -4,7 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.DocxClient;
-using PLVisualizer.BusinessLogic.Clients.XlsxClient;
+using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
 
@@ -14,7 +14,7 @@ public class TestDocxClient
 {
     private IDocxClient docxClient = new DocxClient();
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
-    private IXlsxClient xlsxClient;
+    private IExcelClient ExcelClient;
     
 
     private static object[] getLecturersWithDisciplinesTestCases =
@@ -69,8 +69,8 @@ public class TestDocxClient
     {
         var spreadsheetDocument =
             spreadsheetProvider.GetSpreadsheetDocument("../../../TestDocxClient/LargeFileTest.xlsx");
-        xlsxClient = new XlsxClient();
-        var tableRows = xlsxClient.GetTableRows(spreadsheetDocument);
+        ExcelClient = new ExcelClient();
+        var tableRows = ExcelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)

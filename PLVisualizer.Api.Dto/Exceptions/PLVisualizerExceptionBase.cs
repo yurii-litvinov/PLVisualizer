@@ -1,8 +1,10 @@
 ﻿namespace PlVisualizer.Api.Dto.Exceptions;
 
-public class PLVisualizerExceptionBase : Exception
+public abstract class PLVisualizerExceptionBase : Exception
 {
-    public PLVisualizerExceptionBase(string message) : base(message)
+    public virtual int StatusCode { get; set; }
+
+    protected PLVisualizerExceptionBase(string message) : base(message)
     {
         
     }

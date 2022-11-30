@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 
 namespace PlVisualizer.Api.Dto.Tables;
 
-public class XlsxTableRow
+public class ExcelTableRow
 {
     /// <summary>
     /// Term
@@ -48,7 +48,7 @@ public class XlsxTableRow
 
     public override bool Equals(object? obj)
     {
-        if (obj is not XlsxTableRow xlsxTableRow) return false;
+        if (obj is not ExcelTableRow xlsxTableRow) return false;
         return Term == xlsxTableRow.Term &&
                Subdivision == xlsxTableRow.Subdivision &&
                PedagogicalTask == xlsxTableRow.PedagogicalTask &&

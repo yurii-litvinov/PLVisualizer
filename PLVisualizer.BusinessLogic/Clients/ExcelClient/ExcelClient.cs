@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Http;
 using PlVisualizer.Api.Dto.Tables;
 using Sheet = DocumentFormat.OpenXml.Spreadsheet.Sheet;
 
-namespace PLVisualizer.BusinessLogic.Clients.XlsxClient;
+namespace PLVisualizer.BusinessLogic.Clients.ExcelClient;
 
-public class XlsxClient : IXlsxClient
+public class ExcelClient : IExcelClient
 {
-    public XlsxTableRow[] GetTableRows(SpreadsheetDocument spreadsheetDocument)
+    public ExcelTableRow[] GetTableRows(SpreadsheetDocument spreadsheetDocument)
     {
-        var tableRows = new List<XlsxTableRow>();
+        var tableRows = new List<ExcelTableRow>();
 
-        var (workbookPart, sheetData) = OpenXlsxSheet(spreadsheetDocument);
+        var (workbookPart, sheetData) = OpenExcelSheet(spreadsheetDocument);
         
         var rows = sheetData.Elements<Row>();
        
         
         tableRows.AddRange(rows.Skip(1).Select(row => row.Elements<Cell>().ToArray())
             .Where(cells => cells.Length > 0)
-            .Select(cells => new XlsxTableRow
+            .Select(cells => new ExcelTableRow
             {
                 Term = int.Parse(GetCellValue(cells[0], workbookPart).Replace("Семестр", string.Empty).Trim()),
                 Subdivision = GetCellValue(cells[1], workbookPart),
@@ -50,7 +50,7 @@ public class XlsxClient : IXlsxClient
         return cell.CellValue.InnerText;
     }
 
-    private static (WorkbookPart, SheetData) OpenXlsxSheet(SpreadsheetDocument spreadsheetDocument)
+    private static (WorkbookPart, SheetData) OpenExcelSheet(SpreadsheetDocument spreadsheetDocument)
     {
         var workbookPart = spreadsheetDocument.WorkbookPart;
         var sheet = (Sheet)workbookPart.Workbook.Sheets.FirstOrDefault();
