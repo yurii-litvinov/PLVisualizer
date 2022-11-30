@@ -1,38 +1,22 @@
 using ApiUtils.ContainerConfiguration;
 using ApiUtils.Middlewares;
+using PlVisualizer;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.ConfigureLogicServices()
-    .ConfigureLogger();
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var corsConfigurationName = "AllowOrigins";
-
-builder.Services.AddCors(options =>
+public class Program
 {
-    options.AddPolicy("AllowOrigins", policy =>
+    public static void Main(string[] args)
     {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
+        CreateHostBuilder(args).Build().Run();
+    }
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    private static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        return Host
+            .CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>().UseUrls("https://*:8787");
+            });
+    }
 }
 
-app.UseCors(corsConfigurationName);
-app.UseHttpsRedirection();
-app.UseMiddleware<RequestLoggingMiddleware>();
-app.UseMiddleware<ExceptionsMiddleware>();
-app.MapControllers();
-
-app.Run();
