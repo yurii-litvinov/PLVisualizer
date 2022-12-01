@@ -26,6 +26,9 @@ public class ExceptionsMiddleware
         }
         catch (Exception exception)
         {
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Console.WriteLine(exception);
+            Console.WriteLine(exception.Message);
             context.Response.StatusCode = 500;
         }
     }
