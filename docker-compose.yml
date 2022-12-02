@@ -19,7 +19,6 @@ services:
        - ASPNETCORE_KESTREL__Certificates__Default__Password=aspnet
     volumes:
       - ${GOOGLE_APPLICATION_CREDENTIALS}:/tmp/keys/credentials.json:ro
-#      - ~/var/ssl/private:/https
       - ./certs/https/:/https/
     build:
       dockerfile: .dockerfile

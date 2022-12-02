@@ -61,6 +61,4 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
 }
 
 const LoadingSpinnerContainer = styled.div` 
-    align-content: center;
-  margin-left: 300px;
 `

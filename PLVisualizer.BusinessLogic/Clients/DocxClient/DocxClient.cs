@@ -27,7 +27,7 @@ public class DocxClient : IDocxClient
                     [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
 
-            var pathTemplate = "../../../../app/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans" ;
+            var pathTemplate = "../../../../PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans" ;
             var curriculumPath = GetFullCurriculumCode(pathTemplate, curriculumCode);
             var parser = new DocxCurriculum(curriculumPath);
             var curriculumTitle =

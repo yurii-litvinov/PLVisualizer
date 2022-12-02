@@ -39,14 +39,23 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) =>
         setVisibility(value => !value)
     }
 
-    return <Container>
-        <DropDownItem style={{width: "100%"}} onClick={sortByTerm}>По семестру</DropDownItem>
-        <DropDownItem style={{width: "100%"}}  onClick={sortByProgram}>По учебной программе</DropDownItem>
-    </Container>
+    return <>
+        <DropDownItem onClick={sortByTerm} 
+                      style={{width: "75%"}}
+                        backgroundColor={"lightgrey"}
+                        onHoverBackgroundColor={"lightblue"}
+                        color={"black"}>По семестру
+        </DropDownItem>
+        <DropDownItem onClick={sortByProgram}
+                      style={{width: "75%"}}
+                      backgroundColor={"lightgrey"}
+                      onHoverBackgroundColor={"lightblue"}
+                      color={"black"}>По учебной программе
+        </DropDownItem>
+    </>
 }
 
 const Container = styled.div`
-  width: 65%;
   display: flex;
   flex-direction: column;
 `

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Http;
 using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
@@ -26,7 +27,7 @@ public class ExceptionsMiddleware
         }
         catch (Exception exception)
         {
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            Console.WriteLine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
             Console.WriteLine(exception);
             Console.WriteLine(exception.Message);
             context.Response.StatusCode = 500;

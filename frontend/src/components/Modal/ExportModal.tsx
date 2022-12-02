@@ -44,5 +44,4 @@ export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , on
 
 const LoadingSpinnerContainer = styled.div` 
     align-content: center;
-  margin-left: 300px;
 `

@@ -42,6 +42,7 @@ const ModalContainer = styled.div`
 `
 
 const ModalBox = styled.div`
+    display:flex
     justify-content: center;
     justify-items: center;
     position:relative;

@@ -25,14 +25,18 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
             <TitleContainer>
                 <h3>Дисциплины</h3>
             </TitleContainer>
-            <Button  color={'black'}
-                     style={{width: "75%"}}
-                     backgroundColor={'lightgrey'}
-                     onHoverBackgroundColor={'lightblue'}
-                     onClick={handleResetClick}> Сбросить </Button>
-            <DropDownItem onClick={() => setDropDown(!dropDown)} >Сортировка</DropDownItem>
-            {dropDown && <DropDown  setDisciplines={setDisciplines}
-                                   setVisibility={setDropDown} />}
+                <Button  color={'black'}
+                         style={{width: "75%"}}
+                         backgroundColor={'lightgrey'}
+                         onHoverBackgroundColor={'lightblue'}
+                         onClick={handleResetClick}> Сбросить </Button>
+                <DropDownItem 
+                    onClick={() => setDropDown(!dropDown)}
+                    onHoverBackgroundColor={"lightblue"}
+                backgroundColor={"lightgrey"}
+                color={"black"}>Сортировка</DropDownItem>
+                {dropDown && <DropDown  setDisciplines={setDisciplines}
+                                        setVisibility={setDropDown} />}
             <Droppable droppableId={'column'}>
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
@@ -50,7 +54,6 @@ const Container = styled.div`
   overflow-x: hidden;
   height: 750px;
   display: flex;
-  justify-content: center;
   align-items: center;
   align-content: center;
   flex-direction: column;
@@ -60,6 +63,8 @@ const Container = styled.div`
     border-radius: 2px`
 
 const TitleContainer = styled.div`
+  display: flex;
+  align-self: column;
   align-items: center;
   align-content: center;
   justify-content: center;
