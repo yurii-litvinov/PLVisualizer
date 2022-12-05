@@ -15,11 +15,10 @@ services:
        - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/credentials.json
        - ASPNETCORE_ENVIRONMENT=Production
        - ASPNETCORE_URLS=https://+:8787;http://+:5184
-       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
+       - ASPNETCORE_Kestrel__Certificates__Default__Path=/certificate/https/certificate.pfx
        - ASPNETCORE_KESTREL__Certificates__Default__Password=aspnet
     volumes:
       - ${GOOGLE_APPLICATION_CREDENTIALS}:/tmp/keys/credentials.json:ro
-      - ./certs/https/:/https/
     build:
       dockerfile: .dockerfile
     ports:

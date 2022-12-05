@@ -147,12 +147,14 @@ public class DocxClient : IDocxClient
             string curriculumCode)
     {
         var term = tableRow.Term;
+        var implementation = discipline.Implementations.First(implementation => implementation.Semester == term);
+        
         const int practicesColumn = 3;
         const int lecturesColumn = 0;
+        
         var workType = tableRow.WorkType;
-        var workHours = GetDisciplineWorkHours(discipline, term);
+        var workHours = GetDisciplineWorkHours(implementation);
         var commonWorkType = string.Empty;
-
         if (IsLecturerType(workType) && workHours[practicesColumn] != 0)
         {
             commonWorkType = "Лекции";
@@ -169,6 +171,12 @@ public class DocxClient : IDocxClient
         
         var index = GetIndexByWorkType(workType);
         var contactLoad = workHours[index];
+        // if discipline has a credit and an exam we divine attestation by 2
+        if (implementation.MonitoringTypes.Contains(' ') && workType.Contains("Промежуточная аттестация"))
+        {
+            contactLoad /= 2;
+        }
+        
         var content = commonWorkType == string.Empty
             ? $"{discipline.Code} {disciplineName} [{term}] [{curriculumCode}]"
             : $"{discipline.Code} {disciplineName} [{term}] [{commonWorkType}] [{curriculumCode}]";
@@ -184,9 +192,9 @@ public class DocxClient : IDocxClient
         };
     }
 
-    private static int[] GetDisciplineWorkHours(CurriculumParser.Discipline discipline, int term)
+    private static int[] GetDisciplineWorkHours(DisciplineImplementation implementation)
     {
-        return discipline.Implementations.First(implementation => implementation.Semester == term)
+        return implementation
             .WorkHours
             .Split()
             .Select(int.Parse)
@@ -214,7 +222,7 @@ public class DocxClient : IDocxClient
 
     private static bool IsLecturerType(string workType)
     {
-        return (workType.ToLower() is "лекции" or "промежуточная аттестация (экз)" or "консультации");
+        return (workType.ToLower() is "лекции" or "коллоквиумы" or "промежуточная аттестация (экз)" or "консультации");
     }
 
     private static string GetCommonWorkType(Discipline discipline)
