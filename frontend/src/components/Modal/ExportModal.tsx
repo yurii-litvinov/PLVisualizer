@@ -1,9 +1,8 @@
-import {Modal, modalProps} from "./Modal";
-import {createTablesClient, ITablesClient} from "../../clients/TablesClient";
+import {Modal} from "./Modal";
+import {ITablesClient} from "../../clients/TablesClient";
 import {FC, useState} from 'react'
 import {Lecturer} from "../../Models/Lecturer";
 import {GoogleForm} from "./GoogleForm";
-import exp from "constants";
 import {ColorRing} from "react-loader-spinner";
 import styled from "styled-components";
 

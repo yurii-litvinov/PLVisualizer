@@ -3,7 +3,6 @@ import styled from "styled-components"
 import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
 import {Discipline} from "../../Models/Discipline";
-import {Guid} from "guid-typescript";
 import {Button} from "../Shared/Buttton";
 import {DropDownItem} from "../Shared/DropDownItem";
 import {DropDown} from "./DropDown";
@@ -51,6 +50,8 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
 }
 
 const Container = styled.div`
+  margin-top: 6%;
+  position: fixed;
   overflow-x: hidden;
   height: 750px;
   display: flex;
@@ -58,13 +59,11 @@ const Container = styled.div`
   align-content: center;
   flex-direction: column;
   width: 25%;
-  margin: 8px;
   border: 1px solid lightblue; 
     border-radius: 2px`
 
 const TitleContainer = styled.div`
   display: flex;
-  align-self: column;
   align-items: center;
   align-content: center;
   justify-content: center;

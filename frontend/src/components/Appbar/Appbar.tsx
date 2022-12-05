@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC} from "react";
 import styled from "styled-components";
 import {Actions} from "./Actions";
 
@@ -17,6 +17,7 @@ export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBar
 }
 
 const AppBarContainer = styled.nav`
+  position: fixed;
   color: white;
   height: 80px;
   width: 100%;
@@ -28,6 +29,7 @@ const AppBarContainer = styled.nav`
 `
 
 const AppNameContainer = styled.div`
+    position: fixed;
     padding-left: 20px;
     color: white;
     font-weight: 500;

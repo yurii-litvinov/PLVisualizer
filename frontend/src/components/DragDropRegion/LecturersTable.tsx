@@ -124,6 +124,8 @@ const StandardCell = styled.div`
   width: 5%; `
 
 const TableContainer = styled.div`
+  margin-top: 6%;
+    margin-left: 26%;
     width: 100%;
     display: flex;
     flex-direction: column`

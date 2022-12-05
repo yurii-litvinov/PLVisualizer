@@ -5,8 +5,6 @@ import {LecturersTable} from "./LecturersTable";
 import styled from "styled-components";
 import { Lecturer } from "../../Models/Lecturer";
 import {Discipline} from "../../Models/Discipline";
-import matchers from "@testing-library/jest-dom/matchers";
-import {equal} from "assert";
 
 export interface dragDropRegionProps {
     lecturers : Array<Lecturer>

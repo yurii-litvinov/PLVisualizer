@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {AppBar} from "./components/Appbar/Appbar";
 import {DragDropRegion} from "./components/DragDropRegion/DragDropRegion";

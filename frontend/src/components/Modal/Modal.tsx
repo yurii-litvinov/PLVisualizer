@@ -1,7 +1,6 @@
-import React, {FC, ReactComponentElement, ReactNode} from "react";
+import React, {FC, ReactNode} from "react";
 import closeIcon from "../../img/close.svg"
 import styled from "styled-components";
-import {SelectImport} from "./SelectImport";
 import {Button} from "../Shared/Buttton";
 
 export interface modalProps{
@@ -30,6 +29,7 @@ export const Modal : FC<modalProps> = ({title, onClose, onSubmit, children}) => 
 }
 
 const ModalContainer = styled.div`
+    z-index: 1;
     position: fixed;
     top: 0;
     left: 0;
@@ -42,7 +42,6 @@ const ModalContainer = styled.div`
 `
 
 const ModalBox = styled.div`
-    display:flex
     justify-content: center;
     justify-items: center;
     position:relative;
