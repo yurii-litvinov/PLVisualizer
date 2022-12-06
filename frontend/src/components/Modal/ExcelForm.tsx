@@ -7,7 +7,7 @@ import {Button} from "../Shared/Buttton";
      formData: FormData
 }
 
-export const XlsxForm : FC<xlsxFormProps> = ({formData, setFormData}) => {
+export const ExcelForm : FC<xlsxFormProps> = ({formData, setFormData}) => {
      const inputRef = useRef<HTMLInputElement>(null)
      const [fileName, setFileName] = useState('')
 

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
@@ -23,14 +24,19 @@ public class ExceptionsMiddleware
         catch (PLVisualizerExceptionBase exceptionBase)
         {
             // add switch case some day ?
-            context.Response.StatusCode = exceptionBase.StatusCode;
+            await WriteExceptionAsync(context, exceptionBase, exceptionBase.StatusCode);
         }
         catch (Exception exception)
         {
-            Console.WriteLine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-            Console.WriteLine(exception);
-            Console.WriteLine(exception.Message);
-            context.Response.StatusCode = 500;
+            await WriteExceptionAsync(context, exception, 500);
         }
+    }
+
+    private static async Task WriteExceptionAsync(HttpContext context, Exception exception, int statusCode)
+    {
+        var result = JsonConvert.SerializeObject(exception);
+        context.Response.StatusCode = statusCode;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync(result);
     }
 }

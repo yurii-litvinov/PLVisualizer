@@ -13,7 +13,7 @@ export const DropDownItem = styled.div<dropwDownItemProps>`
   width: 75%;
   height: 60px;
   background-color: ${props => props.backgroundColor};
-  border-radius: 4px;
+  border-radius: 32px;
   box-sizing: border-box;
   color: ${props => props.color};
   cursor: pointer;
@@ -25,7 +25,7 @@ export const DropDownItem = styled.div<dropwDownItemProps>`
   padding: 16px 20px;
   text-align: center;
   white-space: nowrap;
-  border: 1px solid grey;
+  border: 2px solid black;
   &:hover {
       background-color: ${props => props.onHoverBackgroundColor}
   }

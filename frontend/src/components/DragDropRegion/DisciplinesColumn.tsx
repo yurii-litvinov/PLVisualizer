@@ -25,14 +25,14 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
                 <h3>Дисциплины</h3>
             </TitleContainer>
                 <Button  color={'black'}
-                         style={{width: "75%"}}
-                         backgroundColor={'lightgrey'}
+                         style={{width: "75%", border:"5 px solid black"}}
+                         backgroundColor={'white'}
                          onHoverBackgroundColor={'lightblue'}
                          onClick={handleResetClick}> Сбросить </Button>
                 <DropDownItem 
                     onClick={() => setDropDown(!dropDown)}
                     onHoverBackgroundColor={"lightblue"}
-                backgroundColor={"lightgrey"}
+                backgroundColor={"white"}
                 color={"black"}>Сортировка</DropDownItem>
                 {dropDown && <DropDown  setDisciplines={setDisciplines}
                                         setVisibility={setDropDown} />}

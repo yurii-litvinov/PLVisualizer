@@ -12,7 +12,6 @@ export const Button = styled.button<buttonProps>`
   backface-visibility: hidden;
   background-color: ${props => props.backgroundColor};
   border-radius: 32px;
-  border-style: none;
   box-sizing: border-box;
   color: ${props => props.color};
   cursor: pointer;

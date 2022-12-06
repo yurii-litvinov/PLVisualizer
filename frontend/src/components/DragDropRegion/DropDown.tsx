@@ -42,13 +42,13 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) =>
     return <>
         <DropDownItem onClick={sortByTerm} 
                       style={{width: "75%"}}
-                        backgroundColor={"lightgrey"}
+                        backgroundColor={"white"}
                         onHoverBackgroundColor={"lightblue"}
                         color={"black"}>По семестру
         </DropDownItem>
         <DropDownItem onClick={sortByProgram}
                       style={{width: "75%"}}
-                      backgroundColor={"lightgrey"}
+                      backgroundColor={"white"}
                       onHoverBackgroundColor={"lightblue"}
                       color={"black"}>По учебной программе
         </DropDownItem>

@@ -1,5 +1,5 @@
 import React, {Dispatch, FC, SetStateAction} from "react";
-import {XlsxForm} from "./XlsxForm";
+import {ExcelForm} from "./ExcelForm";
 import {FormControlLabel, RadioGroup, Radio} from "@mui/material";
 import styled from "styled-components";
 
@@ -27,7 +27,7 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
                     <FormControlLabel control={<Radio />} label={'.xlsx файл'} value={'xlsx файл'}  />
                 </RadioGroup>
         </fieldset>
-         {xlsxForm && <XlsxForm formData={formData} setFormData={setFormData}/>}
+         {xlsxForm && <ExcelForm formData={formData} setFormData={setFormData}/>}
         </Container>
     )
 }
