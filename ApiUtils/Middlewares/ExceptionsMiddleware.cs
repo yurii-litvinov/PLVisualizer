@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using PlVisualizer.Api.Dto;
 using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
@@ -34,7 +35,8 @@ public class ExceptionsMiddleware
 
     private static async Task WriteExceptionAsync(HttpContext context, Exception exception, int statusCode)
     {
-        var result = JsonConvert.SerializeObject(exception);
+        var response = new Response { Content = exception.Message, StatusCode = statusCode };
+        var result = JsonConvert.SerializeObject(response);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsync(result);
