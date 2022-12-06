@@ -14,9 +14,8 @@ public class TestDocxClient
 {
     private IDocxClient docxClient = new DocxClient();
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
-    private IExcelClient ExcelClient;
+    private IExcelClient excelClient;
     
-
     private static object[] getLecturersWithDisciplinesTestCases =
     {
         new Lecturer[]
@@ -69,8 +68,8 @@ public class TestDocxClient
     {
         var spreadsheetDocument =
             spreadsheetProvider.GetSpreadsheetDocument("../../../TestDocxClient/LargeFileTest.xlsx");
-        ExcelClient = new ExcelClient();
-        var tableRows = ExcelClient.GetTableRows(spreadsheetDocument);
+        excelClient = new ExcelClient();
+        var tableRows = excelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)

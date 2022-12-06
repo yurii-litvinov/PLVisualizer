@@ -17,7 +17,7 @@ public class TestLecturersConfiguration
     private IGoogleClient googleClient = new GoogleClient();
     private IExcelClient excelClient = new ExcelClient();
     private string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
-    private static string largeExcelFilePath = "../../../TestDocxClient/LargeFileTest.xlsx";
+    private static string largeExcelFilePath = "TestDocxClient/LargeFileTest.xlsx";
 
     private static string lecturerWithoutPracticesExcelPath =
         "../../../TestLecturersConfiguration/SingleLecturerWithoutPracticesTest.xlsx";
@@ -127,6 +127,4 @@ public class TestLecturersConfiguration
             Assert.AreEqual(expectedLecturer.DistributedLoad, lecturer?.DistributedLoad);
         }
     }
-    
-    
 }

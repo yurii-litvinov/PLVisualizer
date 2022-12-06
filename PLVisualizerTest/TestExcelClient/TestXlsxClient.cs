@@ -39,7 +39,7 @@ public class TestExcelClient
     public void Test_ExcelClient_ReturnsCorrectModels()
     {
         var spreadsheetDocument =
-            spreadsheetProvider.GetSpreadsheetDocument("../../../TestExcelClient/SmallFileTest.xlsx");
+            spreadsheetProvider.GetSpreadsheetDocument("TestExcelClient/SmallFileTest.xlsx");
         var tableRows = excelClient.GetTableRows(spreadsheetDocument);
         Assert.AreEqual(2, tableRows.Length);
         for (var i = 0; i < tableRows.Length; i++)

@@ -9,8 +9,6 @@ WORKDIR /source
 COPY ["PLVisualizer.Api/PLVisualizer.Api.csproj", "PLVisualizer.Api/"]
 COPY ["PLVisualizer.Api.Dto/PLVisualizer.Api.Dto.csproj", "PLVisualizer.Api.Dto/"]
 COPY ["PLVisualizer.BusinessLogic/PLVisualizer.BusinessLogic.csproj", "PLVisualizer.BusinessLogic/"]
-#copy working plans preserving file structure
-COPY ["PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans", "/PLVisualizer.BusinessLogic/Clients/DocxClient/WorkingPlans"]
 COPY ["ApiUtils/ApiUtils.csproj", "ApiUtils/"]
 COPY ["curriculum-parser/CurriculumParser/CurriculumParser.csproj", "CurriculumParser/"]
 COPY ["Loggers/Loggers.csproj", "Loggers/"]
@@ -23,7 +21,6 @@ RUN dotnet publish "PLVisualizer.Api.csproj" -c Release -o /app/PLVisualizer.Api
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:6ca5c440d36869d4b83059cf16f111bb4dec371c08b6e935186cc696e89cc0ba
 #restore working plans preserving file structure
-COPY --from=build /PLVisualizer.BusinessLogic /PLVisualizer.BusinessLogic
 COPY --from=build /certificate /certificate
 WORKDIR /app
 COPY --from=publish /app/PLVisualizer.Api PLVisualizer.Api
