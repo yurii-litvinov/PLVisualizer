@@ -14,7 +14,6 @@ public class DocxClient : IDocxClient
         return lecturers;
     }
     
-    
     private static Dictionary<string, Lecturer> GetLecturersWithUnmergedDisciplines(IEnumerable<ExcelTableRow> tableRows)
     {
         var lecturers = new Dictionary<string, Lecturer>();
@@ -26,9 +25,8 @@ public class DocxClient : IDocxClient
             var curriculumCode = groupedByProgramRow.Key
                     [1..groupedByProgramRow.Key.IndexOf(':')] // slicing № and title
                 .Replace(',', '-');
-
-            var pathTemplate = "Clients/DocxClient/WorkingPlans";
-            var curriculumPath = GetFullCurriculumCode(pathTemplate, curriculumCode);
+            
+            var curriculumPath = GetFullCurriculumCode(curriculumCode);
             var parser = new DocxCurriculum(curriculumPath);
             var curriculumTitle =
                 curriculumPath[(curriculumPath.LastIndexOfAny(new char[]{'/', '\\'}) + 1)..curriculumPath.LastIndexOf('.')];
@@ -136,8 +134,9 @@ public class DocxClient : IDocxClient
         }
     }
 
-    private static string GetFullCurriculumCode(string pathTemplate, string curriculumCode)
+    private static string GetFullCurriculumCode(string curriculumCode)
     {
+        var pathTemplate = "Clients/DocxClient/WorkingPlans";
         var workingPlans = Directory.GetFiles(pathTemplate);
         return workingPlans.FirstOrDefault(plan => plan.Contains(curriculumCode)) ?? string.Empty;
     }
@@ -231,5 +230,4 @@ public class DocxClient : IDocxClient
         if (discipline.Content.Contains("[Лекции]")) return "Лекции";
         return string.Empty;
     }
-         
 }
