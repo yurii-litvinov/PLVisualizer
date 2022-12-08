@@ -25,7 +25,8 @@ export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , on
     }
     return(
     <Modal onClose={onClose} title={'Экспортирование таблицы'} onSubmit={handleExportSubmit}>
-        <GoogleForm setUrl={setExportUrl}></GoogleForm>
+        <GoogleForm setUrl={setExportUrl}
+        placeholder={'Ссылка на Google Spreadsheet таблицу'}></GoogleForm>
         {loading && <LoadingSpinnerContainer>
             <ColorRing
                 visible={true}

@@ -15,7 +15,6 @@ export const Button = styled.button<buttonProps>`
   box-sizing: border-box;
   color: ${props => props.color};
   cursor: pointer;
-  font-family: "Segoe UI";
   font-size: 16px;
   font-weight: 600;
   letter-spacing: normal;

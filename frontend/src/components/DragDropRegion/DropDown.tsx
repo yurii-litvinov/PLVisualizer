@@ -1,14 +1,13 @@
-import {Dispatch, FC, SetStateAction} from "react";
+import {Dispatch, FC, SetStateAction, useState} from "react";
 import {Discipline} from "../../Models/Discipline";
-import styled from "styled-components";
 import {DropDownItem} from "../Shared/DropDownItem";
 
 interface dropDownProps {
     setDisciplines: Dispatch<SetStateAction<Array<Discipline>>>
-    setVisibility : Dispatch<SetStateAction<boolean>>
 }
 
-export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) => {
+export const DropDown : FC<dropDownProps> = ({setDisciplines}) => {
+    const [dropDown, setDropDown] = useState(false)
     const sortByTerm = () => {
         setDisciplines( prevState => {
             return Array.from(prevState).sort((a, b) => {
@@ -21,7 +20,7 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) =>
                 return 0
             })
         })
-        setVisibility(value => !value)
+        setDropDown(value => !value)
     }
 
     const sortByProgram = () => {
@@ -36,10 +35,19 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) =>
                 return 0
             })
         })
-        setVisibility(value => !value)
+        setDropDown(value => !value)
     }
 
     return <>
+        <DropDownItem
+            onClick={() => setDropDown(value => !value)}
+            backgroundColor={"white"}
+            onHoverBackgroundColor={"lightblue"}
+            color = "black">
+            Сортировка
+        </DropDownItem>
+        {dropDown &&
+            <>
         <DropDownItem onClick={sortByTerm} 
                       style={{width: "75%"}}
                         backgroundColor={"white"}
@@ -51,12 +59,8 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines, setVisibility}) =>
                       backgroundColor={"white"}
                       onHoverBackgroundColor={"lightblue"}
                       color={"black"}>По учебной программе
-        </DropDownItem>
+        </DropDownItem></>}
     </>
 }
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-`
 

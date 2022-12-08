@@ -22,9 +22,9 @@ export const SelectImport : FC<selectImportProps> = ({setGoogleSSForm, setXlsxFo
         <Container>
         <fieldset>
             <legend>Способ импортирования таблицы</legend>
-                <RadioGroup onChange={toggleForm} defaultValue={'google spreadsheet таблица'}>
-                    <FormControlLabel control={<Radio />} label={'Google Spreadsheet таблица'} value={'google spreadsheet таблица'} />
-                    <FormControlLabel control={<Radio />} label={'.xlsx файл'} value={'xlsx файл'}  />
+                <RadioGroup onChange={toggleForm} defaultValue={'xlsx'}>
+                    <FormControlLabel control={<Radio />} label={'xlsx файл'} value={'xlsx'}  />
+                    <FormControlLabel control={<Radio />} label={'Google Spreadsheet таблица'} value={'google'} />
                 </RadioGroup>
         </fieldset>
          {xlsxForm && <ExcelForm formData={formData} setFormData={setFormData}/>}

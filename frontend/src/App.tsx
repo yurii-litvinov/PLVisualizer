@@ -10,7 +10,7 @@ import {ImportModal} from "./components/Modal/ImportModal";
 
 
 function App() {
-    const [importModal, setImportModal] = useState(false)
+    const [importModal, setImportModal] = useState(true)
     const [exportModal, setExportModal] = useState(false)
     const toggleImportModal = () => setImportModal(value => !value)
     const toggleExportModal = () => setExportModal(value => !value)

@@ -17,8 +17,8 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
     const [loading, setLoading] = useState(false)
     const [importUrl, setImportUrl] = useState('')
     const [formData, setFormData] = useState<FormData>(new FormData())
-    const [googleForm, setGoogleSSForm] = useState(true)
-    const [xlsxForm, setXlsxForm] = useState(false)
+    const [googleForm, setGoogleSSForm] = useState(false)
+    const [excelForm, setExcelForm] = useState(true)
 
     const handleImportSubmit = async () => {
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
@@ -42,9 +42,11 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
 
     return(
         <Modal onClose={onClose} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>
-            <SelectImport  xlsxForm={xlsxForm} setXlsxForm={setXlsxForm} setGoogleSSForm={setGoogleSSForm}
+            <SelectImport  xlsxForm={excelForm} setXlsxForm={setExcelForm} setGoogleSSForm={setGoogleSSForm}
                            formData={formData} setFormData={setFormData}/>
-            <GoogleForm setUrl={setImportUrl}/>
+            <GoogleForm setUrl={setImportUrl} placeholder={excelForm ?
+                'Ссылка на конфигурационную Google Spreadsheet таблицу' :
+            'Ссылка на Google Spreadsheet таблицу с преподавателями'}/>
             {loading && <LoadingSpinnerContainer>
                 <ColorRing
                     visible={true}

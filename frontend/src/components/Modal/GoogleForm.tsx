@@ -3,9 +3,10 @@ import styled from "styled-components";
 
 interface googleFormProps {
     setUrl: Dispatch<React.SetStateAction<string>>
+    placeholder : string
 }
 
-export const GoogleForm : FC<googleFormProps> = ({setUrl}) =>{
+export const GoogleForm : FC<googleFormProps> = ({setUrl, placeholder}) =>{
     const handleInputChange = (e : FormEvent<HTMLInputElement>) => {
         const newUrl = e.currentTarget.value
         setUrl( () => newUrl)
@@ -13,7 +14,7 @@ export const GoogleForm : FC<googleFormProps> = ({setUrl}) =>{
 
     return(
     <Container>
-        <InputContainer type={"text"}  placeholder={'Ссылка на Google Spreadsheet таблицу'}  onInput={handleInputChange}/>
+        <InputContainer type={"text"}  placeholder={placeholder}  onInput={handleInputChange}/>
     </Container>)
 }
 

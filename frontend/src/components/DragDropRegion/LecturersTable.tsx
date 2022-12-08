@@ -65,18 +65,18 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
 }
 
 const TableHeader = styled.div`
-    margin-left: 16px;
-    font-weight: 600;
-    display: flex;
-    flex-flow: row wrap;
-    transition: 0.5s`
+  margin-left: 16px;
+  font-weight: 600;
+  display: flex;
+  flex-flow: row wrap;
+  transition: 0.5s`
 
 const TableRow = styled.div`
-    display: flex;
-    box-sizing: border-box;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border: 1px solid lightblue;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 1px solid lightblue;
 `
 
 const NameCell = styled.div`
@@ -125,10 +125,9 @@ const StandardCell = styled.div`
 
 const TableContainer = styled.div`
   margin-top: 6%;
-    margin-left: 26%;
-    width: 100%;
-    display: flex;
-    flex-direction: column`
-
+  margin-left: 26%;
+  width: 100%;
+  display: flex;
+  flex-direction: column`
 
 

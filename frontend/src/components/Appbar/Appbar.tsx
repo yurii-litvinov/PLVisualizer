@@ -19,12 +19,11 @@ export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBar
 const AppBarContainer = styled.nav`
   position: fixed;
   color: white;
-  height: 80px;
+  height: 10%;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: "Segoe UI";
   background-image: linear-gradient(45deg, #282c34 0%, #251c34 100%);
 `
 

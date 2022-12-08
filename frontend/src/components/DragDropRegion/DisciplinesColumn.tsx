@@ -18,8 +18,6 @@ interface disciplinesListProps {
 }
 
 export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines, handleResetClick}) =>{
-    const [dropDown, setDropDown] = useState(false)
-
     return ( <Container>
             <TitleContainer>
                 <h3>Дисциплины</h3>
@@ -29,13 +27,7 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
                          backgroundColor={'white'}
                          onHoverBackgroundColor={'lightblue'}
                          onClick={handleResetClick}> Сбросить </Button>
-                <DropDownItem 
-                    onClick={() => setDropDown(!dropDown)}
-                    onHoverBackgroundColor={"lightblue"}
-                backgroundColor={"white"}
-                color={"black"}>Сортировка</DropDownItem>
-                {dropDown && <DropDown  setDisciplines={setDisciplines}
-                                        setVisibility={setDropDown} />}
+                 <DropDown  setDisciplines={setDisciplines}/>
             <Droppable droppableId={'column'}>
                 {(provided, snapshot) =>(
                     <DisciplinesList ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
@@ -50,7 +42,7 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
 }
 
 const Container = styled.div`
-  margin-top: 6%;
+  margin-top: 6.5%;
   position: fixed;
   overflow-x: hidden;
   height: 750px;
