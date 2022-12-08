@@ -65,7 +65,7 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
 }
 
 const TableHeader = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   font-weight: 600;
   display: flex;
   flex-flow: row wrap;
@@ -80,16 +80,16 @@ const TableRow = styled.div`
 `
 
 const NameCell = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 10%`
 const PostCell = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 10%`
 const InterestRateCell = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 10%`
 const DisciplinesCell = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 40%`
 
 interface distributedLoadCellProps {
@@ -116,11 +116,11 @@ const getCellColor = (loadType: string) : string =>{
     return 'white'
 }
 const DistributedLoadCell = styled.div<distributedLoadCellProps>`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 15%;
   background-color: ${(props) =>  getCellColor(props.loadType)}`
 const StandardCell = styled.div`
-  margin-left: 16px;
+  margin-left: 8px;
   width: 5%; `
 
 const TableContainer = styled.div`
