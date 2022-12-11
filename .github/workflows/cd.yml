@@ -25,10 +25,10 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }} 
       - 
         name: Build api
-        run: docker build . -t pedagogical-load-visualizer/api
+        run: docker build . -t oveeernight/pedagogical-load-visualizer:api
       -  
         name: Build frontend 
-        run: docker build ./frontend -t pedagogical-load-visualizer/frontend
+        run: docker build . -t oveeernight/pedagogical-load-visualizer:frontend
       - 
         name: Docker push
         run: |
