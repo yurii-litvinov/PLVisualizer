@@ -2,6 +2,9 @@
 
 namespace PlVisualizer.Api.Dto.Tables;
 
+/// <summary>
+/// Represents lecturer
+/// </summary>
 public class Lecturer
 {
     public string Name { get; set; } = string.Empty;

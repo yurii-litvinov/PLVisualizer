@@ -1,5 +1,8 @@
 ﻿namespace PlVisualizer.Api.Dto.Tables;
 
+/// <summary>
+/// Represents model of row in configuration table
+/// </summary>
 public class ConfigTableRow
 {
     public string LecturerName { get; set; }

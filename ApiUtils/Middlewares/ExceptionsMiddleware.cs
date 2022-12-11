@@ -7,6 +7,9 @@ using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 
 namespace ApiUtils.Middlewares;
 
+/// <summary>
+/// Represents middleware that handles exceptions occuring in application
+/// </summary>
 public class ExceptionsMiddleware
 {
     private RequestDelegate next;

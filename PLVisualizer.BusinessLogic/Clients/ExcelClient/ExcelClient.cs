@@ -15,12 +15,11 @@ public class ExcelClient : IExcelClient
         var tableRows = new List<ExcelTableRow>();
 
         var (workbookPart, sheetData) = OpenExcelSheet(spreadsheetDocument);
-        
+
         var rows = sheetData.Elements<Row>();
-       
         
         tableRows.AddRange(rows.Skip(1).Select(row => row.Elements<Cell>().ToArray())
-            .Where(cells => cells.Length > 0)
+            .Where(cells => cells.Length > 0 && GetCellValue(cells[0], workbookPart).Length > 0)
             .Select(cells => new ExcelTableRow
             {
                 Term = int.Parse(GetCellValue(cells[0], workbookPart).Replace("Семестр", string.Empty).Trim()),

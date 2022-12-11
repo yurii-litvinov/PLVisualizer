@@ -3,6 +3,9 @@ using System.Security.AccessControl;
 
 namespace PlVisualizer.Api.Dto.Tables;
 
+/// <summary>
+/// Represents model of row in xlsx file
+/// </summary>
 public class ExcelTableRow
 {
     /// <summary>

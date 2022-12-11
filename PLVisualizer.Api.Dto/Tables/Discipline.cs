@@ -2,6 +2,9 @@
 
 namespace PlVisualizer.Api.Dto.Tables;
 
+/// <summary>
+/// Represents discipline
+/// </summary>
 public class Discipline
 {
     public Guid Id { get; set; }

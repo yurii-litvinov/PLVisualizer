@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace ApiUtils.Middlewares;
 
+/// <summary>
+/// Represents middleware that writes logs of input network requests
+/// </summary>
 public class RequestLoggingMiddleware
 {
     private ILogger logger;
