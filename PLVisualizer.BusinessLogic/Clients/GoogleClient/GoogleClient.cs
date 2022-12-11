@@ -1,10 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using DocumentFormat.OpenXml.Vml.Office;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4.Data;
-using Newtonsoft.Json;
 using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Google.Apis.Sheets.v4;
@@ -78,7 +75,7 @@ public class GoogleClient : IGoogleClient
         var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
         var response = await request.ExecuteAsync();
         var values = response.Values.Skip(1).ToArray();
-        return ToLecturersModel(values);
+        return ToLecturerModels(values);
     }
 
     public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId, string sheetTitle)
@@ -124,7 +121,7 @@ public class GoogleClient : IGoogleClient
             .ToArray();
     }
     
-    private  static Lecturer[] ToLecturersModel(IList<IList<object>> lecturers)
+    private  static Lecturer[] ToLecturerModels(IList<IList<object>> lecturers)
     {
         // otherwise response from google will contain 4 elements in a row
         const int lecturerHeaderCount = 6;
@@ -139,14 +136,6 @@ public class GoogleClient : IGoogleClient
                 var disciplineContent = lecturers[i][3].ToString() ?? string.Empty;
                 var discipline = CreateDiscipline(disciplineContent);
                 disciplines.Add(discipline);
-
-                if (i == lecturers.Count - 1 || lecturers[i + 1].Count == lecturerHeaderCount)
-                {
-                    lecturer.Disciplines = disciplines;
-                    models.Add(lecturer);
-                    disciplines = new List<Discipline>();
-                    lecturer = new Lecturer();
-                }
             }
             else
             {
@@ -156,6 +145,13 @@ public class GoogleClient : IGoogleClient
                 disciplines.Add(CreateDiscipline(lecturers[i][3].ToString() ?? string.Empty));
                 lecturer.DistributedLoad = int.Parse(lecturers[i][4].ToString() ?? string.Empty);
                 lecturer.Standard = int.Parse(lecturers[i][5].ToString() ?? string.Empty);
+            }
+            if (i == lecturers.Count - 1 || lecturers[i + 1].Count == lecturerHeaderCount)
+            {
+                lecturer.Disciplines = disciplines;
+                models.Add(lecturer);
+                disciplines = new List<Discipline>();
+                lecturer = new Lecturer();
             }
         }
 
