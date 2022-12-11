@@ -14,6 +14,11 @@ jobs:
       -  
         name: Checkout repository
         uses: actions/checkout@v3
+      -
+        name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
       -   
         name: Add submodules
         run: git submodule init && git submodule update
