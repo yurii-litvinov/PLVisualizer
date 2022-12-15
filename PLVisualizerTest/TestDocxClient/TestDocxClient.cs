@@ -14,7 +14,7 @@ public class TestDocxClient
 {
     private IDocxClient docxClient = new DocxClient();
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
-    private IExcelClient excelClient;
+    private IExcelClient excelClient = new ExcelClient();
     
     private static object[] getLecturersWithDisciplinesTestCases =
     {
@@ -67,7 +67,7 @@ public class TestDocxClient
     public void Test_DocxClient_ReturnsCorrectLecturersModel(IList<Lecturer> expectedLecturers)
     {
         var spreadsheetDocument =
-            spreadsheetProvider.GetSpreadsheetDocument("../../../TestDocxClient/LargeFileTest.xlsx");
+            spreadsheetProvider.GetSpreadsheetDocument("TestDocxClient/LargeFileTest.xlsx");
         excelClient = new ExcelClient();
         var tableRows = excelClient.GetTableRows(spreadsheetDocument);
         var lecturers = docxClient.GetLecturersWithDisciplines(tableRows).Values.ToArray();

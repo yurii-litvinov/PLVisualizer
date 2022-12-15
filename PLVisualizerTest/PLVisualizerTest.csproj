@@ -20,13 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="XlsxClientTest\test.xlsx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="TestLecturersConfiguration\SingleLecturerWithoutPracticesTest.xlsx">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Update="TestExcelClient\SmallFileTest.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="TestLecturersConfiguration\SingleLecturerTest.xlsx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="TestDocxClient\LargeFileTest.xlsx">

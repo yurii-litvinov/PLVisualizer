@@ -9,7 +9,7 @@ public abstract class PLVisualizerExceptionBase : Exception
         
     }
 
-    public PLVisualizerExceptionBase()
+    protected PLVisualizerExceptionBase()
     {
         
     }

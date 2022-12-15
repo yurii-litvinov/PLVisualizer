@@ -6,11 +6,12 @@
 public class Response
 {
     /// <summary>
-    /// Status code
-    /// </summary>
-    public int StatusCode { get; set; }
-    /// <summary>
     /// Exception message
     /// </summary>
     public string Content { get; set; }
+    
+    /// <summary>
+    /// Exception
+    /// </summary>
+    public Exception Exception { get; set; }
 }

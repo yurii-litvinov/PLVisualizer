@@ -20,7 +20,6 @@ WORKDIR /source/PLVisualizer.Api
 RUN dotnet publish "PLVisualizer.Api.csproj" -c Release -o /app/PLVisualizer.Api
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:6ca5c440d36869d4b83059cf16f111bb4dec371c08b6e935186cc696e89cc0ba
-#restore working plans preserving file structure
 COPY --from=build /certificate /certificate
 WORKDIR /app
 COPY --from=publish /app/PLVisualizer.Api PLVisualizer.Api

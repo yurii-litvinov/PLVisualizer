@@ -1,4 +1,5 @@
-﻿using CurriculumParser;
+﻿using System.Reflection.Metadata.Ecma335;
+using CurriculumParser;
 using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
@@ -106,8 +107,8 @@ public class DocxClient : IDocxClient
                             groupedByWorkTypeDiscipline.Count() != firstGroupCount && 
                             groupedByWorkTypeDiscipline.Key.ToLower() != "лекции"))
                     {
-                        throw new InvalidDisciplineWorkTypesCountException($"{groupedByCodeDiscipline.Key} discipline " +
-                                                                           $"in {groupedByTermDiscipline.Key} term do not form equal groups");
+                        throw new InvalidDisciplineWorkTypesCountException(
+                            $"Дисциплина {groupedByCodeDiscipline.Key} в семестре {groupedByTermDiscipline.Key} не образует одинаковые копии для каждой группы");
                     }
                     
                     contactLoad = groupedByWorkTypeDisciplines.Sum(group => group.First().ContactLoad);
@@ -169,8 +170,8 @@ public class DocxClient : IDocxClient
             : $"{discipline.RussianName} ({realization})";
         
         var index = GetIndexByWorkType(workType);
-        var contactLoad = workHours[index];
-        // if discipline has a credit and an exam we divine attestation by 2
+        var contactLoad = index != -1 ? workHours[index] : 0;
+        // if discipline has a credit and an exam we divide attestation by 2
         if (implementation.MonitoringTypes.Contains(' ') && workType.Contains("Промежуточная аттестация"))
         {
             contactLoad /= 2;
@@ -202,6 +203,9 @@ public class DocxClient : IDocxClient
 
     private static int GetIndexByWorkType(string workType)
     {
+        // cases when some info provided in brackets
+        if (workType.ToLower().Contains("промежуточная аттестация")) return 8;
+        if (workType.ToLower().Contains("текущий контроль")) return 7;
         return workType.ToLower() switch
         {
             "лекции" => 0,
@@ -211,9 +215,6 @@ public class DocxClient : IDocxClient
             "лабораторные работы" => 4,
             "контрольные работы" => 5,
             "коллоквиумы" => 6,
-            "текущий контроль" => 7,
-            "промежуточная аттестация (экз)" => 8,
-            "промежуточная аттестация (зач)" => 8,
             "в присутствии преподавателя" => 10,
             _ => -1
         };

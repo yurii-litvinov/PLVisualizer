@@ -2,15 +2,15 @@
 
 services:
   frontend:
-    image: frontend:latest
+    image: oveeernight/pedagogical-load-visualizer:frontend
     build:
       context: frontend
       dockerfile: .dockerfile
     ports:
       - "3000:3000"
       
-  backend:
-    image: backend:latest
+  api:
+    image: oveeernight/pedagogical-load-visualizer:api
     environment: 
        - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/credentials.json
        - ASPNETCORE_ENVIRONMENT=Production

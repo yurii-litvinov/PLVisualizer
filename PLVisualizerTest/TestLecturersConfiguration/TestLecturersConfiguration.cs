@@ -20,7 +20,7 @@ public class TestLecturersConfiguration
     private static string largeExcelFilePath = "TestDocxClient/LargeFileTest.xlsx";
 
     private static string lecturerWithoutPracticesExcelPath =
-        "../../../TestLecturersConfiguration/SingleLecturerWithoutPracticesTest.xlsx";
+        "TestLecturersConfiguration/SingleLecturerTest.xlsx";
 
     [SetUp]
     public void Setup()

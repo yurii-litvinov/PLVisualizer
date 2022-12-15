@@ -27,13 +27,18 @@ public class ExcelClient : IExcelClient
                 PedagogicalTask = GetCellValue(cells[2], workbookPart),
                 DisciplineName = GetCellValue(cells[3], workbookPart),
                 WorkType = GetCellValue(cells[4], workbookPart),
-                Lecturer = GetCellValue(cells[5], workbookPart),
+                Lecturer = RetrieveLecturer(GetCellValue(cells[5], workbookPart)),
                 SAPSubdivision2 = GetCellValue(cells[6], workbookPart),
                 SAPSubdivision1 = GetCellValue(cells[7], workbookPart),
                 EducationalProgram = GetCellValue(cells[8], workbookPart)
             }));
 
         return tableRows.ToArray();
+    }
+
+    private static string RetrieveLecturer(string cellValue)
+    {
+        return cellValue[..cellValue.IndexOf(',')];
     }
 
     private static string GetCellValue(Cell cell, WorkbookPart workbookPart)

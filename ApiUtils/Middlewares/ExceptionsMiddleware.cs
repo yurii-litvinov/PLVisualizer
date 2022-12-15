@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Google;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using PlVisualizer.Api.Dto;
@@ -25,20 +26,26 @@ public class ExceptionsMiddleware
         {
             await next(context);
         }
-        catch (PLVisualizerExceptionBase exceptionBase)
-        {
-            // add switch case some day ?
-            await WriteExceptionAsync(context, exceptionBase, exceptionBase.StatusCode);
-        }
         catch (Exception exception)
         {
-            await WriteExceptionAsync(context, exception, 500);
+            if (exception is PLVisualizerExceptionBase baseException)
+            {
+                await WriteExceptionAsync(context, baseException, baseException.StatusCode);
+            }
+            else if (exception is GoogleApiException googleApiException)
+            {
+                
+            }
+            else
+            {
+                await WriteExceptionAsync(context, exception, 500);
+            }
         }
     }
 
     private static async Task WriteExceptionAsync(HttpContext context, Exception exception, int statusCode)
     {
-        var response = new Response { Content = exception.Message, StatusCode = statusCode };
+        var response = new Response { Content = exception.Message, Exception = exception};
         var result = JsonConvert.SerializeObject(response);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";
