@@ -6,19 +6,21 @@ import {ITablesClient} from "../../clients/TablesClient";
 import {SelectImport} from "./SelectImport";
 import styled from "styled-components";
 import {ColorRing} from "react-loader-spinner";
+import {Response} from "../../Models/Response";
 
 interface importModalProps{
     setLecturers: Dispatch<SetStateAction<Lecturer[]>>
-    onClose: () => void
+    closeModal: () => void
     tablesClient : ITablesClient
 }
 
-export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers , onClose}) => {
+export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers , closeModal}) => {
     const [loading, setLoading] = useState(false)
     const [importUrl, setImportUrl] = useState('')
     const [formData, setFormData] = useState<FormData>(new FormData())
     const [googleForm, setGoogleSSForm] = useState(false)
     const [excelForm, setExcelForm] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
     const handleImportSubmit = async () => {
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
@@ -26,10 +28,17 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
         const spreadsheetId = matches![0];
         setLoading(value => !value)
         if (googleForm){
-            await tablesClient.importTableViaLecturersTableAsync(spreadsheetId).then(response => {
+            await tablesClient.importTableViaLecturersTableAsync(spreadsheetId)
+                .then(response => {
                 const {data} = response
-                setLecturers(prevState => data)
+                setLecturers(() => data)
             })
+                .catch(function (error) {
+                    if (error.response) {
+                        const jsonResponse =  JSON.stringify(error.response.data)
+                        const response : Response = JSON.parse(jsonResponse)
+                        setError(prevState => response.content )
+                    }})
         }
         else {
             await tablesClient.importTableViaConfigAsync(spreadsheetId, formData).then(response =>{
@@ -38,10 +47,11 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                 }).catch(error => console.error())
             }
         setLoading(value => !value)
+        if (!error) closeModal()
         }
 
     return(
-        <Modal onClose={onClose} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>
+        <Modal onClose={closeModal} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>
             <SelectImport  xlsxForm={excelForm} setXlsxForm={setExcelForm} setGoogleSSForm={setGoogleSSForm}
                            formData={formData} setFormData={setFormData}/>
             <GoogleForm setUrl={setImportUrl} placeholder={excelForm ?
@@ -59,6 +69,7 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                     colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
                 />
             </LoadingSpinnerContainer>}
+            {error && <div>{error}</div>}
         </Modal>)
 }
 

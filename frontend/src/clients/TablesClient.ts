@@ -1,5 +1,4 @@
 import axios, {AxiosResponse} from "axios";
-import {Discipline} from "../Models/Discipline";
 import {Lecturer} from "../Models/Lecturer";
 
 

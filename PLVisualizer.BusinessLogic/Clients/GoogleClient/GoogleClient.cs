@@ -98,14 +98,14 @@ public class GoogleClient : IGoogleClient
             { new List<object>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка", "Норматив"} };
         foreach (var lecturer in lecturers)
         {
+            if (lecturer.Disciplines.Count == 0)
+            {
+                values.Add(new List<object>() 
+                    {lecturer.Name, lecturer.Post, lecturer.InterestRate, string.Empty, lecturer.DistributedLoad, lecturer.Standard});
+            }
             values.AddRange(lecturer.Disciplines.Select(discipline => new List<object>
             {
-                lecturer.Name,
-                lecturer.Post,
-                lecturer.InterestRate,
-                discipline.Content,
-                lecturer.DistributedLoad,
-                lecturer.Standard
+                lecturer.Name, lecturer.Post, lecturer.InterestRate, discipline.Content, lecturer.DistributedLoad, lecturer.Standard
             }));
         }
 
@@ -121,32 +121,35 @@ public class GoogleClient : IGoogleClient
             .ToArray();
     }
     
-    private  static Lecturer[] ToLecturerModels(IList<IList<object>> lecturers)
+    private  static Lecturer[] ToLecturerModels(IList<IList<object>> values)
     {
         // otherwise response from google will contain 4 elements in a row
         const int lecturerHeaderCount = 6;
         var models = new List<Lecturer>();
         var disciplines = new List<Discipline>();
         var lecturer = new Lecturer();
-        for(var i = 0; i < lecturers.Count; i++)
+        for(var i = 0; i < values.Count; i++)
         {
             //iterating through the same lecturer disciplines
-            if (lecturers[i].Count != lecturerHeaderCount)
+            if (values[i].Count != lecturerHeaderCount)
             { 
-                var disciplineContent = lecturers[i][3].ToString() ?? string.Empty;
+                var disciplineContent = values[i][3].ToString() ?? string.Empty;
                 var discipline = CreateDiscipline(disciplineContent);
                 disciplines.Add(discipline);
             }
             else
             {
-                lecturer.Name = lecturers[i][0].ToString() ?? string.Empty;
-                lecturer.Post = lecturers[i][1].ToString() ?? string.Empty;
-                lecturer.InterestRate = int.Parse(lecturers[i][2].ToString() ?? string.Empty);
-                disciplines.Add(CreateDiscipline(lecturers[i][3].ToString() ?? string.Empty));
-                lecturer.DistributedLoad = int.Parse(lecturers[i][4].ToString() ?? string.Empty);
-                lecturer.Standard = int.Parse(lecturers[i][5].ToString() ?? string.Empty);
+                lecturer.Name = values[i][0].ToString() ?? string.Empty;
+                lecturer.Post = values[i][1].ToString() ?? string.Empty;
+                lecturer.InterestRate = int.Parse(values[i][2].ToString() ?? string.Empty);
+                if (values[i][3].ToString() != string.Empty)
+                {
+                    disciplines.Add(CreateDiscipline(values[i][3].ToString() ?? string.Empty));
+                }
+                lecturer.DistributedLoad = int.Parse(values[i][4].ToString() ?? string.Empty);
+                lecturer.Standard = int.Parse(values[i][5].ToString() ?? string.Empty);
             }
-            if (i == lecturers.Count - 1 || lecturers[i + 1].Count == lecturerHeaderCount)
+            if (i == values.Count - 1 || values[i + 1].Count == lecturerHeaderCount)
             {
                 lecturer.Disciplines = disciplines;
                 models.Add(lecturer);

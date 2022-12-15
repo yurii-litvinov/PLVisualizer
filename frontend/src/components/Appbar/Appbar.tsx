@@ -5,13 +5,14 @@ import {Actions} from "./Actions";
 export interface appBarProps{
     onImportClick: () => void
     onExportClick: () => void
+    onHelpClick: () => void
 }
 
-export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick} : appBarProps) => {
+export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick, onHelpClick} : appBarProps) => {
     return(
         <AppBarContainer>
             <AppNameContainer> PLVisualizer </AppNameContainer>
-            <Actions onExportClick={onExportClick} onImportClick={onImportClick}  />
+            <Actions onExportClick={onExportClick} onImportClick={onImportClick}  onHelpClick={onHelpClick} />
         </AppBarContainer>
     )
 }

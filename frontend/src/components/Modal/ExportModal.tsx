@@ -7,24 +7,24 @@ import {ColorRing} from "react-loader-spinner";
 import styled from "styled-components";
 
 interface exportModalProps{
-    onClose: () => void
+    closeModal: () => void
     tablesClient: ITablesClient
     lecturers: Lecturer[]
 }
 
-export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , onClose}) => {
-    const [loading, setLodaing] = useState(false)
+export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , closeModal}) => {
+    const [loading, setLoading] = useState(false)
     const [exportUrl, setExportUrl] = useState('')
     const handleExportSubmit = async () => {
-        setLodaing(value => !value)
+        setLoading(value => !value)
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
         const matches = regExp.exec(exportUrl)
         const spreadsheetId = matches![0];
         await tablesClient.exportTableAsync(spreadsheetId, lecturers)
-        setLodaing(value => !value)
+        setLoading(value => !value)
     }
     return(
-    <Modal onClose={onClose} title={'Экспортирование таблицы'} onSubmit={handleExportSubmit}>
+    <Modal onClose={closeModal} title={'Экспортирование таблицы'} onSubmit={handleExportSubmit}>
         <GoogleForm setUrl={setExportUrl}
         placeholder={'Ссылка на Google Spreadsheet таблицу'}></GoogleForm>
         {loading && <LoadingSpinnerContainer>
