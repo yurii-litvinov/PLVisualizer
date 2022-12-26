@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using CurriculumParser;
+using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
@@ -28,10 +29,10 @@ public class DocxClient : IDocxClient
                 .Replace(',', '-');
             
             var curriculumPath = GetFullCurriculumCode(curriculumCode);
-            var parser = new DocxCurriculum(curriculumPath);
+            var curriculum = new DocxCurriculum(curriculumPath);
             var curriculumTitle =
                 curriculumPath[(curriculumPath.LastIndexOfAny(new char[]{'/', '\\'}) + 1)..curriculumPath.LastIndexOf('.')];
-            var parserDisciplines = parser.Disciplines;
+            var parserDisciplines = curriculum.Disciplines;
             foreach (var tableRow in groupedByProgramRow)
             {
                 var disciplineCode = tableRow.PedagogicalTask[..tableRow.PedagogicalTask.IndexOf(' ')];
@@ -64,6 +65,11 @@ public class DocxClient : IDocxClient
         return lecturers;
     }
 
+    /// <summary>
+    /// Merges disciplines into disciplines with common work types.
+    /// </summary>
+    /// <param name="lecturers">Lecturers with unmerged disciplines.</param>
+    /// <exception cref="InvalidDisciplineWorkTypesCountException">Throws when practical disciplines can not be grouped into equal groups.</exception>
     private static void MergeLecturersDisciplines(Dictionary<string, Lecturer> lecturers)
     {
         foreach (var (_, lecturer) in lecturers)
@@ -135,26 +141,45 @@ public class DocxClient : IDocxClient
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="curriculumCode">Code of curriculum</param>
+    /// <exception cref="PLVisualizerApiNotFoundException">Throws when unable to find appropriate working plan.</exception>
     private static string GetFullCurriculumCode(string curriculumCode)
     {
         var pathTemplate = "Clients/DocxClient/WorkingPlans";
         var workingPlans = Directory.GetFiles(pathTemplate);
-        return workingPlans.FirstOrDefault(plan => plan.Contains(curriculumCode)) ?? string.Empty;
+        var workingPlan = workingPlans.FirstOrDefault(plan => plan.Contains(curriculumCode));
+        if (workingPlan == null)
+        {
+            throw new WorkingPlanNotFoundException(
+                $"Could not find working plan appropriate to {curriculumCode} code");
+        }
+
+        return workingPlan;
     }
     
-    private static Discipline CreateDiscipline(CurriculumParser.Discipline discipline,
-            ExcelTableRow tableRow,
-            string curriculumCode)
+    private static Discipline CreateDiscipline(
+        CurriculumParser.Discipline discipline,
+        ExcelTableRow tableRow,
+        string curriculumCode)
     {
         var term = tableRow.Term;
-        var implementation = discipline.Implementations.First(implementation => implementation.Semester == term);
+        var implementation = discipline.Implementations.FirstOrDefault(implementation => implementation.Semester == term);
+        if (implementation == null)
+        {
+            throw new DisciplineNotFoundException(
+                $"Could not find {discipline.Code} {discipline.RussianName} in {term} semester");
+        }
         
-        const int practicesColumn = 3;
-        const int lecturesColumn = 0;
         
         var workType = tableRow.WorkType;
-        var workHours = GetDisciplineWorkHours(implementation);
+        var workHours = GetImplementationWorkHours(implementation);
+        
         var commonWorkType = string.Empty;
+        const int practicesColumn = 3;
+        const int lecturesColumn = 0;
         if (IsLecturerType(workType) && workHours[practicesColumn] != 0)
         {
             commonWorkType = "Лекции";
@@ -164,13 +189,16 @@ public class DocxClient : IDocxClient
             commonWorkType = "Практики";
         }
         
+        // specifies realization work education practices etc
         var realization = discipline.Implementations.First().Realization;
         var disciplineName = realization == null
             ? discipline.RussianName
             : $"{discipline.RussianName} ({realization})";
         
-        var index = GetIndexByWorkType(workType);
+        var index = GetWorkTypeIndex(workType);
+        // if appropriate work type not found or does not contain hours of contact load
         var contactLoad = index != -1 ? workHours[index] : 0;
+        
         // if discipline has a credit and an exam we divide attestation by 2
         if (implementation.MonitoringTypes.Contains(' ') && workType.Contains("Промежуточная аттестация"))
         {
@@ -191,8 +219,12 @@ public class DocxClient : IDocxClient
             WorkType = workType
         };
     }
-
-    private static int[] GetDisciplineWorkHours(DisciplineImplementation implementation)
+    
+    /// <summary>
+    /// Gets array of implementation work hours corresponding to working plan work hours row.
+    /// </summary>
+    /// <param name="implementation">Discipline implementation.</param>
+    private static int[] GetImplementationWorkHours(DisciplineImplementation implementation)
     {
         return implementation
             .WorkHours
@@ -200,8 +232,12 @@ public class DocxClient : IDocxClient
             .Select(int.Parse)
             .ToArray();
     }
-
-    private static int GetIndexByWorkType(string workType)
+    
+    /// <summary>
+    /// Gets column corresponding to work type in working plan.
+    /// </summary>
+    /// <param name="workType">Work type.</param>
+    private static int GetWorkTypeIndex(string workType)
     {
         // cases when some info provided in brackets
         if (workType.ToLower().Contains("промежуточная аттестация")) return 8;
@@ -225,6 +261,10 @@ public class DocxClient : IDocxClient
         return (workType.ToLower() is "лекции" or "коллоквиумы" or "промежуточная аттестация (экз)" or "консультации");
     }
 
+    /// <summary>
+    /// Gets common work type of discipline.
+    /// </summary>
+    /// <param name="discipline">Discipline.</param>
     private static string GetCommonWorkType(Discipline discipline)
     {
         if (discipline.Content.Contains("[Практики]")) return "Практики";

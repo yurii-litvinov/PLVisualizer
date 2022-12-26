@@ -14,6 +14,7 @@ interface importModalProps{
     tablesClient : ITablesClient
 }
 
+
 export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers , closeModal}) => {
     const [loading, setLoading] = useState(false)
     const [importUrl, setImportUrl] = useState('')
@@ -37,7 +38,8 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                     if (error.response) {
                         const jsonResponse =  JSON.stringify(error.response.data)
                         const response : Response = JSON.parse(jsonResponse)
-                        setError(prevState => response.content )
+                        console.log(response)
+                        setError(prevState => response.content)
                     }})
         }
         else {
@@ -47,7 +49,7 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                 }).catch(error => console.error())
             }
         setLoading(value => !value)
-        if (!error) closeModal()
+        if (error == null) closeModal()
         }
 
     return(

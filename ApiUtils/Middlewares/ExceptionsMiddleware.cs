@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
 using Google;
+using Loggers;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using PlVisualizer.Api.Dto;
 using PlVisualizer.Api.Dto.Exceptions;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
+using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 
 namespace ApiUtils.Middlewares;
 
@@ -14,10 +16,12 @@ namespace ApiUtils.Middlewares;
 public class ExceptionsMiddleware
 {
     private RequestDelegate next;
+    private ILogger logger;
     
-    public ExceptionsMiddleware(RequestDelegate next)
+    public ExceptionsMiddleware(RequestDelegate next, ILogger logger)
     {
         this.next = next;
+        this.logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -28,17 +32,19 @@ public class ExceptionsMiddleware
         }
         catch (Exception exception)
         {
-            if (exception is PLVisualizerExceptionBase baseException)
+            logger.Error(exception, "Unhandled exception in api method {method} occured. {message}",
+                context.Request.Method, exception.Message);
+            switch (exception)
             {
-                await WriteExceptionAsync(context, baseException, baseException.StatusCode);
-            }
-            else if (exception is GoogleApiException googleApiException)
-            {
-                
-            }
-            else
-            {
-                await WriteExceptionAsync(context, exception, 500);
+                case PLVisualizerExceptionBase baseException:
+                    await WriteExceptionAsync(context, baseException, baseException.StatusCode);
+                    break;
+                case GoogleApiException googleApiException:
+                    await WriteExceptionAsync(context, googleApiException, 400);
+                    break;
+                default:
+                    await WriteExceptionAsync(context, exception, 500);
+                    break;
             }
         }
     }
