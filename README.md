@@ -19,16 +19,6 @@
 git clone --recurse-submodules https://github.com/oveeernight/PLVisualizer
 cd PLVisualizer
 ```
-Собираем контейнер с фронтендом 
-```console
-cd frontend
-docker build -t frontend .
-```
-Собираем контейнер с бэкендом
-```console
-cd ..
-docker build -t backend .
-```
 Запускаем приложение
 ```console
 docker compose up
