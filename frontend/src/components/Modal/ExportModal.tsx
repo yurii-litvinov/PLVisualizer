@@ -5,6 +5,7 @@ import {Lecturer} from "../../Models/Lecturer";
 import {GoogleForm} from "./GoogleForm";
 import {ColorRing} from "react-loader-spinner";
 import styled from "styled-components";
+import {Response} from "../../Models/Response";
 
 interface exportModalProps{
     closeModal: () => void
@@ -15,12 +16,17 @@ interface exportModalProps{
 export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , closeModal}) => {
     const [loading, setLoading] = useState(false)
     const [exportUrl, setExportUrl] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
     const handleExportSubmit = async () => {
         setLoading(value => !value)
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
         const matches = regExp.exec(exportUrl)
         const spreadsheetId = matches![0];
-        await tablesClient.exportTableAsync(spreadsheetId, lecturers)
+        await tablesClient.exportTableAsync(spreadsheetId, lecturers).catch(function (error){
+            const jsonResponse =  JSON.stringify(error.response.data)
+            const response : Response = JSON.parse(jsonResponse)
+            setErrorMessage(prevState => response.Content)
+        })
         setLoading(value => !value)
     }
     return(
@@ -39,6 +45,7 @@ export const ExportModal : FC<exportModalProps> = ({tablesClient, lecturers , cl
                 colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
             />
         </LoadingSpinnerContainer>}
+        {errorMessage !== '' && <h3 style={{marginLeft: "12px"}}>{errorMessage}</h3>}
     </Modal>)
 }
 

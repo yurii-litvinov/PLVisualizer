@@ -4,8 +4,5 @@ namespace PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 
 public class InvalidDisciplineWorkTypesCountException : PLVisualizerApiBadRequestException
 {
-    public InvalidDisciplineWorkTypesCountException(string message) : base(message)
-    {
-
-    }
+    public InvalidDisciplineWorkTypesCountException(string message) : base(message) { }
 }

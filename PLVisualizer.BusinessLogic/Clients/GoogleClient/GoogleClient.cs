@@ -117,12 +117,18 @@ public class GoogleClient : IGoogleClient
         return configTableRows.Select(configTableRow => new ConfigTableRow { 
                 LecturerName = configTableRow[0].ToString() ?? string.Empty,
                 Post = configTableRow[1].ToString() ?? string.Empty,
-                InterestRate = int.Parse(configTableRow[2].ToString() ?? string.Empty) })
+                InterestRate = int.Parse(configTableRow[2].ToString() ?? throw new SpreadsheetParsingException(
+                    "An error occured while parsing. Ensure Google Spreadsheet has valid format.")) })
             .ToArray();
     }
     
     private  static Lecturer[] ToLecturerModels(IList<IList<object>> values)
     {
+        if (values.First().Count != 6)
+        {
+            throw new SpreadsheetParsingException(
+                "An error occured while parsing. Ensure Google Spreadsheet has valid format.");
+        }
         // otherwise response from google will contain 4 elements in a row
         const int lecturerHeaderCount = 6;
         var models = new List<Lecturer>();
@@ -141,13 +147,16 @@ public class GoogleClient : IGoogleClient
             {
                 lecturer.Name = values[i][0].ToString() ?? string.Empty;
                 lecturer.Post = values[i][1].ToString() ?? string.Empty;
-                lecturer.InterestRate = int.Parse(values[i][2].ToString() ?? string.Empty);
+                lecturer.InterestRate = int.Parse(values[i][2].ToString() ?? throw new SpreadsheetParsingException(
+                    "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
                 if (values[i][3].ToString() != string.Empty)
                 {
                     disciplines.Add(CreateDiscipline(values[i][3].ToString() ?? string.Empty));
                 }
-                lecturer.DistributedLoad = int.Parse(values[i][4].ToString() ?? string.Empty);
-                lecturer.Standard = int.Parse(values[i][5].ToString() ?? string.Empty);
+                lecturer.DistributedLoad = int.Parse(values[i][4].ToString() ?? throw new SpreadsheetParsingException(
+                    "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
+                lecturer.Standard = int.Parse(values[i][5].ToString() ??throw new SpreadsheetParsingException(
+                    "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
             }
             if (i == values.Count - 1 || values[i + 1].Count == lecturerHeaderCount)
             {
@@ -225,6 +234,11 @@ public class GoogleClient : IGoogleClient
         // take content in [ ]
         var pattern = @"(?<=\[).+?(?=\])";
         var matches = Regex.Matches(content, pattern);
+        if (matches == null || matches.Count < 3)
+        {
+            throw new SpreadsheetParsingException(
+                "An error occured while parsing. Ensure Google Spreadsheet has valid format.");
+        }
         var term = int.Parse(matches[0].Value);
         var contactLoad = int.Parse(matches[^1].Value);
         var curriculum = matches[^2].Value;

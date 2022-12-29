@@ -5,6 +5,12 @@ namespace PLVisualizer.BusinessLogic.Extensions;
 
 public static class LecturersConfiguration
 {
+    /// <summary>
+    /// Adds interest rate and post to lecturers according to configuration table information.
+    /// Lecturers not listed in configuration table are being removed.
+    /// </summary>
+    /// <param name="lecturers">Lecturers to configure.</param>
+    /// <param name="configTableRows">Configuration table rows.</param>
     public static IEnumerable<Lecturer> WithConfigInformation(this Dictionary<string, Lecturer> lecturers,
         IEnumerable<ConfigTableRow> configTableRows)
     {
@@ -22,6 +28,10 @@ public static class LecturersConfiguration
         return lecturersViaConfig;
     }
 
+    /// <summary>
+    /// Adds standard to lecturers according to their post.
+    /// </summary>
+    /// <param name="lecturers">Lecturers to configure.</param>
     public static IEnumerable<Lecturer> WithStandards(this IEnumerable<Lecturer> lecturers)
     {
         var withStandards = lecturers as Lecturer[] ?? lecturers.ToArray();
@@ -33,6 +43,11 @@ public static class LecturersConfiguration
         return withStandards;
     }
 
+    /// <summary>
+    /// Adds distributed load to lecturers according to disciplines assigned to him.
+    /// </summary>
+    /// <param name="lecturers"></param>
+    /// <returns></returns>
     public static IEnumerable<Lecturer> WithDistributedLoad(this IEnumerable<Lecturer> lecturers)
     {
         var withDistributedLoad = lecturers as Lecturer[] ?? lecturers.ToArray();

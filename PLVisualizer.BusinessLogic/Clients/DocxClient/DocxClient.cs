@@ -41,7 +41,7 @@ public class DocxClient : IDocxClient
                 if (disciplineFromParser == null)
                 {
                     throw new DisciplineNotFoundException(
-                        $"{disciplineCode} not found in {curriculumCode} working plan");
+                        $"Discipline with code {disciplineCode} not found in {curriculumCode} working plan.");
                 }
 
                 var lecturer = tableRow.Lecturer;
@@ -114,7 +114,7 @@ public class DocxClient : IDocxClient
                             groupedByWorkTypeDiscipline.Key.ToLower() != "лекции"))
                     {
                         throw new InvalidDisciplineWorkTypesCountException(
-                            $"Дисциплина {groupedByCodeDiscipline.Key} в семестре {groupedByTermDiscipline.Key} не образует одинаковые копии для каждой группы");
+                            $"Discipline {groupedByCodeDiscipline.Key} in semester {groupedByTermDiscipline.Key} does not form equal groups.");
                     }
                     
                     contactLoad = groupedByWorkTypeDisciplines.Sum(group => group.First().ContactLoad);
@@ -154,7 +154,7 @@ public class DocxClient : IDocxClient
         if (workingPlan == null)
         {
             throw new WorkingPlanNotFoundException(
-                $"Could not find working plan appropriate to {curriculumCode} code");
+                $"Could not find working plan appropriate to {curriculumCode} code.");
         }
 
         return workingPlan;
@@ -170,7 +170,7 @@ public class DocxClient : IDocxClient
         if (implementation == null)
         {
             throw new DisciplineNotFoundException(
-                $"Could not find {discipline.Code} {discipline.RussianName} in {term} semester");
+                $"Could not find {discipline.Code} {discipline.RussianName} in {term} semester.");
         }
         
         

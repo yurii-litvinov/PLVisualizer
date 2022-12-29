@@ -1,4 +1,5 @@
 export interface Response{
-    error: Error
-    content: string
+    exception: Error
+    // in lower case it can not be parsed xd
+    Content: string
 }

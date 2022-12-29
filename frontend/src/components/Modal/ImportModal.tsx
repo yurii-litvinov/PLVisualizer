@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useState} from "react";
+import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
 import {Modal} from "./Modal";
 import {GoogleForm} from "./GoogleForm";
 import {Lecturer} from "../../Models/Lecturer";
@@ -21,7 +21,12 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
     const [formData, setFormData] = useState<FormData>(new FormData())
     const [googleForm, setGoogleSSForm] = useState(false)
     const [excelForm, setExcelForm] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [errorMessage, setErrorMessage] = useState("")
+    // useEffect(() => {
+    //     if (errorMessage === ""){
+    //         closeModal()
+    //     }
+    // }, [errorMessage])
 
     const handleImportSubmit = async () => {
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
@@ -38,18 +43,22 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                     if (error.response) {
                         const jsonResponse =  JSON.stringify(error.response.data)
                         const response : Response = JSON.parse(jsonResponse)
-                        console.log(response)
-                        setError(prevState => response.content)
+                        setErrorMessage(response.Content)
                     }})
         }
         else {
             await tablesClient.importTableViaConfigAsync(spreadsheetId, formData).then(response =>{
                 const {data} = response
                 setLecturers(prevState => data)
-                }).catch(error => console.error())
-            }
+                }).catch(function (error){
+                const jsonResponse =  JSON.stringify(error.response.data)
+                const response : Response = JSON.parse(jsonResponse)
+                setErrorMessage(prevState => response.Content)
+                })
+        }
+
         setLoading(value => !value)
-        if (error == null) closeModal()
+        // if (errorMessage === "") closeModal()
         }
 
     return(
@@ -71,7 +80,7 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                     colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
                 />
             </LoadingSpinnerContainer>}
-            {error && <div>{error}</div>}
+            {errorMessage !== "" && <h3 style={{marginLeft: "12px"}}>{errorMessage}</h3>}
         </Modal>)
 }
 
