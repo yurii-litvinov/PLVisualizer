@@ -5,11 +5,11 @@ namespace PlVisualizer;
 
 public class Startup
 {
-    public IConfiguration Configuration { get; }
+    private IConfiguration configuration;
 
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        this.configuration = configuration;
     }
 
     public void ConfigureServices(IServiceCollection services)

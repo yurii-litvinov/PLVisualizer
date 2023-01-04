@@ -3,6 +3,7 @@ RUN dotnet dev-certs https
 WORKDIR /certificate
 RUN dotnet dev-certs https --clean
 RUN dotnet dev-certs https -ep ./https/certificate.pfx -p aspnet
+RUN dotnet dev-certs https --trust
 WORKDIR /app
 
 WORKDIR /source
