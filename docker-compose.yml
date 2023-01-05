@@ -7,7 +7,7 @@ services:
       context: frontend
       dockerfile: .dockerfile
     ports:
-      - "3000:3000"
+      - "7000:3000"
       
   api:
     image: oveeernight/pedagogical-load-visualizer:api
