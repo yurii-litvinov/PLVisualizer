@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Client secrets
+client_secret_73783733765-cil43cbdnr1nshgdtao5p0bb6di0git8.apps.googleusercontent.com.json
+
 certs
 #IDE
 .fleet

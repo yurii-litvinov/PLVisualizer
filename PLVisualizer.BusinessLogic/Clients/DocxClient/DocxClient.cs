@@ -1,11 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
+
 using CurriculumParser;
 using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
 using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
-
-namespace PLVisualizer.BusinessLogic.Clients.DocxClient;
 
 public class DocxClient : IDocxClient
 {
@@ -72,7 +71,8 @@ public class DocxClient : IDocxClient
     /// <exception cref="InvalidDisciplineWorkTypesCountException">Throws when practical disciplines can not be grouped into equal groups.</exception>
     private static void MergeLecturersDisciplines(Dictionary<string, Lecturer> lecturers)
     {
-        foreach (var (_, lecturer) in lecturers)
+        var updatedLecturers = new List<(string, Lecturer)>();
+        foreach (var (key, lecturer) in lecturers)
         {
             var mergedDisciplines = new List<Discipline>();
             var groupedByCodeDisciplines = lecturer.Disciplines.GroupBy(discipline => discipline.Code);
@@ -137,8 +137,10 @@ public class DocxClient : IDocxClient
                 }
             }
 
-            lecturer.Disciplines = mergedDisciplines;
+            updatedLecturers.Add((key, lecturer with { Disciplines = mergedDisciplines }));
         }
+
+        updatedLecturers.ForEach(pair => lecturers[pair.Item1] = pair.Item2);
     }
 
     /// <summary>

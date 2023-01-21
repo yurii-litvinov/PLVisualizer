@@ -34,14 +34,14 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
                 <TableHeader style={{width: "5%"}}>Стандарт</TableHeader>
             </TableRow>
             {lecturers.map(lecturer => {
-                const loadType = getLoadType(lecturer.distributedLoad, lecturer.standard)
+                const loadType = getLoadType(lecturer.distributedLoad, lecturer.requiredLoad)
                 return <Droppable droppableId={lecturer.name}>
                     {((provided, snapshot) => {
                         return (
                             <TableRow ref={provided.innerRef} style={{backgroundColor : snapshot.isDraggingOver ? 'skyblue' : 'white'}}>
                                 <NameCell>{lecturer.name}</NameCell>
-                                <PostCell>{lecturer.post}</PostCell>
-                                <InterestRateCell>{lecturer.interestRate}</InterestRateCell>
+                                <PostCell>{lecturer.position}</PostCell>
+                                <InterestRateCell>{lecturer.fullTimePercent}</InterestRateCell>
                                 <DisciplinesCell>{lecturer.disciplines.map((discipline, index) => {
                                     return (<DndDiscipline discipline={discipline} index={index} key={discipline.id.toString()}/>)
                                 })}
@@ -52,7 +52,7 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
                                     <div>{lecturer.distributedLoad}</div>
                                     <div>{loadType}</div>
                                 </DistributedLoadCell>
-                                <StandardCell>{lecturer.standard}</StandardCell>
+                                <StandardCell>{lecturer.requiredLoad}</StandardCell>
                                 {provided.placeholder}
                             </TableRow>
                         )

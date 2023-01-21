@@ -1,164 +1,133 @@
-﻿using System.Text.RegularExpressions;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4.Data;
+﻿namespace PLVisualizer.BusinessLogic.Clients.GoogleClient;
+
+using DocUtils;
+using System.Text.RegularExpressions;
 using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
-using Google.Apis.Sheets.v4;
-
-namespace PLVisualizer.BusinessLogic.Clients.GoogleClient;
 
 /// <summary>
 /// Represents google spreadsheets client
 /// </summary>
 public class GoogleClient : IGoogleClient
 {
-    private readonly string applicationName = "PLVisualizer";
-    private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
-    private readonly GoogleCredential credential;
-    private readonly SheetsService service;
+    private const string applicationName = "PLVisualizer";
+    private GoogleSheetService service;
+    private string spreadsheetId;
+    private string sheetId;
 
-    public GoogleClient()
+    private GoogleClient(GoogleSheetService service, string spreadsheetId, string sheetId)
     {
-        credential = GoogleCredential.GetApplicationDefault().CreateScoped(scopes);
-        service = new SheetsService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = applicationName
-            }
-        );
+        this.service = service;
+        this.spreadsheetId = spreadsheetId;
+        this.sheetId = sheetId;
     }
 
-    public async Task ExportLecturersAsync(string spreadsheetId, Lecturer[] lecturers, string sheetTitle)
-    {
-        var range = $"{sheetTitle}!A:F";
-        
-        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
-        if (spreadsheet == null)
-        {
-            throw new SpreadsheetNotFoundException();
-        }
-        
-        var sheet = spreadsheet.Sheets.FirstOrDefault(sheet => sheet.Properties.Title == sheetTitle);
-        if (sheet == null)
-        {
-            throw new SheetNotFoundException() ;
-        }
-        var sheetId = sheet.Properties.SheetId;
-        
-        await ClearSpreadsheet(spreadsheetId, sheetId, range);
+    /// <summary>
+    /// Creates a client and asynchronously connects to Google Drive.
+    /// </summary>
+    /// <param name="spreadsheetId">Id of  Google Spreadsheet.</param>
+    /// <param name="sheetId">Title of sheet that contains lecturers.</param>
+    public static async Task<GoogleClient> Connect(string spreadsheetId, string sheetId)
+        => new GoogleClient(await GoogleSheetService.CreateAsync(
+            "client_secret_73783733765-cil43cbdnr1nshgdtao5p0bb6di0git8.apps.googleusercontent.com.json", applicationName),
+            spreadsheetId, sheetId);
 
-        var valueRange = new ValueRange();
+    public async Task ExportLecturersAsync(Lecturer[] lecturers)
+    {
+        var range = $"{sheetId}!A:F";
+
+        var sheet = service.Sheet(spreadsheetId, sheetId);
+
+        await ClearSpreadsheet(sheet, range);
+
         var values = ToValues(lecturers);
-        valueRange.Values = values;
-        var appendRequest = service.Spreadsheets.Values.Append(valueRange, spreadsheetId, range);
-        appendRequest.ValueInputOption =
-            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-        await appendRequest.ExecuteAsync();
+        await sheet.WriteSheetAsync("A", "F", values, null);
 
-        var formatTableRequests = GetFormatTableRequests(lecturers, sheetId);
-        var formatRequest = service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest
-        {
-            Requests = formatTableRequests
-        }, spreadsheetId);
-        await formatRequest.ExecuteAsync();
+        var formatTableRequests = GetFormatTableRequests(lecturers);
+        await sheet.MergeCellsAsync(formatTableRequests);
     }
 
-    public async Task<Lecturer[]> GetLecturersAsync(string spreadsheetId, string sheetTitle)
+    public async Task<Lecturer[]> GetLecturersAsync()
     {
-        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
-        if (spreadsheet == null)
-        {
-            throw new SpreadsheetNotFoundException();
-        }
-        var range = $"{sheetTitle}!A:F";
-        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-        var response = await request.ExecuteAsync();
-        var values = response.Values.Skip(1).ToArray();
+        var values = await service.Sheet(spreadsheetId, sheetId).ReadSheetAsync("A", "F", 2, null);
         return ToLecturerModels(values);
     }
 
-    public async Task<ConfigTableRow[]> GetConfigTableRowsAsync(string spreadsheetId, string sheetTitle)
+    public async Task<ConfigTableRow[]> GetConfigTableRowsAsync()
     {
-        var spreadsheet = await service.Spreadsheets.Get(spreadsheetId).ExecuteAsync();
-        if (spreadsheet == null)
-        {
-            throw new SpreadsheetNotFoundException();
-        }
-        var range = $"{sheetTitle}!A:C";
-        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
-        var response = await request.ExecuteAsync();
-        var values = response.Values.Skip(1).ToArray();
-        return ToConfigModel(values);
+        var values = await service.Sheet(spreadsheetId, sheetId).ReadSheetAsync("A", "C", 2, null);
+        return await Task.FromResult(ToConfigModel(values));
     }
 
-    private static  IList<IList<object>> ToValues(Lecturer[] lecturers)
+    private static IList<IList<string>> ToValues(Lecturer[] lecturers)
     {
-        var values = new List<IList<object>> 
-            { new List<object>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка", "Норматив"} };
+        var values = new List<IList<string>> 
+            { new List<string>() {"ФИО", "Должность", "Процент ставки", "Дисциплины", "Распределенная нагрузка", "Норматив"} };
         foreach (var lecturer in lecturers)
         {
             if (lecturer.Disciplines.Count == 0)
             {
-                values.Add(new List<object>() 
-                    {lecturer.Name, lecturer.Post, lecturer.InterestRate, string.Empty, lecturer.DistributedLoad, lecturer.Standard});
+                values.Add(new List<string>() 
+                    {lecturer.Name, lecturer.Position, lecturer.FullTimePercent.ToString(), string.Empty, lecturer.DistributedLoad.ToString(), lecturer.RequiredLoad.ToString()});
             }
-            values.AddRange(lecturer.Disciplines.Select(discipline => new List<object>
+            values.AddRange(lecturer.Disciplines.Select(discipline => new List<string>
             {
-                lecturer.Name, lecturer.Post, lecturer.InterestRate, discipline.Content, lecturer.DistributedLoad, lecturer.Standard
+                lecturer.Name, lecturer.Position, lecturer.FullTimePercent.ToString(), discipline.Content, lecturer.DistributedLoad.ToString(), lecturer.RequiredLoad.ToString()
             }));
         }
 
         return values;
     }
 
-    private static ConfigTableRow[] ToConfigModel(IEnumerable<IList<object>> configTableRows)
-    {
-        return configTableRows.Select(configTableRow => new ConfigTableRow { 
-                LecturerName = configTableRow[0].ToString() ?? string.Empty,
-                Post = configTableRow[1].ToString() ?? string.Empty,
-                InterestRate = int.Parse(configTableRow[2].ToString() ?? throw new SpreadsheetParsingException(
-                    "An error occured while parsing. Ensure Google Spreadsheet has valid format.")) })
+    private static ConfigTableRow[] ToConfigModel(IEnumerable<IEnumerable<object>> configTableRows)
+        => configTableRows
+            .Select(configTableRow => configTableRow.ToList())
+            .Select(configTableRow => new ConfigTableRow( 
+                LecturerName: configTableRow[0].ToString() ?? string.Empty,
+                Position: configTableRow[1].ToString() ?? string.Empty,
+                FullTimePercent: int.Parse(configTableRow[2].ToString() ?? throw new SpreadsheetParsingException(
+                    "An error occured while parsing. Ensure Google Spreadsheet has valid format."))))
             .ToArray();
-    }
     
-    private  static Lecturer[] ToLecturerModels(IList<IList<object>> values)
+    private static Lecturer[] ToLecturerModels(IEnumerable<IEnumerable<string>> values)
     {
-        if (values.First().Count != 6)
+        if (values.First().Count() != 6)
         {
             throw new SpreadsheetParsingException(
                 "An error occured while parsing. Ensure Google Spreadsheet has valid format.");
         }
+
+        var valuesAsList = values.Select(str => str.ToList()).ToList();
         // otherwise response from google will contain 4 elements in a row
         const int lecturerHeaderCount = 6;
         var models = new List<Lecturer>();
         var disciplines = new List<Discipline>();
         var lecturer = new Lecturer();
-        for(var i = 0; i < values.Count; i++)
+        for (var i = 0; i < valuesAsList.Count; i++)
         {
-            //iterating through the same lecturer disciplines
-            if (values[i].Count != lecturerHeaderCount)
+            // iterating through the same lecturer disciplines
+            if (valuesAsList[i].Count != lecturerHeaderCount)
             { 
-                var disciplineContent = values[i][3].ToString() ?? string.Empty;
+                var disciplineContent = valuesAsList[i][3] ?? string.Empty;
                 var discipline = CreateDiscipline(disciplineContent);
                 disciplines.Add(discipline);
             }
             else
             {
-                lecturer.Name = values[i][0].ToString() ?? string.Empty;
-                lecturer.Post = values[i][1].ToString() ?? string.Empty;
-                lecturer.InterestRate = int.Parse(values[i][2].ToString() ?? throw new SpreadsheetParsingException(
+                lecturer.Name = valuesAsList[i][0] ?? string.Empty;
+                lecturer.Position = valuesAsList[i][1] ?? string.Empty;
+                lecturer.FullTimePercent = int.Parse(valuesAsList[i][2] ?? throw new SpreadsheetParsingException(
                     "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
-                if (values[i][3].ToString() != string.Empty)
+                if (valuesAsList[i][3] != string.Empty)
                 {
-                    disciplines.Add(CreateDiscipline(values[i][3].ToString() ?? string.Empty));
+                    disciplines.Add(CreateDiscipline(valuesAsList[i][3] ?? string.Empty));
                 }
-                lecturer.DistributedLoad = int.Parse(values[i][4].ToString() ?? throw new SpreadsheetParsingException(
+                lecturer.DistributedLoad = int.Parse(valuesAsList[i][4] ?? throw new SpreadsheetParsingException(
                     "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
-                lecturer.Standard = int.Parse(values[i][5].ToString() ??throw new SpreadsheetParsingException(
+                lecturer.RequiredLoad = int.Parse(valuesAsList[i][5].ToString() ??throw new SpreadsheetParsingException(
                     "An error occured while parsing. Ensure Google Spreadsheet has valid format."));
             }
-            if (i == values.Count - 1 || values[i + 1].Count == lecturerHeaderCount)
+            if (i == valuesAsList.Count - 1 || valuesAsList[i + 1].Count == lecturerHeaderCount)
             {
                 lecturer.Disciplines = disciplines;
                 models.Add(lecturer);
@@ -170,26 +139,20 @@ public class GoogleClient : IGoogleClient
         return models.ToArray();
     }
 
-    private static List<Request> GetFormatTableRequests(Lecturer[] lecturers, int? sheetId)
+    private static List<(int, int, int, int)> GetFormatTableRequests(Lecturer[] lecturers)
     {
-        var requests = new List<Request>();
+        var requests = new List<(int, int, int, int)>();
         const int disciplinesColumnIndex = 3;
         const int columnsCount = 6;
         var currentDisciplinesCount = 0;
         foreach (var lecturer in lecturers)
         {
-            var mergeLeftColumns = new Request
-            {
-                MergeCells = GetMergeCellsRequest(sheetId, startRowIndex: currentDisciplinesCount + 1,
-                    endRowIndex: currentDisciplinesCount + lecturer.Disciplines.Count + 1,
-                    startColumnIndex: 0, endColumnIndex: disciplinesColumnIndex)
-            };
-            var mergeRightColumns = new Request
-            {
-                MergeCells = GetMergeCellsRequest(sheetId, startRowIndex: currentDisciplinesCount + 1,
-                    endRowIndex: currentDisciplinesCount + lecturer.Disciplines.Count + 1,
-                    startColumnIndex: disciplinesColumnIndex + 1, endColumnIndex: columnsCount)
-            };
+            var mergeLeftColumns = (currentDisciplinesCount + 1,
+                    currentDisciplinesCount + lecturer.Disciplines.Count + 1,
+                    0, disciplinesColumnIndex);
+            var mergeRightColumns = (currentDisciplinesCount + 1,
+                    currentDisciplinesCount + lecturer.Disciplines.Count + 1,
+                    disciplinesColumnIndex + 1, columnsCount);
             requests.Add(mergeLeftColumns);
             requests.Add(mergeRightColumns);
 
@@ -199,36 +162,7 @@ public class GoogleClient : IGoogleClient
         return requests;
     }
 
-    private static Request GetUnmergeCellsRequest(int? spreadsheetId)
-    {
-        return new Request()
-        {
-            UnmergeCells = new UnmergeCellsRequest
-            {
-                Range = new GridRange
-                {
-                    SheetId = spreadsheetId
-                }
-            }
-        };
-    }
-    private static MergeCellsRequest GetMergeCellsRequest(int? spreadsheetId, int startRowIndex, int endRowIndex,
-        int startColumnIndex, int endColumnIndex)
-    {
-        return new MergeCellsRequest
-        {
-            Range = new GridRange
-            {
-                SheetId = spreadsheetId,
-                StartRowIndex = startRowIndex,
-                EndRowIndex = endRowIndex,
-                StartColumnIndex = startColumnIndex,
-                EndColumnIndex = endColumnIndex
-            },
-            MergeType = "MERGE_COLUMNS"
-        };
-    }
-    
+    // TODO: Should not work.
     private static Discipline CreateDiscipline(string content)
     {
         // take content in [ ]
@@ -243,27 +177,21 @@ public class GoogleClient : IGoogleClient
         var contactLoad = int.Parse(matches[^1].Value);
         var curriculum = matches[^2].Value;
 
-        return new Discipline
-        {
-            Id = Guid.NewGuid(),
-            Term = term,
-            Content = content,
-            Code = content[..content.IndexOf(' ')],
-            ContactLoad = contactLoad,
-            EducationalProgram = curriculum,
-            WorkType = matches.Count == 4 ? matches[1].Value : string.Empty
-        };
+        return new Discipline(
+            Id: Guid.NewGuid(),
+            Term: "",
+            Content: content,
+            Code: content[..content.IndexOf(' ')],
+            Name: "",
+            Load: contactLoad,
+            WorkType: matches.Count == 4 ? matches[1].Value : string.Empty,
+            Audience: ""
+        );
     }
 
-    private  async Task ClearSpreadsheet(string spreadsheetId, int? sheetId, string range)
+    private static async Task ClearSpreadsheet(Sheet sheet, string range)
     {
-        await service.Spreadsheets.Values
-            .Clear(new ClearValuesRequest(), spreadsheetId, range)
-            .ExecuteAsync();
-        
-        var unmergeRequest = GetUnmergeCellsRequest(sheetId);
-        await service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest()
-                { Requests = new List<Request> { unmergeRequest } }, spreadsheetId)
-            .ExecuteAsync();
+        await sheet.ClearRangeAsync(range);
+        await sheet.UnmergeCellsAsync();
     }
 }

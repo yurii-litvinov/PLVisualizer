@@ -11,6 +11,7 @@ public class TablesController : Controller
 {
     private readonly ISpreadsheetProvider spreadsheetProvider;
     private readonly ITablesService tablesService;
+
     public TablesController(ITablesService tablesService, ISpreadsheetProvider spreadsheetProvider)
     {
         this.tablesService = tablesService;
@@ -19,14 +20,12 @@ public class TablesController : Controller
 
     [HttpGet]
     [Route("import/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTableAsync([FromRoute]string spreadsheetId)
-    { 
-        return await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
-    }
+    public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTableAsync([FromRoute] string spreadsheetId)
+        => await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
 
     [HttpPost]
     [Route("import/config/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm]IFormFile file)
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm] IFormFile file)
     {
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
         return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
@@ -34,7 +33,7 @@ public class TablesController : Controller
 
     [HttpPost]
     [Route("export/{spreadsheetId}")]
-    public async Task<ActionResult> ExportLecturersAsync(string spreadsheetId, [FromBody]Lecturer[] lecturers)
+    public async Task<ActionResult> ExportLecturersAsync(string spreadsheetId, [FromBody] Lecturer[] lecturers)
     {
         await tablesService.ExportLecturersAsync(spreadsheetId, lecturers);
         return Ok();

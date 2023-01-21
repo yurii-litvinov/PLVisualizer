@@ -1,7 +1,8 @@
-﻿using Loggers;
-using Microsoft.AspNetCore.Http;
+﻿namespace ApiUtils.Middlewares;
 
-namespace ApiUtils.Middlewares;
+using Loggers;
+using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 /// <summary>
 /// Represents middleware that writes logs of input network requests
@@ -22,8 +23,8 @@ public class RequestLoggingMiddleware
         await next(context);
         logger.Info(
             "Request {method} {url} with response {statusCode}", 
-            context.Request?.Method,
-            context.Request?.Path,
-            context.Response?.StatusCode);
+            context.Request?.Method ?? throw new UnreachableException(),
+            context.Request?.Path ?? throw new UnreachableException(),
+            context.Response?.StatusCode ?? throw new UnreachableException());
     }
 }

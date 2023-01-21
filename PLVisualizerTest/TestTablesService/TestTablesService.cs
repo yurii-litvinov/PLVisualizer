@@ -14,19 +14,11 @@ public class TestTablesService
 {
     private IExcelClient excelClient = new ExcelClient();
     private IDocxClient docxClient = new DocxClient();
-    private IGoogleClient googleClient = new GoogleClient();
-    private ITablesService tablesService;
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private static string largeFileExcelPath = "../../../TestDocxClient/LargeFileTest.xlsx";
     private static readonly string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalConfigLecturersSheetTitle = "SeveralConfigLecturers";
 
-    [SetUp]
-    public void Setup()
-    {
-        tablesService = new TablesService(docxClient, excelClient, googleClient);
-    }
-    
     private static object[] getLecturersViaConfigTestCases =
     {
         new object[] { severalConfigLecturersSheetTitle, largeFileExcelPath,
@@ -34,7 +26,7 @@ public class TestTablesService
         {
             new ()
             {
-                Name = "Литвинов Юрий Викторович", Standard = 500, Post = "доцент", InterestRate = 100, DistributedLoad = 349,
+                Name = "Литвинов Юрий Викторович", RequiredLoad = 500, Position = "доцент", FullTimePercent = 100, DistributedLoad = 349,
                 Disciplines = new List<Discipline>
                 {
                     new () { Code = "058505",  Term = 1, ContactLoad = 15, WorkType = string.Empty,
@@ -62,7 +54,7 @@ public class TestTablesService
             },
             new ()
             {
-                Name = "Кириленко Яков Александрович", Standard = 650, DistributedLoad = 58, InterestRate = 50,  Post = "старший преподаватель",
+                Name = "Кириленко Яков Александрович", RequiredLoad = 650, DistributedLoad = 58, FullTimePercent = 50, Position = "старший преподаватель",
                 Disciplines = new List<Discipline>
                 {
                     new () { Code = "064851", Term = 4, ContactLoad = 14, WorkType = string.Empty,
@@ -83,6 +75,8 @@ public class TestTablesService
         Lecturer[] expectedLecturers)
     {
         var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(xlsxPath);
+        var googleClient = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var tablesService = new TablesService(docxClient, excelClient);
         var lecturers = await tablesService.GetLecturersViaConfigAsync(
             spreadsheetDocument: spreadsheetDocument,
             spreadsheetId: spreadsheetId,
@@ -104,8 +98,8 @@ public class TestTablesService
             {
                 new()
                 {
-                    Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 241,
-                    Standard = 500, Disciplines =
+                    Name = "Литвинов Юрий Викторович", Position = "доцент", FullTimePercent = 100, DistributedLoad = 241,
+                    RequiredLoad = 500, Disciplines =
                         new List<Discipline>
                         {
                             new()
@@ -155,8 +149,8 @@ public class TestTablesService
                 },
                 new()
                 {
-                    Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50,
-                    DistributedLoad = 46, Standard = 650, Disciplines = new List<Discipline>()
+                    Name = "Кириленко Яков Александрович", Position = "старший преподаватель", FullTimePercent = 50,
+                    DistributedLoad = 46, RequiredLoad = 650, Disciplines = new List<Discipline>()
                     {
                         new()
                         {
@@ -182,15 +176,17 @@ public class TestTablesService
     public async Task Test_GetLecturersViaLecturersTable_ReturnsCorrectModels(string sheetTitle,
         Lecturer[] expectedLecturers)
     {
+        var googleClient = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var tablesService = new TablesService(docxClient, excelClient);
         var lecturers = await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId, sheetTitle);
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
             Assert.AreEqual(expectedLecturers[i].Name, lecturers[i].Name);
-            Assert.AreEqual(expectedLecturers[i].Post, lecturers[i].Post);
-            Assert.AreEqual(expectedLecturers[i].Standard, lecturers[i].Standard);
+            Assert.AreEqual(expectedLecturers[i].Position, lecturers[i].Position);
+            Assert.AreEqual(expectedLecturers[i].RequiredLoad, lecturers[i].RequiredLoad);
             Assert.AreEqual(expectedLecturers[i].DistributedLoad, lecturers[i].DistributedLoad);
-            Assert.AreEqual(expectedLecturers[i].InterestRate, lecturers[i].InterestRate);
+            Assert.AreEqual(expectedLecturers[i].FullTimePercent, lecturers[i].FullTimePercent);
             Assert.AreEqual(expectedLecturers[i], lecturers[i]);
         }
     }

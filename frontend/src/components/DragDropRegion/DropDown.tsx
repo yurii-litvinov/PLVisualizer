@@ -23,20 +23,20 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines}) => {
         setDropDown(value => !value)
     }
 
-    const sortByProgram = () => {
-        setDisciplines( prevState => {
-            return Array.from(prevState).sort((a, b) => {
-                if (a.educationalProgram < b.educationalProgram) {
-                    return -1
-                }
-                if (a.educationalProgram > b.educationalProgram) {
-                    return 1
-                }
-                return 0
-            })
-        })
-        setDropDown(value => !value)
-    }
+    // const sortByProgram = () => {
+    //     setDisciplines( prevState => {
+    //         return Array.from(prevState).sort((a, b) => {
+    //             if (a.educationalProgram < b.educationalProgram) {
+    //                 return -1
+    //             }
+    //             if (a.educationalProgram > b.educationalProgram) {
+    //                 return 1
+    //             }
+    //             return 0
+    //         })
+    //     })
+    //     setDropDown(value => !value)
+    // }
 
     return <>
         <DropDownItem
@@ -54,12 +54,14 @@ export const DropDown : FC<dropDownProps> = ({setDisciplines}) => {
                         onHoverBackgroundColor={"lightblue"}
                         color={"black"}>По семестру
         </DropDownItem>
-        <DropDownItem onClick={sortByProgram}
+        {/* <DropDownItem onClick={sortByProgram}
                       style={{width: "75%"}}
                       backgroundColor={"white"}
                       onHoverBackgroundColor={"lightblue"}
                       color={"black"}>По учебной программе
-        </DropDownItem></>}
+        </DropDownItem> */}
+        </>
+        }
     </>
 }
 

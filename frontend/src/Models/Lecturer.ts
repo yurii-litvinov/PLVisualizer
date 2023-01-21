@@ -1,10 +1,10 @@
 import {Discipline} from "./Discipline";
 
-export interface Lecturer{
+export interface Lecturer {
     name: string
-    post: string
-    interestRate: number
+    position: string
+    fullTimePercent: number
     disciplines: Array<Discipline>
     distributedLoad: number
-    standard: number
+    requiredLoad: number
 }

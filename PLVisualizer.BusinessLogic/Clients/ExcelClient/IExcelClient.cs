@@ -1,8 +1,7 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using Microsoft.AspNetCore.Http;
-using PlVisualizer.Api.Dto.Tables;
+﻿namespace PLVisualizer.BusinessLogic.Clients.ExcelClient;
 
-namespace PLVisualizer.BusinessLogic.Clients.ExcelClient;
+using DocumentFormat.OpenXml.Packaging;
+using PlVisualizer.Api.Dto.Tables;
 
 /// <summary>
 /// Represents client which use Open Xml to retrieve info from xlsx file

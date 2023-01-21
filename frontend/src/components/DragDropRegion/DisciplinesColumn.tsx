@@ -30,7 +30,7 @@ export const DisciplinesColumn : FC<columnProps> = ({setDisciplines, disciplines
                  <DropDown  setDisciplines={setDisciplines}/>
             <Droppable droppableId={'column'}>
                 {(provided, snapshot) =>(
-                    <DisciplinesList placeholder={"Дисциплины можно перетаскивать сюда"} ref={provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
+                    <DisciplinesList placeholder={"Дисциплины можно перетаскивать сюда"} ref = {provided.innerRef} isDraggingOver = {snapshot.isDraggingOver}>
                         {disciplines.map((discipline, index) => {
                             return(<DndDiscipline key={discipline.id.toString()} discipline={discipline} index={index}/>)
                         })}

@@ -1,22 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.Api", "PLVisualizer.Api/PLVisualizer.Api.csproj", "{4F14D2A8-CB33-4BEC-B13F-1AE414BDEEA9}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PLVisualizer.Api", "PLVisualizer.Api\PLVisualizer.Api.csproj", "{4F14D2A8-CB33-4BEC-B13F-1AE414BDEEA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.BusinessLogic", "PLVisualizer.BusinessLogic/PLVisualizer.BusinessLogic.csproj", "{0BC99D5B-FD05-4EBB-91D5-A66F9CF2E1B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PLVisualizer.BusinessLogic", "PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj", "{0BC99D5B-FD05-4EBB-91D5-A66F9CF2E1B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizer.Api.Dto", "PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj", "{9479FD9D-4127-467C-87AF-1DA5ACFD1A58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PLVisualizer.Api.Dto", "PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj", "{9479FD9D-4127-467C-87AF-1DA5ACFD1A58}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{8D85966D-22E6-40DD-913F-A7097DE163AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{A422761D-60BA-4EB2-A91D-5D1DF188D8ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurriculumParser", "curriculum-parser\CurriculumParser\CurriculumParser.csproj", "{8CF7BB42-3A20-4A5B-AF43-B000B16F5C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurriculumParser", "curriculum-parser\CurriculumParser\CurriculumParser.csproj", "{8CF7BB42-3A20-4A5B-AF43-B000B16F5C43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PLVisualizerTest", "PLVisualizerTest\PLVisualizerTest.csproj", "{6EC2C89F-AE40-44FB-B766-514D8CB6219A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PLVisualizerTest", "PLVisualizerTest\PLVisualizerTest.csproj", "{6EC2C89F-AE40-44FB-B766-514D8CB6219A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiUtils", "ApiUtils\ApiUtils.csproj", "{59FEA199-BAD1-4929-A8EC-45B8FB7EC931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiUtils", "ApiUtils\ApiUtils.csproj", "{59FEA199-BAD1-4929-A8EC-45B8FB7EC931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loggers", "Loggers\Loggers.csproj", "{80437186-75E2-4681-8483-576D10290BF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Loggers", "Loggers\Loggers.csproj", "{80437186-75E2-4681-8483-576D10290BF8}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "DocUtils", "..\DocUtils\DocUtils\DocUtils.fsproj", "{7CE192C2-FF8B-403F-B523-6785883B8B2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,13 +57,24 @@ Global
 		{80437186-75E2-4681-8483-576D10290BF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80437186-75E2-4681-8483-576D10290BF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80437186-75E2-4681-8483-576D10290BF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CE192C2-FF8B-403F-B523-6785883B8B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CE192C2-FF8B-403F-B523-6785883B8B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CE192C2-FF8B-403F-B523-6785883B8B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CE192C2-FF8B-403F-B523-6785883B8B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4F14D2A8-CB33-4BEC-B13F-1AE414BDEEA9} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
-		{9479FD9D-4127-467C-87AF-1DA5ACFD1A58} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
 		{0BC99D5B-FD05-4EBB-91D5-A66F9CF2E1B2} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
+		{9479FD9D-4127-467C-87AF-1DA5ACFD1A58} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
 		{8CF7BB42-3A20-4A5B-AF43-B000B16F5C43} = {8D85966D-22E6-40DD-913F-A7097DE163AB}
 		{59FEA199-BAD1-4929-A8EC-45B8FB7EC931} = {8D85966D-22E6-40DD-913F-A7097DE163AB}
 		{80437186-75E2-4681-8483-576D10290BF8} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
+		{7CE192C2-FF8B-403F-B523-6785883B8B2B} = {A422761D-60BA-4EB2-A91D-5D1DF188D8ED}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CCA257F0-2823-441C-AC6E-ADC426DBFAAC}
 	EndGlobalSection
 EndGlobal

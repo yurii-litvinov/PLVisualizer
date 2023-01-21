@@ -1,8 +1,11 @@
+namespace PLVisualizer.BusinessLogic.Extensions;
+
 using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
 
-namespace PLVisualizer.BusinessLogic.Extensions;
-
+/// <summary>
+/// Helper class that adds information from configuration table to lecturers collection.
+/// </summary>
 public static class LecturersConfiguration
 {
     /// <summary>
@@ -17,11 +20,17 @@ public static class LecturersConfiguration
         var lecturersViaConfig = new List<Lecturer>();
         foreach (var configTableRow in configTableRows)
         {
-            if (lecturers.ContainsKey(configTableRow.LecturerName))
+            var lecturerName = configTableRow.LecturerName.Split(' ')[0];
+            if (lecturers.ContainsKey(lecturerName))
             {
-                lecturers[configTableRow.LecturerName].Post = configTableRow.Post;
-                lecturers[configTableRow.LecturerName].InterestRate = configTableRow.InterestRate;
-                lecturersViaConfig.Add(lecturers[configTableRow.LecturerName]);
+                lecturers[lecturerName] = lecturers[lecturerName] with 
+                {
+                    Name = configTableRow.LecturerName,
+                    Position = configTableRow.Position, 
+                    FullTimePercent = configTableRow.FullTimePercent 
+                };
+
+                lecturersViaConfig.Add(lecturers[lecturerName]);
             }
         }
 
@@ -33,15 +42,7 @@ public static class LecturersConfiguration
     /// </summary>
     /// <param name="lecturers">Lecturers to configure.</param>
     public static IEnumerable<Lecturer> WithStandards(this IEnumerable<Lecturer> lecturers)
-    {
-        var withStandards = lecturers as Lecturer[] ?? lecturers.ToArray();
-        foreach (var lecturer in withStandards)
-        {
-            lecturer.Standard = GetStandard(lecturer);
-        }
-
-        return withStandards;
-    }
+        => lecturers.Select(l => l with { RequiredLoad = GetStandard(l) });
 
     /// <summary>
     /// Adds distributed load to lecturers according to disciplines assigned to him.
@@ -49,36 +50,29 @@ public static class LecturersConfiguration
     /// <param name="lecturers"></param>
     /// <returns></returns>
     public static IEnumerable<Lecturer> WithDistributedLoad(this IEnumerable<Lecturer> lecturers)
-    {
-        var withDistributedLoad = lecturers as Lecturer[] ?? lecturers.ToArray();
-        foreach (var lecturer in withDistributedLoad)
-        {
-            lecturer.DistributedLoad = lecturer.Disciplines.Select(discipline => discipline.ContactLoad).Sum();
-        }
-
-        return withDistributedLoad;
-    }
-
+        => lecturers.Select(l => l with { DistributedLoad = l.Disciplines.Select(discipline => discipline.Load).Sum() });
+    
     private static int GetStandard(Lecturer lecturer)
     {
-        var isPractician = lecturer.Post.Contains("практик");
+        var isPractician = lecturer.Position.Contains("практик");
         if (isPractician)
         {
-            return lecturer.Post.ToLower() switch
+            return lecturer.Position.ToLower() switch
             {
                 "доцент" => 650,
                 "старший преподаватель" => 700,
                 "ассистент" => 750,
-                _ => throw new UnknownLecturerPostException()
+                _ => throw new UnknownLecturerPositionException()
             };
         }
-        return lecturer.Post.ToLower() switch
+
+        return lecturer.Position.ToLower() switch
         {
             "профессор" => 250,
             "доцент" => 500,
             "старший преподаватель" => 650,
             "ассистент" => 600,
-            _ => throw new UnknownLecturerPostException()
+            _ => throw new UnknownLecturerPositionException()
         };
     }
 }

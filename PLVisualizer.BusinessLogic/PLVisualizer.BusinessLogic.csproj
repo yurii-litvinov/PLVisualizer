@@ -1,10 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Clients\DocxClient\**" />
+      <EmbeddedResource Remove="Clients\DocxClient\**" />
+      <None Remove="Clients\DocxClient\**" />
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="DocumentFormat.OpenXml" Version="2.18.0" />
@@ -13,48 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\DocUtils\DocUtils\DocUtils.fsproj" />
       <ProjectReference Include="..\curriculum-parser\CurriculumParser\CurriculumParser.csproj" />
       <ProjectReference Include="..\PLVisualizer.Api.Dto\PLVisualizer.Api.Dto.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5665-2019.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5665-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5665-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5666-2019.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5666-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5666-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5666-2022.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\ВМ.5890-2022.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3019-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3019-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3020-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3020-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3021-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\МК.3021-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5006-2017.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5006-2018.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5006-2019.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5078-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5078-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5078-2022.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2017.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2018.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2019.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5080-2022.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5162-2020.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5162-2021.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
-        <None Update="Clients\DocxClient\WorkingPlans\СВ.5162-2022.docx"><CopyToOutputDirectory>Always</CopyToOutputDirectory></None>
- 
-        
-        
-        
-    
-
-      
-
     </ItemGroup>
 
 </Project>

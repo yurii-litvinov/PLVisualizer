@@ -55,7 +55,7 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 const newLecturerDisciplines = Array.from(lecturer!.disciplines)
                 newLecturerDisciplines.splice(destination!.index, 0, columnDisciplines[source.index])
                 lecturer!.disciplines = newLecturerDisciplines
-                lecturer!.distributedLoad += columnDisciplines[source.index].contactLoad
+                lecturer!.distributedLoad += columnDisciplines[source.index].load
                 return newLecturers
             })
 
@@ -78,7 +78,7 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 const newLecturers = Array.from(lecturers)
                 const lecturer = newLecturers.find(lecturer => lecturer.name === source.droppableId)
                 const discipline = lecturer!.disciplines[source.index]
-                lecturer!.distributedLoad -= discipline.contactLoad
+                lecturer!.distributedLoad -= discipline.load
                 const newLecturerDisciplines = Array.from(lecturer!.disciplines)
                 newLecturerDisciplines.splice(source.index, 1)
                 lecturer!.disciplines = newLecturerDisciplines
@@ -111,9 +111,9 @@ export const DragDropRegion : FC<dragDropRegionProps>  = ({lecturers, setLecture
                 const destinationLecturer = newLecturers.find(lecturer => lecturer.name === destination.droppableId)
                 const discipline = sourceLecturer!.disciplines[source.index];
                 destinationLecturer!.disciplines.splice(destination.index, 0, discipline )
-                destinationLecturer!.distributedLoad += discipline.contactLoad
+                destinationLecturer!.distributedLoad += discipline.load
                 sourceLecturer!.disciplines.splice(source.index, 1)
-                sourceLecturer!.distributedLoad -= discipline.contactLoad
+                sourceLecturer!.distributedLoad -= discipline.load
                 return newLecturers
             })
             setColumnDisciplines(columnDisciplines => columnDisciplines)

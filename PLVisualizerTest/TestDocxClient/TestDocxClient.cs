@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Wordprocessing;
 using NUnit.Framework;
 using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
 using PlVisualizer.Api.Dto.Tables;
-using PLVisualizer.BusinessLogic.Clients.DocxClient;
 using PLVisualizer.BusinessLogic.Clients.ExcelClient;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using Discipline = PlVisualizer.Api.Dto.Tables.Discipline;
@@ -14,7 +11,6 @@ namespace PLVisualizerTest.TestDocxClient;
 
 public class TestDocxClient
 {
-    private IDocxClient docxClient = new DocxClient();
     private ISpreadsheetProvider spreadsheetProvider = new SpreadsheetProvider();
     private IExcelClient excelClient = new ExcelClient();
 
@@ -26,8 +22,8 @@ public class TestDocxClient
             {
                 Name = "Литвинов Юрий Викторович", Disciplines = new List<Discipline>
                 {
-                    new () { Code = "058505",  Term = 1, ContactLoad = 15, WorkType = string.Empty,
-                        Content = "058505 Учебная практика (научно-исследовательская работа) [1] [ВМ.5665-2021] [15]", EducationalProgram = "ВМ.5665-2021", },
+                    new (Code: "058505", Term: "1", Load: 15, WorkType: string.Empty,
+                        Content: "058505 Учебная практика (научно-исследовательская работа) [1] [ВМ.5665-2021] [15]"),
                     new () { Code = "002212",  Term = 1, ContactLoad = 64, WorkType = string.Empty,
                         Content = "002212 Программирование [1] [СВ.5162-2022] [64]", EducationalProgram = "СВ.5162-2022"},
                     new () { Code = "002212",  Term = 2 , ContactLoad = 32, WorkType = string.Empty,
@@ -76,11 +72,11 @@ public class TestDocxClient
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
         {
-            Assert.AreEqual(expectedLecturers[i].Post, lecturers[i].Post);
+            Assert.AreEqual(expectedLecturers[i].Position, lecturers[i].Position);
             Assert.AreEqual(expectedLecturers[i].Name, lecturers[i].Name);
-            Assert.AreEqual(expectedLecturers[i].Standard, lecturers[i].Standard);
+            Assert.AreEqual(expectedLecturers[i].RequiredLoad, lecturers[i].RequiredLoad);
             Assert.AreEqual(expectedLecturers[i].DistributedLoad, lecturers[i].DistributedLoad);
-            Assert.AreEqual(expectedLecturers[i].InterestRate, lecturers[i].InterestRate);
+            Assert.AreEqual(expectedLecturers[i].FullTimePercent, lecturers[i].FullTimePercent);
             // checking disciplines
             Assert.AreEqual(expectedLecturers[i],lecturers[i]);
         }
@@ -184,11 +180,11 @@ public class TestDocxClient
         Assert.AreEqual(expectedLecturers.Count, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Count; i++)
         {
-            Assert.AreEqual(expectedLecturers[i].Post, lecturers[i].Post);
+            Assert.AreEqual(expectedLecturers[i].Position, lecturers[i].Position);
             Assert.AreEqual(expectedLecturers[i].Name, lecturers[i].Name);
-            Assert.AreEqual(expectedLecturers[i].Standard, lecturers[i].Standard);
+            Assert.AreEqual(expectedLecturers[i].RequiredLoad, lecturers[i].RequiredLoad);
             Assert.AreEqual(expectedLecturers[i].DistributedLoad, lecturers[i].DistributedLoad);
-            Assert.AreEqual(expectedLecturers[i].InterestRate, lecturers[i].InterestRate);
+            Assert.AreEqual(expectedLecturers[i].FullTimePercent, lecturers[i].FullTimePercent);
             // checking disciplines
             Assert.AreEqual(expectedLecturers[i],lecturers[i]);
         }

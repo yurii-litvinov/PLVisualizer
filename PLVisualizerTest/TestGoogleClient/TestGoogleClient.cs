@@ -1,18 +1,13 @@
-using System;
+namespace PLVisualizerTest.TestGoogleClient;
+
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Clients.GoogleClient;
 
-
-namespace PLVisualizerTest.TestGoogleClient;
-
 public class TestGoogleClient
 {
-    private IGoogleClient googleClient = new GoogleClient();
     private static string spreadsheetId = "13iWusc8H38jwL1Mhmd9ApSGyjsNQo0SudIGtJTyBDxE";
     private static string severalLecturersSheet = "SeveralLecturers";
     private static string singleLecturerSheet = "SingleLecturer";
@@ -20,8 +15,8 @@ public class TestGoogleClient
     private static Lecturer[] sampleLecturers = {
         new()
         {
-            Name = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100, DistributedLoad = 241,
-            Standard = 500, Disciplines =
+            Name = "Литвинов Юрий Викторович", Position = "доцент", FullTimePercent = 100, DistributedLoad = 241,
+            RequiredLoad = 500, Disciplines =
                 new List<Discipline>
                 {
                     new()
@@ -49,8 +44,8 @@ public class TestGoogleClient
         },
         new()
         {
-            Name = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50,
-            DistributedLoad = 46, Standard = 650, Disciplines = new List<Discipline>()
+            Name = "Кириленко Яков Александрович", Position = "старший преподаватель", FullTimePercent = 50,
+            DistributedLoad = 46, RequiredLoad = 650, Disciplines = new List<Discipline>()
             {
                 new() { Code = "002187", ContactLoad = 32, Term = 4, WorkType = string.Empty, EducationalProgram = "СВ.5162-2022",
                     Content = "002187 Структуры и алгоритмы компьютерной обработки данных [4] [СВ.5162-2022] [32]",},
@@ -77,7 +72,8 @@ public class TestGoogleClient
     [TestCaseSource(nameof(getLecturersTestCases))]
     public async Task Test_GoogleClient_ReturnsCorrectLecturerModels(string sheetTitle, Lecturer[] expectedLecturers)
     {
-        var lecturers = await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        var client = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var lecturers = await client.GetLecturersAsync();
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
@@ -94,15 +90,15 @@ public class TestGoogleClient
         {
             severalConfigLecturersSheet, new ConfigTableRow[]
             {
-                new() { LecturerName = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100 },
-                new() { LecturerName = "Кириленко Яков Александрович", Post = "старший преподаватель", InterestRate = 50 },
-                new() { LecturerName = "Брыксин Тимофей Александрович", Post = "доцент", InterestRate = 0 }
+                new(LecturerName: "Литвинов Юрий Викторович", Position: "доцент", FullTimePercent: 100),
+                new(LecturerName: "Кириленко Яков Александрович", Position: "старший преподаватель", FullTimePercent: 50),
+                new(LecturerName: "Брыксин Тимофей Александрович", Position: "доцент", FullTimePercent: 0)
             },
         },
         new object[]
         {
             singleConfigLecturersSheet, new ConfigTableRow[]
-            { new() { LecturerName = "Литвинов Юрий Викторович", Post = "доцент", InterestRate = 100 } }
+            { new(LecturerName: "Литвинов Юрий Викторович", Position: "доцент", FullTimePercent: 100) }
         }
     };
     
@@ -112,10 +108,11 @@ public class TestGoogleClient
     public async Task Test_GoogleClient_ReturnsCorrectConfigTableRowModels(
         string sheetTitle, ConfigTableRow[] expectedTableRows)
     {
-        var configTableRows = await googleClient.GetConfigTableRowsAsync(spreadsheetId, sheetTitle: sheetTitle);
+        var client = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var configTableRows = await client.GetConfigTableRowsAsync();
         for (var i = 0; i < expectedTableRows.Length; i++)
         {
-            Assert.AreEqual(expectedTableRows[i],(configTableRows[i]));
+            Assert.AreEqual(expectedTableRows[i], configTableRows[i]);
         }
         
     }
@@ -131,8 +128,9 @@ public class TestGoogleClient
     [TestCaseSource(nameof(exportLecturersTestCases))]
     public async Task Test_GoogleClient_ModelsFromGetLecturersToExportLecturersResultAreTheSame(Lecturer[] lecturers, string sheetTitle)
     {
-        await googleClient.ExportLecturersAsync(spreadsheetId, lecturers, sheetTitle);
-        var responseLecturers =  await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        var client = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        await client.ExportLecturersAsync(lecturers);
+        var responseLecturers =  await client.GetLecturersAsync();
         Assert.AreEqual(lecturers.Length, responseLecturers.Length);
         for (var i = 0; i < lecturers.Length; i++)
         {
@@ -149,7 +147,7 @@ public class TestGoogleClient
             new Lecturer[]
             {
             new ()
-            {Name = "Литвинов Юрий Викторович", DistributedLoad = 36, Post = "доцент", Standard = 500, InterestRate = 100,
+            {Name = "Литвинов Юрий Викторович", DistributedLoad = 36, Position = "доцент", RequiredLoad = 500, FullTimePercent = 100,
                 Disciplines = new List<Discipline>()
                 {
                     new()
@@ -158,7 +156,7 @@ public class TestGoogleClient
                         Content = "002211 Информатика [3] [СВ.5162-2022] [36]"
                     }
                 } }, new ()
-            {Name = "Кириленко Яков Александрович", DistributedLoad = 32, Post = "старший преподаватель", Standard = 650, InterestRate = 50,
+            {Name = "Кириленко Яков Александрович", DistributedLoad = 32, Position = "старший преподаватель", RequiredLoad = 650, FullTimePercent = 50,
                 Disciplines = new List<Discipline>()
                 {
                     new()
@@ -175,7 +173,8 @@ public class TestGoogleClient
     public async Task Test_GoogleClient_ReturnCorrectLecturerModelsWithSingleDiscipline(string sheetTitle,
         Lecturer[] expectedLecturers)
     {
-        var lecturers = await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        var client = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var lecturers = await client.GetLecturersAsync();
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {
@@ -192,11 +191,11 @@ public class TestGoogleClient
             new Lecturer[]
             {
                 new ()
-                {Name = "Литвинов Юрий Викторович", DistributedLoad = 0, Post = "доцент", Standard = 500, InterestRate = 100,
+                {Name = "Литвинов Юрий Викторович", DistributedLoad = 0, Position = "доцент", RequiredLoad = 500, FullTimePercent = 100,
                     Disciplines = new List<Discipline>()
                    }, 
                 new ()
-                {Name = "Кириленко Яков Александрович", DistributedLoad = 0, Post = "старший преподаватель", Standard = 650, InterestRate = 50,
+                {Name = "Кириленко Яков Александрович", DistributedLoad = 0, Position = "старший преподаватель", RequiredLoad = 650, FullTimePercent = 50,
                     Disciplines = new List<Discipline>()
                         
                 }
@@ -208,7 +207,8 @@ public class TestGoogleClient
     public async Task Test_GoogleClient_ReturnsCorrectLecturerModelsWithoutDisciplines(string sheetTitle,
         Lecturer[] expectedLecturers)
     {
-        var lecturers = await googleClient.GetLecturersAsync(spreadsheetId, sheetTitle);
+        var client = await GoogleClient.Connect(spreadsheetId, sheetTitle);
+        var lecturers = await client.GetLecturersAsync();
         Assert.AreEqual(expectedLecturers.Length, lecturers.Length);
         for (var i = 0; i < expectedLecturers.Length; i++)
         {

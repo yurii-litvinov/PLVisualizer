@@ -1,14 +1,11 @@
-﻿using System.Reflection;
+﻿namespace ApiUtils.Middlewares;
+
 using Google;
 using Loggers;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using PlVisualizer.Api.Dto;
 using PlVisualizer.Api.Dto.Exceptions;
-using PlVisualizer.Api.Dto.Exceptions.ApiExceptions;
-using PlVisualizer.Api.Dto.Exceptions.DocxExceptions;
-
-namespace ApiUtils.Middlewares;
 
 /// <summary>
 /// Represents middleware that handles exceptions occuring in application
@@ -51,7 +48,7 @@ public class ExceptionsMiddleware
 
     private static async Task WriteExceptionAsync(HttpContext context, Exception exception, int statusCode)
     {
-        var response = new Response { Content = exception.Message, Exception = exception};
+        var response = new Response(Content: exception.Message, Exception: exception);
         var result = JsonConvert.SerializeObject(response);
         context.Response.StatusCode = statusCode;
         context.Response.ContentType = "application/json";

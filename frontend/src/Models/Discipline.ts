@@ -1,11 +1,12 @@
 import {Guid} from "guid-typescript";
 
-export interface Discipline{
+export interface Discipline {
     id: Guid
     content: string
-    contactLoad : number
-    term: number
+    load : number
+    term: string
     code: string
-    educationalProgram: string
+    name: string
     workType: string
+    audience: string
 }
