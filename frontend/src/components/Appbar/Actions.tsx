@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import React from "react";
 import {appBarProps} from "./Appbar";
-import {Button} from "../Shared/Buttton";
+// import {Button} from "../Shared/Buttton";
 
 export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick, onHelpClick} : appBarProps) =>{
     return(
             <ActionsContainer>
-                <Button style={{height:"90%", width:"300px"}}
+                {/* <Button style={{height:"90%", width:"300px"}}
                         backgroundColor={'white'}
                         onHoverBackgroundColor={'lightblue'}
                         color={'black'}
@@ -26,7 +26,7 @@ export const Actions: React.FC<appBarProps> = ({onImportClick, onExportClick, on
                         color={'black'}
                         onClick={onHelpClick}>
                     Помощь
-                </Button>
+                </Button> */}
             </ActionsContainer>)
 }
 

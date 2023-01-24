@@ -1,12 +1,18 @@
 import {Guid} from "guid-typescript";
 
+export interface LoadDetails {
+    loadType: string
+    hours: number
+    audience: string
+}
+
 export interface Discipline {
     id: Guid
-    content: string
-    load : number
+    totalLoad : number
     term: string
     code: string
     name: string
-    workType: string
+    generalWorkType: string
     audience: string
+    loadDetails: LoadDetails[]
 }

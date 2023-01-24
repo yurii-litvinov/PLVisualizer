@@ -1,16 +1,35 @@
-import React, {FC} from 'react'
+import React, {FC, useState} from 'react'
 import {Lecturer} from "../../Models/Lecturer";
 import styled from "styled-components";
 import {Droppable} from "react-beautiful-dnd";
 import {DndDiscipline} from "./DndDiscipline";
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export interface tableProps {
-    lecturers: Array<Lecturer>
+
+interface ExpandMoreProps extends IconButtonProps {
+    expand: boolean;
 }
 
+const ExpandMore = styled((props: ExpandMoreProps) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+}));
 
-/// Represents a table with a pedagogical load with the possibility of Drag&Drop
-export const LecturersTable : FC<tableProps> = ({lecturers}) => {
+export interface LecturerRowProps {
+    lecturer: Lecturer
+}
+
+const LecturerRow : FC<LecturerRowProps> = ({lecturer}) => {
+    const [expanded, setExpanded] = useState(true);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded)
+    };
+
     const getLoadType = (distributedLoad : number, standard: number) : string => {
         if (distributedLoad === 0) return 'Сильно ниже нормы'
         const frac = distributedLoad / standard
@@ -23,42 +42,63 @@ export const LecturersTable : FC<tableProps> = ({lecturers}) => {
         return 'Сильно выше нормы'
     }
 
+    const loadType = getLoadType(lecturer.distributedLoad, lecturer.requiredLoad)
+
+    return(<Droppable droppableId={lecturer.name}>
+                {((provided, snapshot) => {
+                    return (
+                        <TableRow ref={provided.innerRef} style={{backgroundColor : snapshot.isDraggingOver ? 'skyblue' : 'white'}}>
+                            <div>
+                                <ExpandMore 
+                                    expand={expanded}
+                                    onClick={handleExpandClick}
+                                    >
+                                    <ExpandMoreIcon />
+                                </ExpandMore>
+                            </div>
+                            <NameCell>{lecturer.name}</NameCell>
+                            <PositionCell>{lecturer.position}</PositionCell>
+                            <InterestRateCell>{lecturer.fullTimePercent}</InterestRateCell>
+                            <DisciplinesCell>{expanded ? lecturer.disciplines.map((discipline, index) => {
+                                    return (<DndDiscipline discipline={discipline} index={index} key={discipline.id.toString()}/>)
+                                }) : []}
+                            </DisciplinesCell>
+                            <DistributedLoadCell
+                                loadType={loadType}
+                            >
+                                <div>{lecturer.distributedLoad}</div>
+                                <div>{loadType}</div>
+                            </DistributedLoadCell>
+                            <StandardCell>{lecturer.requiredLoad}</StandardCell>
+                            {provided.placeholder}
+                        </TableRow>
+                    )
+                })}
+            </Droppable>
+    )
+
+}
+
+
+export interface TableProps {
+    lecturers: Array<Lecturer>
+}
+
+/// Represents a table with a pedagogical load with the possibility of Drag&Drop
+export const LecturersTable : FC<TableProps> = ({lecturers}) => {
+
     return(
         <TableContainer>
             <TableRow>
-                <TableHeader style={{width: "10%"}}>ФИО</TableHeader>
+                <TableHeader style={{width: "1.5%"}}></TableHeader>
+                <TableHeader style={{width: "13%"}}>ФИО</TableHeader>
                 <TableHeader style={{width: "10%"}}>Должность</TableHeader>
                 <TableHeader style={{width: "10%"}}>Процент ставки</TableHeader>
                 <TableHeader style={{width: "40%"}}>Дисциплины</TableHeader>
                 <TableHeader style={{width: "15%"}}>Распределенная нагрузка</TableHeader>
-                <TableHeader style={{width: "5%"}}>Стандарт</TableHeader>
+                <TableHeader style={{width: "5%"}}>Ожидаемая нагрузка</TableHeader>
             </TableRow>
-            {lecturers.map(lecturer => {
-                const loadType = getLoadType(lecturer.distributedLoad, lecturer.requiredLoad)
-                return <Droppable droppableId={lecturer.name}>
-                    {((provided, snapshot) => {
-                        return (
-                            <TableRow ref={provided.innerRef} style={{backgroundColor : snapshot.isDraggingOver ? 'skyblue' : 'white'}}>
-                                <NameCell>{lecturer.name}</NameCell>
-                                <PostCell>{lecturer.position}</PostCell>
-                                <InterestRateCell>{lecturer.fullTimePercent}</InterestRateCell>
-                                <DisciplinesCell>{lecturer.disciplines.map((discipline, index) => {
-                                    return (<DndDiscipline discipline={discipline} index={index} key={discipline.id.toString()}/>)
-                                })}
-                                </DisciplinesCell>
-                                <DistributedLoadCell
-                                    loadType={loadType}
-                                >
-                                    <div>{lecturer.distributedLoad}</div>
-                                    <div>{loadType}</div>
-                                </DistributedLoadCell>
-                                <StandardCell>{lecturer.requiredLoad}</StandardCell>
-                                {provided.placeholder}
-                            </TableRow>
-                        )
-                    })}
-                </Droppable>
-            })}
+            {lecturers.map(lecturer => <LecturerRow lecturer={lecturer} />)}
 
         </TableContainer>
     )
@@ -81,13 +121,16 @@ const TableRow = styled.div`
 
 const NameCell = styled.div`
   margin-left: 8px;
-  width: 10%`
-const PostCell = styled.div`
+  width: 13%`
+
+const PositionCell = styled.div`
   margin-left: 8px;
   width: 10%`
+
 const InterestRateCell = styled.div`
   margin-left: 8px;
   width: 10%`
+
 const DisciplinesCell = styled.div`
   margin-left: 8px;
   width: 40%`
@@ -99,33 +142,35 @@ interface distributedLoadCellProps {
 const getCellColor = (loadType: string) : string =>{
     switch (loadType){
         case "Сильно ниже нормы":
-            return 'white'
+            return 'Red'
         case "Ниже нормы":
-            return 'lightblue'
+            return 'LightCoral'
         case "Несколько ниже нормы":
-            return 'lightgreen'
+            return 'NavajoWhite'
         case "Нормальная нагрузка":
-            return 'yellow'
+            return 'LightGreen'
         case "Несколько выше нормы":
-            return  'pink'
+            return  'MediumAquaMarine'
         case "Выше нормы":
-            return "deeppink"
+            return "MediumTurquoise"
         case "Сильно выше нормы":
-            return "crimson"
+            return "RoyalBlue"
     }
     return 'white'
 }
+
 const DistributedLoadCell = styled.div<distributedLoadCellProps>`
   margin-left: 8px;
   width: 15%;
   background-color: ${(props) =>  getCellColor(props.loadType)}`
+
 const StandardCell = styled.div`
   margin-left: 8px;
   width: 5%; `
 
 const TableContainer = styled.div`
-  margin-top: 6%;
-  margin-left: 26%;
+  margin-top: 3%;
+  margin-left: 15.5%;
   width: 100%;
   display: flex;
   flex-direction: column`

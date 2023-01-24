@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace PlVisualizer.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
 using PlVisualizer.Api.Dto.Tables;
 using PLVisualizer.BusinessLogic.Providers.SpreadsheetProvider;
 using PLVisualizer.BusinessLogic.Services;
-
-namespace PlVisualizer.Controllers;
 
 [ApiController]
 [Route("tables")]
@@ -11,6 +11,8 @@ public class TablesController : Controller
 {
     private readonly ISpreadsheetProvider spreadsheetProvider;
     private readonly ITablesService tablesService;
+
+    private const string distributedLoadPath = "pedagogicalLoad2023.xlsx";
 
     public TablesController(ITablesService tablesService, ISpreadsheetProvider spreadsheetProvider)
     {
@@ -23,11 +25,19 @@ public class TablesController : Controller
     public async Task<ActionResult<Lecturer[]>> GetLecturersViaLecturersTableAsync([FromRoute] string spreadsheetId)
         => await tablesService.GetLecturersViaLecturersTableAsync(spreadsheetId);
 
-    [HttpPost]
+    //[HttpPost]
+    //[Route("import/config/{spreadsheetId}")]
+    //public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm] IFormFile file)
+    //{
+    //    var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
+    //    return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
+    //}
+
+    [HttpGet]
     [Route("import/config/{spreadsheetId}")]
-    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId, [FromForm] IFormFile file)
+    public async Task<ActionResult<Lecturer[]>> GetLecturerViaConfigAsync([FromRoute] string spreadsheetId)
     {
-        var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(file);
+        var spreadsheetDocument = spreadsheetProvider.GetSpreadsheetDocument(distributedLoadPath);
         return await tablesService.GetLecturersViaConfigAsync(spreadsheetId, spreadsheetDocument);
     }
 

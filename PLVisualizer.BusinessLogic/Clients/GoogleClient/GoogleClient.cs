@@ -72,7 +72,7 @@ public class GoogleClient : IGoogleClient
             }
             values.AddRange(lecturer.Disciplines.Select(discipline => new List<string>
             {
-                lecturer.Name, lecturer.Position, lecturer.FullTimePercent.ToString(), discipline.Content, lecturer.DistributedLoad.ToString(), lecturer.RequiredLoad.ToString()
+                lecturer.Name, lecturer.Position, lecturer.FullTimePercent.ToString(), lecturer.DistributedLoad.ToString(), lecturer.RequiredLoad.ToString()
             }));
         }
 
@@ -180,12 +180,12 @@ public class GoogleClient : IGoogleClient
         return new Discipline(
             Id: Guid.NewGuid(),
             Term: "",
-            Content: content,
             Code: content[..content.IndexOf(' ')],
             Name: "",
-            Load: contactLoad,
-            WorkType: matches.Count == 4 ? matches[1].Value : string.Empty,
-            Audience: ""
+            TotalLoad: contactLoad,
+            GeneralWorkType: matches.Count == 4 ? matches[1].Value : string.Empty,
+            Audience: "",
+            LoadDetails: new List<LoadDetail>()
         );
     }
 

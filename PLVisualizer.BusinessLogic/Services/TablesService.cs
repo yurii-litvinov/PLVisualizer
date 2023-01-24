@@ -100,32 +100,34 @@ public class TablesService : ITablesService
                 {
                     var disciplinesInAGroup = disciplineGroupedByTerm.ToList();
                     var lectureDisciplines = disciplineGroupedByTerm.Where(discipline =>
-                        CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.WorkType)).ToArray();
+                        CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.GeneralWorkType)).ToArray();
                     if (lectureDisciplines.Length != 0)
                     {
                         var mainLectureDiscipline = lectureDisciplines.First();
-                        var lectureLoad = lectureDisciplines.Sum(lectureDiscipline => lectureDiscipline.Load);
+                        var lectureLoad = lectureDisciplines.Sum(lectureDiscipline => lectureDiscipline.TotalLoad);
+                        var loadDetails = lectureDisciplines.Select(lectureDiscipline => new LoadDetail(lectureDiscipline.GeneralWorkType, lectureDiscipline.TotalLoad, lectureDiscipline.Audience));
+
                         mergedDisciplines.Add(
                             new Discipline(
                                 Id: Guid.NewGuid(),
-                                Content: mainLectureDiscipline.Content,
-                                Load: lectureLoad,
+                                TotalLoad: lectureLoad,
                                 Term: mainLectureDiscipline.Term,
                                 Code: mainLectureDiscipline.Code,
                                 Name: mainLectureDiscipline.Name,
                                 Audience: mainLectureDiscipline.Audience,
-                                WorkType: "Лекции"
+                                GeneralWorkType: "Лекции",
+                                LoadDetails: loadDetails
                             ));
                     }
 
                     var nonLectureDisciplines = disciplineGroupedByTerm.Where(discipline => 
-                         !CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.WorkType)).ToArray();
+                         !CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.GeneralWorkType)).ToArray();
                     if (nonLectureDisciplines.Length == 0)
                     {
                         continue;
                     }
 
-                    var groupedByWorkTypeDisciplines = nonLectureDisciplines.GroupBy(d => d.WorkType).ToArray();
+                    var groupedByWorkTypeDisciplines = nonLectureDisciplines.GroupBy(d => d.GeneralWorkType).ToArray();
                     var firstGroupCount = groupedByWorkTypeDisciplines.First().Count();
 
                     //if (groupedByWorkTypeDisciplines.Any(groupedByWorkTypeDiscipline =>
@@ -138,20 +140,22 @@ public class TablesService : ITablesService
                     //}
 
                     var mainPracticeDiscipline = nonLectureDisciplines.First();
-                    var practiceLoad = groupedByWorkTypeDisciplines.Sum(group => group.First().Load);
+                    var practiceLoad = groupedByWorkTypeDisciplines.Sum(group => group.First().TotalLoad);
 
                     for (var i = 0; i < firstGroupCount; i++)
                     {
+                        var loadDetails = nonLectureDisciplines.Select(nonLectureDiscipline => new LoadDetail(nonLectureDiscipline.GeneralWorkType, nonLectureDiscipline.TotalLoad, nonLectureDiscipline.Audience));
+
                         mergedDisciplines.Add(
                             new Discipline(
                                 Id: Guid.NewGuid(),
-                                Content: mainPracticeDiscipline.Content,
-                                Load: practiceLoad,
+                                TotalLoad: practiceLoad,
                                 Term: mainPracticeDiscipline.Term,
                                 Code: mainPracticeDiscipline.Code,
                                 Name: mainPracticeDiscipline.Name,
                                 Audience: mainPracticeDiscipline.Audience,
-                                WorkType: GetGeneralizedPracticeWorkType(nonLectureDisciplines)
+                                GeneralWorkType: GetGeneralizedPracticeWorkType(nonLectureDisciplines),
+                                LoadDetails: loadDetails
                             ));
                     }
                 }
@@ -166,13 +170,13 @@ public class TablesService : ITablesService
     private static Discipline CreateDiscipline(ExcelTableRow tableRow)
         => new Discipline(
             Id: Guid.NewGuid(),
-            Content: $"[{tableRow.DisciplineCode}] {tableRow.DisciplineName}",
-            Load: tableRow.Hours,
+            TotalLoad: tableRow.Hours,
             Term: tableRow.Term,
             Code: tableRow.DisciplineCode,
             Name: tableRow.DisciplineName,
             Audience: tableRow.Audience,
-            WorkType: tableRow.WorkType
+            GeneralWorkType: tableRow.WorkType,
+            LoadDetails: new List<LoadDetail>()
         );
 
     private static bool CanBeClassifiedAsLecture(IEnumerable<Discipline> group, string workType)
@@ -180,7 +184,7 @@ public class TablesService : ITablesService
         bool IsPartOfLectureCourseWithPassedNotPassedAttestation(string workType)
             => workType is "лекции" or "коллоквиумы" or "промежуточная аттестация (зач)" or "консультации";
 
-        var workTypes = group.Select(x => x.WorkType.ToLower());
+        var workTypes = group.Select(x => x.GeneralWorkType.ToLower());
         workType = workType.ToLower();
 
         if (workType is "лекции" or "коллоквиумы" or "промежуточная аттестация (экз)" or "консультации")
@@ -193,7 +197,7 @@ public class TablesService : ITablesService
 
     private static string GetGeneralizedPracticeWorkType(IEnumerable<Discipline> group)
     {
-        var workTypes = group.Select(x => x.WorkType.ToLower());
+        var workTypes = group.Select(x => x.GeneralWorkType.ToLower());
         if (workTypes.Contains("практики"))
         {
             return "практики";

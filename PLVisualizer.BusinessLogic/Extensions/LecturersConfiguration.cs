@@ -50,7 +50,7 @@ public static class LecturersConfiguration
     /// <param name="lecturers"></param>
     /// <returns></returns>
     public static IEnumerable<Lecturer> WithDistributedLoad(this IEnumerable<Lecturer> lecturers)
-        => lecturers.Select(l => l with { DistributedLoad = l.Disciplines.Select(discipline => discipline.Load).Sum() });
+        => lecturers.Select(l => l with { DistributedLoad = l.Disciplines.Select(discipline => discipline.TotalLoad).Sum() });
     
     private static int GetStandard(Lecturer lecturer)
     {

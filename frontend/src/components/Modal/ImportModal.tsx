@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, FC, SetStateAction, useState} from "react";
 import {Modal} from "./Modal";
 import {GoogleForm} from "./GoogleForm";
 import {Lecturer} from "../../Models/Lecturer";
@@ -14,7 +14,6 @@ interface importModalProps{
     tablesClient : ITablesClient
 }
 
-
 export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers , closeModal}) => {
     const [loading, setLoading] = useState(false)
     const [importUrl, setImportUrl] = useState('')
@@ -22,11 +21,6 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
     const [googleForm, setGoogleSSForm] = useState(false)
     const [excelForm, setExcelForm] = useState(true)
     const [errorMessage, setErrorMessage] = useState("")
-    // useEffect(() => {
-    //     if (errorMessage === ""){
-    //         closeModal()
-    //     }
-    // }, [errorMessage])
 
     const handleImportSubmit = async () => {
         const regExp = new RegExp("(?<=^([^/]*/){5})([^/]*)")
@@ -47,19 +41,18 @@ export const ImportModal : FC<importModalProps> = ({tablesClient, setLecturers ,
                     }})
         }
         else {
-            await tablesClient.importTableViaConfigAsync(spreadsheetId, formData).then(response =>{
-                const {data} = response
-                setLecturers(prevState => data)
-                }).catch(function (error){
-                const jsonResponse =  JSON.stringify(error.response.data)
-                const response : Response = JSON.parse(jsonResponse)
-                setErrorMessage(prevState => response.Content)
-                })
+            // await tablesClient.importTableViaConfigAsync(spreadsheetId, formData).then(response =>{
+            //     const {data} = response
+            //     setLecturers(prevState => data)
+            //     }).catch(function (error){
+            //     const jsonResponse =  JSON.stringify(error.response.data)
+            //     const response : Response = JSON.parse(jsonResponse)
+            //     setErrorMessage(prevState => response.Content)
+            //     })
         }
 
         setLoading(value => !value)
-        // if (errorMessage === "") closeModal()
-        }
+    }
 
     return(
         <Modal onClose={closeModal} title={'Способ импортирования таблицы'} onSubmit={handleImportSubmit}>

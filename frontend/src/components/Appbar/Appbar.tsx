@@ -11,7 +11,7 @@ export interface appBarProps{
 export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick, onHelpClick} : appBarProps) => {
     return(
         <AppBarContainer>
-            <AppNameContainer> PLVisualizer </AppNameContainer>
+            <AppNameContainer> Визуализатор педнагрузки </AppNameContainer>
             <Actions onExportClick={onExportClick} onImportClick={onImportClick}  onHelpClick={onHelpClick} />
         </AppBarContainer>
     )
@@ -20,7 +20,7 @@ export const AppBar : FC<appBarProps> = ({onImportClick, onExportClick, onHelpCl
 const AppBarContainer = styled.nav`
   position: fixed;
   color: white;
-  height: 10%;
+  height: 5%;
   width: 100%;
   display: flex;
   align-items: center;
