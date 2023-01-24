@@ -27,7 +27,8 @@ public static class LecturersConfiguration
                 {
                     Name = configTableRow.LecturerName,
                     Position = configTableRow.Position, 
-                    FullTimePercent = configTableRow.FullTimePercent 
+                    FullTimePercent = configTableRow.FullTimePercent,
+                    IsFired= configTableRow.IsFired
                 };
 
                 lecturersViaConfig.Add(lecturers[lecturerName]);
@@ -42,7 +43,7 @@ public static class LecturersConfiguration
     /// </summary>
     /// <param name="lecturers">Lecturers to configure.</param>
     public static IEnumerable<Lecturer> WithStandards(this IEnumerable<Lecturer> lecturers)
-        => lecturers.Select(l => l with { RequiredLoad = GetStandard(l) });
+        => lecturers.Select(l => l with { RequiredLoad = GetStandard(l) * l.FullTimePercent / 100 });
 
     /// <summary>
     /// Adds distributed load to lecturers according to disciplines assigned to him.
@@ -54,10 +55,9 @@ public static class LecturersConfiguration
     
     private static int GetStandard(Lecturer lecturer)
     {
-        var isPractician = lecturer.Position.Contains("практик");
-        if (isPractician)
+        if (lecturer.Position.Contains("практик"))
         {
-            return lecturer.Position.ToLower() switch
+            return lecturer.Position.Split('-')[0].ToLower() switch
             {
                 "доцент" => 650,
                 "старший преподаватель" => 700,
@@ -72,6 +72,7 @@ public static class LecturersConfiguration
             "доцент" => 500,
             "старший преподаватель" => 650,
             "ассистент" => 600,
+            "инженер-исследователь" => 1,
             _ => throw new UnknownLecturerPositionException()
         };
     }

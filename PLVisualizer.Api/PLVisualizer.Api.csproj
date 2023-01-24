@@ -8,16 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="pedagogicalLoad2023.xlsx" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="pedagogicalLoad2023.xlsx">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ApiUtils\ApiUtils.csproj" />
       <ProjectReference Include="..\Loggers\Loggers.csproj" />
       <ProjectReference Include="..\PLVisualizer.BusinessLogic\PLVisualizer.BusinessLogic.csproj" />

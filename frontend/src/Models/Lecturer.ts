@@ -7,4 +7,5 @@ export interface Lecturer {
     disciplines: Array<Discipline>
     distributedLoad: number
     requiredLoad: number
+    isFired: boolean
 }

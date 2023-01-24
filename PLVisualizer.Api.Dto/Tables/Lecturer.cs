@@ -3,4 +3,4 @@
 /// <summary>
 /// Represents lecturer
 /// </summary>
-public record struct Lecturer(string Name, string Position, int FullTimePercent, List<Discipline> Disciplines, int DistributedLoad, int RequiredLoad);
+public record struct Lecturer(string Name, string Position, int FullTimePercent, List<Discipline> Disciplines, int DistributedLoad, int RequiredLoad, bool IsFired);

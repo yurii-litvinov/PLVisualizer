@@ -6,6 +6,9 @@
 # Client secrets
 client_secret_73783733765-cil43cbdnr1nshgdtao5p0bb6di0git8.apps.googleusercontent.com.json
 
+#.xlsx files (can contain sensitive information)
+.xlsx
+
 certs
 #IDE
 .fleet

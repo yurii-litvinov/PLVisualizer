@@ -4,6 +4,7 @@ using DocUtils;
 using System.Text.RegularExpressions;
 using PlVisualizer.Api.Dto.Exceptions.SpreadsheetsExceptions;
 using PlVisualizer.Api.Dto.Tables;
+using System.Linq;
 
 /// <summary>
 /// Represents google spreadsheets client
@@ -55,7 +56,7 @@ public class GoogleClient : IGoogleClient
 
     public async Task<ConfigTableRow[]> GetConfigTableRowsAsync()
     {
-        var values = await service.Sheet(spreadsheetId, sheetId).ReadSheetAsync("A", "C", 2, null);
+        var values = await service.Sheet(spreadsheetId, sheetId).ReadSheetAsync("A", "D", 2, null);
         return await Task.FromResult(ToConfigModel(values));
     }
 
@@ -83,10 +84,14 @@ public class GoogleClient : IGoogleClient
         => configTableRows
             .Select(configTableRow => configTableRow.ToList())
             .Select(configTableRow => new ConfigTableRow( 
-                LecturerName: configTableRow[0].ToString() ?? string.Empty,
-                Position: configTableRow[1].ToString() ?? string.Empty,
-                FullTimePercent: int.Parse(configTableRow[2].ToString() ?? throw new SpreadsheetParsingException(
-                    "An error occured while parsing. Ensure Google Spreadsheet has valid format."))))
+                    LecturerName: configTableRow[0].ToString() ?? string.Empty,
+                    Position: configTableRow[1].ToString() ?? string.Empty,
+                    FullTimePercent: int.Parse(configTableRow[2].ToString() ?? throw new SpreadsheetParsingException(
+                        "An error occured while parsing. Ensure Google Spreadsheet has valid format.")),
+                    IsFired: configTableRow[3].ToString() == "да"
+                )
+            )
+
             .ToArray();
     
     private static Lecturer[] ToLecturerModels(IEnumerable<IEnumerable<string>> values)

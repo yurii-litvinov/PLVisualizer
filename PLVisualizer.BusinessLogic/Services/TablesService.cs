@@ -50,35 +50,28 @@ public class TablesService : ITablesService
 
     private Dictionary<string, Lecturer> GetLecturersWithDisciplines(IEnumerable<ExcelTableRow> tableRows)
     {
-        var lecturers = GetLecturersWithUnmergedDisciplines(tableRows);
-        MergeLecturersDisciplines(lecturers);
+        var lecturerRowGroups = GroupByLecturers(tableRows);
+        var lecturers = CreateDisciplines(lecturerRowGroups);
         return lecturers;
     }
 
-    private static Dictionary<string, Lecturer> GetLecturersWithUnmergedDisciplines(IEnumerable<ExcelTableRow> tableRows)
+    private static Dictionary<string, List<ExcelTableRow>> GroupByLecturers(IEnumerable<ExcelTableRow> tableRows)
     {
-        var lecturers = new Dictionary<string, Lecturer>();
+        var lecturerRowGroups = new Dictionary<string, List<ExcelTableRow>>();
 
         foreach (ExcelTableRow row in tableRows)
         {
-            var lecturer = row.Lecturer.Split(' ')[0];
-            var discipline = CreateDiscipline(row);
+            var lecturerKey = row.Lecturer.Split(' ')[0];
 
-            if (lecturers.ContainsKey(lecturer))
+            if (!lecturerRowGroups.ContainsKey(lecturerKey))
             {
-                lecturers[lecturer].Disciplines.Add(discipline);
+                lecturerRowGroups.Add(lecturerKey, new());
             }
-            else
-            {
-                lecturers.Add(lecturer, new Lecturer
-                {
-                    Name = lecturer,
-                    Disciplines = new List<Discipline> { discipline }
-                });
-            }
+
+            lecturerRowGroups[lecturerKey].Add(row);
         }
 
-        return lecturers;
+        return lecturerRowGroups;
     }
 
     /// <summary>
@@ -86,121 +79,105 @@ public class TablesService : ITablesService
     /// </summary>
     /// <param name="lecturers">Lecturers with unmerged disciplines.</param>
     /// <exception cref="InvalidDisciplineWorkTypesCountException">Throws when practical disciplines can not be grouped into equal groups.</exception>
-    private static void MergeLecturersDisciplines(Dictionary<string, Lecturer> lecturers)
+    private static Dictionary<string, Lecturer> CreateDisciplines(Dictionary<string, List<ExcelTableRow>> lecturerRowGroups)
     {
-        var updatedLecturers = new List<(string, Lecturer)>();
-        foreach (var (key, lecturer) in lecturers)
-        {
-            var mergedDisciplines = new List<Discipline>();
-            var disciplinesGroupedByCode = lecturer.Disciplines.GroupBy(discipline => discipline.Code);
-            foreach (var disciplineGroupedByCode in disciplinesGroupedByCode)
-            {
-                var disciplinesGroupedByTerm = disciplineGroupedByCode.GroupBy(discipline => discipline.Term);
-                foreach (var disciplineGroupedByTerm in disciplinesGroupedByTerm)
-                {
-                    var disciplinesInAGroup = disciplineGroupedByTerm.ToList();
-                    var lectureDisciplines = disciplineGroupedByTerm.Where(discipline =>
-                        CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.GeneralWorkType)).ToArray();
-                    if (lectureDisciplines.Length != 0)
-                    {
-                        var mainLectureDiscipline = lectureDisciplines.First();
-                        var lectureLoad = lectureDisciplines.Sum(lectureDiscipline => lectureDiscipline.TotalLoad);
-                        var loadDetails = lectureDisciplines.Select(lectureDiscipline => new LoadDetail(lectureDiscipline.GeneralWorkType, lectureDiscipline.TotalLoad, lectureDiscipline.Audience));
+        var result = new Dictionary<string, Lecturer>();
 
-                        mergedDisciplines.Add(
+        foreach (var (key, rows) in lecturerRowGroups)
+        {
+            var disciplines = new List<Discipline>();
+            var rowsGroupedByCode = rows.GroupBy(row => row.DisciplineCode);
+
+            foreach (var rowGroupedByCode in rowsGroupedByCode)
+            {
+                var rowsGroupedByTerm = rowGroupedByCode.GroupBy(row => row.Term);
+                foreach (var rowGroupedByTerm in rowsGroupedByTerm)
+                {
+                    var rowsInAGroup = rowGroupedByTerm.ToList();
+                    
+                    var lectureRows = rowGroupedByTerm.Where(row => CanBeClassifiedAsLecture(rowsInAGroup, row.WorkType));
+                    
+                    if (lectureRows.Count() != 0)
+                    {
+                        var mainLectureWorkUnit = lectureRows.First();
+                        var lectureLoad = lectureRows.Sum(lectureRow => lectureRow.Hours);
+                        var loadDetails = lectureRows.Select(lectureRow => new LoadDetail(lectureRow.WorkType, lectureRow.Hours, lectureRow.Audience));
+
+                        disciplines.Add(
                             new Discipline(
                                 Id: Guid.NewGuid(),
                                 TotalLoad: lectureLoad,
-                                Term: mainLectureDiscipline.Term,
-                                Code: mainLectureDiscipline.Code,
-                                Name: mainLectureDiscipline.Name,
-                                Audience: mainLectureDiscipline.Audience,
+                                Term: mainLectureWorkUnit.Term,
+                                Code: mainLectureWorkUnit.DisciplineCode,
+                                Name: mainLectureWorkUnit.DisciplineName,
+                                Audience: mainLectureWorkUnit.Audience,
                                 GeneralWorkType: "Лекции",
                                 LoadDetails: loadDetails
                             ));
                     }
 
-                    var nonLectureDisciplines = disciplineGroupedByTerm.Where(discipline => 
-                         !CanBeClassifiedAsLecture(disciplinesInAGroup, discipline.GeneralWorkType)).ToArray();
-                    if (nonLectureDisciplines.Length == 0)
+                    var practiceRows = rowGroupedByTerm.Where(row => !CanBeClassifiedAsLecture(rowsInAGroup, row.WorkType));
+                    if (practiceRows.Count() == 0)
                     {
                         continue;
                     }
 
-                    var groupedByWorkTypeDisciplines = nonLectureDisciplines.GroupBy(d => d.GeneralWorkType).ToArray();
-                    var firstGroupCount = groupedByWorkTypeDisciplines.First().Count();
+                    var practiceRowsGroupedByWorkType = practiceRows.GroupBy(d => d.WorkType);
+                    var firstGroupCount = practiceRowsGroupedByWorkType.First().Count();
 
-                    //if (groupedByWorkTypeDisciplines.Any(groupedByWorkTypeDiscipline =>
-                    //        groupedByWorkTypeDiscipline.Count() != firstGroupCount 
-                    //        && groupedByWorkTypeDiscipline.Key.ToLower() != "лекции"
-                    //        && groupedByWorkTypeDiscipline.Key.ToLower() != "контрольные работы"))
-                    //{
-                    //    throw new InvalidDisciplineWorkTypesCountException(
-                    //        $"Discipline {groupedByCodeDiscipline.Key} in semester {groupedByTermDiscipline.Key} does not form equal groups.");
-                    //}
+                    
+                    var practiceLoad = practiceRowsGroupedByWorkType.Sum(group => group.First().Hours);
 
-                    var mainPracticeDiscipline = nonLectureDisciplines.First();
-                    var practiceLoad = groupedByWorkTypeDisciplines.Sum(group => group.First().TotalLoad);
+                    var practiceRowsGroupedByAudience = practiceRows.GroupBy(d => d.Audience);
 
-                    for (var i = 0; i < firstGroupCount; i++)
+                    foreach (var practiceGroupedByAudience in practiceRowsGroupedByAudience)
                     {
-                        var loadDetails = nonLectureDisciplines.Select(nonLectureDiscipline => new LoadDetail(nonLectureDiscipline.GeneralWorkType, nonLectureDiscipline.TotalLoad, nonLectureDiscipline.Audience));
+                        var practicesInAGroup = practiceGroupedByAudience.ToList();
+                        var mainPracticeWorkUnit = practicesInAGroup.First();
 
-                        mergedDisciplines.Add(
+                        var loadDetails = practicesInAGroup.Select(practiceRow => new LoadDetail(practiceRow.WorkType, practiceRow.Hours, practiceRow.Audience));
+
+                        disciplines.Add(
                             new Discipline(
                                 Id: Guid.NewGuid(),
                                 TotalLoad: practiceLoad,
-                                Term: mainPracticeDiscipline.Term,
-                                Code: mainPracticeDiscipline.Code,
-                                Name: mainPracticeDiscipline.Name,
-                                Audience: mainPracticeDiscipline.Audience,
-                                GeneralWorkType: GetGeneralizedPracticeWorkType(nonLectureDisciplines),
+                                Term: mainPracticeWorkUnit.Term,
+                                Code: mainPracticeWorkUnit.DisciplineCode,
+                                Name: mainPracticeWorkUnit.DisciplineName,
+                                Audience: mainPracticeWorkUnit.Audience,
+                                GeneralWorkType: GetGeneralizedPracticeWorkType(practiceRows),
                                 LoadDetails: loadDetails
                             ));
                     }
                 }
             }
 
-            updatedLecturers.Add((key, lecturer with { Disciplines = mergedDisciplines }));
+            result.Add(key, new Lecturer { Name = key, Disciplines = disciplines });
         }
 
-        updatedLecturers.ForEach(pair => lecturers[pair.Item1] = pair.Item2);
+        return result;
     }
 
-    private static Discipline CreateDiscipline(ExcelTableRow tableRow)
-        => new Discipline(
-            Id: Guid.NewGuid(),
-            TotalLoad: tableRow.Hours,
-            Term: tableRow.Term,
-            Code: tableRow.DisciplineCode,
-            Name: tableRow.DisciplineName,
-            Audience: tableRow.Audience,
-            GeneralWorkType: tableRow.WorkType,
-            LoadDetails: new List<LoadDetail>()
-        );
-
-    private static bool CanBeClassifiedAsLecture(IEnumerable<Discipline> group, string workType)
+    private static bool CanBeClassifiedAsLecture(IEnumerable<ExcelTableRow> group, string workType)
     {
-        bool IsPartOfLectureCourseWithPassedNotPassedAttestation(string workType)
-            => workType is "лекции" or "коллоквиумы" or "промежуточная аттестация (зач)" or "консультации";
+        bool IsDefinitelyPartOfLectureCourse(string workType)
+            => workType is "лекции" or "коллоквиумы" or "промежуточная аттестация (экз)" or "консультации";
 
-        var workTypes = group.Select(x => x.GeneralWorkType.ToLower());
+        bool CanBePartOfLectureCourse(string workType)
+            => IsDefinitelyPartOfLectureCourse(workType) || workType is "промежуточная аттестация (зач)" or "текущий контроль (ауд)" or "контрольные работы";
+
+        var workTypes = group.Select(x => x.WorkType.ToLower());
         workType = workType.ToLower();
 
-        if (workType is "лекции" or "коллоквиумы" or "промежуточная аттестация (экз)" or "консультации")
-        {
-            return true;
-        }
-
-        return workType is "промежуточная аттестация (зач)" && workTypes.All(IsPartOfLectureCourseWithPassedNotPassedAttestation);
+        return IsDefinitelyPartOfLectureCourse(workType) || workTypes.All(CanBePartOfLectureCourse);
     }
 
-    private static string GetGeneralizedPracticeWorkType(IEnumerable<Discipline> group)
+    private static string GetGeneralizedPracticeWorkType(IEnumerable<ExcelTableRow> group)
     {
-        var workTypes = group.Select(x => x.GeneralWorkType.ToLower());
-        if (workTypes.Contains("практики"))
+        var workTypes = group.Select(x => x.WorkType.ToLower());
+        if (workTypes.Contains("практические занятия"))
         {
-            return "практики";
+            return "практические занятия";
         }
 
         if (workTypes.Contains("семинары"))
